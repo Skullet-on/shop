@@ -27,6 +27,7 @@ const Product = sequelize.define("product", {
   price: { type: DataTypes.INTEGER, allowNull: false },
   oldPrice: { type: DataTypes.INTEGER, defaultValue: 0 },
   rating: { type: DataTypes.INTEGER, defaultValue: 0 },
+  img: { type: DataTypes.STRING, allowNull: false },
 });
 
 const Property = sequelize.define("property", {
@@ -34,12 +35,7 @@ const Property = sequelize.define("property", {
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
 
-const Description = sequelize.define("description", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  description: { type: DataTypes.STRING },
-});
-
-const Type = sequelize.define("type", {
+const Catalog = sequelize.define("catalog", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
 });
@@ -66,7 +62,7 @@ const ProductColors = sequelize.define("product_colors", {
   count: { type: DataTypes.INTEGER, defaultValue: 0 },
 });
 
-const TypeBrand = sequelize.define("type_brand", {
+const CatalogProperty = sequelize.define("catalog_property", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
 
@@ -82,8 +78,8 @@ Rating.belongsTo(User);
 Basket.hasMany(BasketProduct);
 BasketProduct.belongsTo(Basket);
 
-Type.hasMany(Product);
-Product.belongsTo(Type);
+Catalog.hasMany(Product);
+Product.belongsTo(Catalog);
 
 Brand.hasMany(Product);
 Product.belongsTo(Brand);
@@ -94,9 +90,6 @@ Rating.belongsTo(Product);
 Product.hasMany(BasketProduct);
 BasketProduct.belongsTo(Product);
 
-// Product.hasMany(ProductProperties, {as: 'info'})
-// ProductProperties.belongsTo(Product)
-
 Property.hasMany(ProductProperties);
 ProductProperties.belongsTo(Property);
 
@@ -106,8 +99,12 @@ ProductProperties.belongsTo(Product);
 Product.hasMany(ProductColors, { as: "color" });
 ProductColors.belongsTo(Product);
 
-Type.belongsToMany(Brand, { through: TypeBrand });
-Brand.belongsToMany(Type, { through: TypeBrand });
+Catalog.belongsToMany(Property, { as: "properties", through: CatalogProperty });
+Property.belongsToMany(Catalog, { as: "catalogs", through: CatalogProperty });
+Catalog.hasMany(CatalogProperty);
+CatalogProperty.belongsTo(Catalog);
+Property.hasMany(CatalogProperty);
+CatalogProperty.belongsTo(Property);
 
 module.exports = {
   User,
@@ -116,11 +113,10 @@ module.exports = {
   BasketProduct,
   Product,
   Property,
-  Description,
-  Type,
+  Catalog,
+  CatalogProperty,
   Brand,
   Rating,
-  TypeBrand,
   ProductColors,
   ProductProperties,
 };

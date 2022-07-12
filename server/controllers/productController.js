@@ -11,10 +11,19 @@ const { Op } = require("sequelize");
 class ProductController {
   async create(req, res, next) {
     try {
-      let { name, price, brandId, typeId, info, color, count } = req.body;
+      let {
+        name,
+        price,
+        brandId,
+        catalogId,
+        info,
+        color,
+        count,
+        oldPrice = 0,
+      } = req.body;
 
       let fileName = "no-image.jpg";
-
+      console.log(oldPrice);
       if (req.files) {
         const { img } = req.files;
         fileName = uuid.v4() + ".jpg";
@@ -24,8 +33,10 @@ class ProductController {
       const product = await Product.create({
         name,
         price,
+        oldPrice,
+        img: fileName,
         brandId,
-        typeId,
+        catalogId,
       });
 
       await ProductColors.create({
@@ -54,7 +65,7 @@ class ProductController {
 
   async edit(req, res, next) {
     try {
-      let { name, price, brandId, typeId, info, color } = req.body;
+      let { name, price, brandId, catalogId, info, color } = req.body;
       const { id } = req.params;
       let product;
 
@@ -65,12 +76,12 @@ class ProductController {
         img.mv(path.resolve(__dirname, "..", "static", fileName));
 
         product = await Product.update(
-          { name, price, brandId, typeId, img: fileName },
+          { name, price, brandId, catalogId, img: fileName },
           { where: { id: id } }
         );
       } else {
         product = await Product.update(
-          { name, price, brandId, typeId },
+          { name, price, brandId, catalogId },
           { where: { id: id } }
         );
       }
@@ -124,7 +135,7 @@ class ProductController {
   async getAll(req, res) {
     let {
       brandId = null,
-      typeId = null,
+      catalogId = null,
       limit,
       page,
       minPrice = null,
@@ -136,57 +147,11 @@ class ProductController {
 
     let products;
 
-    // if (!brandId && !typeId) {
-    //   products = await Product.findAndCountAll({
-    //     limit,
-    //     offset,
-    //     include: [
-    //       { model: ProductProperties, as: "info" },
-    //       {
-    //         model: ProductColors,
-    //         as: "color",
-    //       },
-    //     ],
-    //     order: [["color", "id"]],
-    //     distinct: true,
-    //   });
-    // }
-    // if (brandId && !typeId) {
-    //   products = await Product.findAndCountAll({
-    //     where: { brandId },
-    //     limit,
-    //     offset,
-    //     include: [
-    //       { model: ProductProperties, as: "info" },
-    //       {
-    //         model: ProductColors,
-    //         as: "color",
-    //       },
-    //     ],
-    //     order: [["color", "id"]],
-    //     distinct: true,
-    //   });
-    // }
-    // if (!brandId && typeId) {
-    //   products = await Product.findAndCountAll({
-    //     where: { typeId },
-    //     limit,
-    //     offset,
-    //     include: [
-    //       { model: ProductProperties, as: "info" },
-    //       { model: ProductColors, as: "color" },
-    //     ],
-    //     order: [["color", "id"]],
-    //     distinct: true,
-    //   });
-    // }
-    // if (brandId && typeId) {
-
     products = await Product.findAndCountAll({
       where: {
         [Op.and]: [
           { brandId: brandId || { [Op.ne]: brandId } },
-          { typeId: typeId || { [Op.ne]: typeId } },
+          { catalogId: catalogId || { [Op.ne]: catalogId } },
           {
             price: {
               [Op.and]: [

@@ -7,4 +7,6 @@ router.get("/", BrandController.getAll);
 
 router.post("/", authMiddleware, BrandController.create);
 
+router.patch("/:id", authMiddleware, BrandController.edit);
+
 module.exports = router;

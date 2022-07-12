@@ -1,4 +1,4 @@
-const { Property } = require("../models/models");
+const { Property, CatalogProperty } = require("../models/models");
 
 class PropertyController {
   async create(req, res) {
@@ -10,6 +10,18 @@ class PropertyController {
 
   async getAll(req, res) {
     const properties = await Property.findAll();
+
+    return res.json(properties);
+  }
+
+  async getCatalogPropertiesAll(req, res) {
+    const { id } = req.params;
+
+    const properties = await CatalogProperty.findAll({
+      where: { catalogId: id },
+      include: [{ model: Property }],
+      order: [["id"]],
+    });
 
     return res.json(properties);
   }

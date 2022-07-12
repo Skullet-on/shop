@@ -3,13 +3,13 @@ const router = new Router();
 
 const productRouter = require("./productRouter");
 const userRouter = require("./userRouter");
-const typeRouter = require("./typeRouter");
+const catalogRouter = require("./catalogRouter");
 const brandRouter = require("./brandRouter");
 const colorRouter = require("./colorRouter");
 const propertyRouter = require("./propertyRouter");
 
 router.use("/users", userRouter);
-router.use("/type", typeRouter);
+router.use("/catalog", catalogRouter);
 router.use("/brand", brandRouter);
 router.use("/product", productRouter);
 router.use("/color", colorRouter);
