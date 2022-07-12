@@ -1,13 +1,19 @@
 import { $authHost, $host } from "./index";
 
-export const createType = async (type) => {
-  const { data } = await $authHost.post("/api/type", type);
+export const createCatalog = async (catalog) => {
+  const { data } = await $authHost.post("/api/catalog", catalog);
 
   return data;
 };
 
-export const fetchTypes = async () => {
-  const { data } = await $host.get("/api/type");
+export const fetchCatalogs = async () => {
+  const { data } = await $host.get("/api/catalog");
+
+  return data;
+};
+
+export const fetchCatalogProperties = async (id) => {
+  const { data } = await $host.get("/api/property/" + id);
 
   return data;
 };
@@ -43,7 +49,7 @@ export const removeProduct = async (id) => {
 };
 
 export const fetchProducts = async (
-  typeId,
+  catalogId,
   brandId,
   page,
   limit = 10,
@@ -51,7 +57,7 @@ export const fetchProducts = async (
 ) => {
   const { data } = await $host.get("/api/product", {
     params: {
-      typeId,
+      catalogId,
       brandId,
       page,
       limit,

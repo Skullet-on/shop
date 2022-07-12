@@ -5,14 +5,14 @@ import { Context } from "../index";
 import BrandBar from "../components/BrandBar";
 import ProductList from "../components/ProductList";
 import FilterBar from "../components/FilterBar";
-import { fetchTypes, fetchBrands, fetchProducts } from "../http/productApi";
+import { fetchCatalogs, fetchBrands, fetchProducts } from "../http/productApi";
 import Pages from "../components/Pages";
 
 const Shop = observer(() => {
   const { product, filter } = useContext(Context);
 
   useEffect(() => {
-    fetchTypes().then((data) => product.setTypes(data));
+    fetchCatalogs().then((data) => product.setCatalogs(data));
     fetchBrands().then((data) => product.setBrands(data));
     fetchProducts(null, null, product.page, product.limit, filter).then(
       (data) => {
@@ -21,12 +21,12 @@ const Shop = observer(() => {
       }
     );
     product.setSelectedBrand({});
-    product.setSelectedType({});
+    product.setSelectedCatalog({});
   }, []);
 
   useEffect(() => {
     fetchProducts(
-      product.selectedType.id,
+      product.selectedCatalog.id,
       product.selectedBrand.id,
       product.page,
       product.limit,
@@ -35,11 +35,11 @@ const Shop = observer(() => {
       product.setProducts(data.rows);
       product.setTotalCount(data.count);
     });
-  }, [product.page, product.selectedType, product.selectedBrand]);
+  }, [product.page, product.selectedCatalog, product.selectedBrand]);
 
   const handleFilter = () => {
     fetchProducts(
-      product.selectedType.id,
+      product.selectedCatalog.id,
       product.selectedBrand.id,
       product.page,
       product.limit,

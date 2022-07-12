@@ -6,7 +6,7 @@ import {
   editProduct,
   fetchBrands,
   fetchProducts,
-  fetchTypes,
+  fetchCatalogs,
   fetchProperties,
   fetchOneProduct,
   removeProduct,
@@ -21,12 +21,12 @@ const EditProductForm = () => {
   const [info, setInfo] = useState([]);
 
   useEffect(() => {
-    fetchTypes().then((data) => product.setTypes(data));
+    fetchCatalogs().then((data) => product.setCatalogs(data));
     fetchBrands().then((data) => product.setBrands(data));
     fetchProducts().then((data) => product.setProducts(data.rows));
     fetchProperties().then((data) => product.setProperties(data));
     product.setSelectedBrand({});
-    product.setSelectedType({});
+    product.setSelectedCatalog({});
     product.setSelectedProduct({});
   }, []);
 
@@ -52,7 +52,7 @@ const EditProductForm = () => {
           setInfo([]);
         }
         product.setSelectedBrand(product.getBrand(data.brandId));
-        product.setSelectedType(product.getType(data.typeId));
+        product.setSelectedCatalog(product.getCatalog(data.catalogId));
       });
   }, [product.selectedProduct]);
 
@@ -73,7 +73,7 @@ const EditProductForm = () => {
 
     formData.append("name", name);
     formData.append("price", price);
-    formData.append("typeId", product.selectedType.id);
+    formData.append("catalogId", product.selectedCatalog.id);
     formData.append("brandId", product.selectedBrand.id);
     formData.append("info", JSON.stringify(info));
     editProduct(product.selectedProduct.id, formData).then((data) => {});
@@ -107,7 +107,7 @@ const EditProductForm = () => {
                   </Form.Label>
                   <Col md={10}>
                     <Form.Control
-                      type="text"
+                      catalog="text"
                       value={name}
                       placeholder="Введите название товара"
                       onChange={(e) => setName(e.target.value)}
@@ -120,7 +120,7 @@ const EditProductForm = () => {
                   </Form.Label>
                   <Col md={10} className="mt-2">
                     <Form.Control
-                      type="number"
+                      catalog="number"
                       value={price}
                       placeholder="Введите цену товара"
                       onChange={(e) => setPrice(e.target.value)}
@@ -134,15 +134,15 @@ const EditProductForm = () => {
                   <Col md={4}>
                     <Dropdown className="mt-2 mb-2">
                       <Dropdown.Toggle>
-                        {product.selectedType.name || "Выберите каталог"}
+                        {product.selectedCatalog.name || "Выберите каталог"}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        {product.types.map((type) => (
+                        {product.catalogs.map((catalog) => (
                           <Dropdown.Item
-                            key={type.id}
-                            onClick={() => product.setSelectedType(type)}
+                            key={catalog.id}
+                            onClick={() => product.setSelectedCatalog(catalog)}
                           >
-                            {type.name}
+                            {catalog.name}
                           </Dropdown.Item>
                         ))}
                       </Dropdown.Menu>

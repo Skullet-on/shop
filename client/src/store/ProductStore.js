@@ -2,11 +2,11 @@ import { makeAutoObservable } from "mobx";
 
 export default class ProductStore {
   constructor() {
-    this._types = [];
+    this._catalogs = [];
     this._brands = {};
     this._products = [];
     this._properties = [];
-    this._selectedType = {};
+    this._selectedCatalog = {};
     this._selectedBrand = {};
     this._selectedProduct = {};
     this._page = 1;
@@ -16,8 +16,8 @@ export default class ProductStore {
     makeAutoObservable(this);
   }
 
-  setTypes(types) {
-    this._types = types;
+  setCatalogs(catalogs) {
+    this._catalogs = catalogs;
   }
   setBrands(brands) {
     this._brands = brands;
@@ -28,9 +28,9 @@ export default class ProductStore {
   setProperties(properties) {
     this._properties = properties;
   }
-  setSelectedType(type) {
+  setSelectedCatalog(catalog) {
     this.setPage(1);
-    this._selectedType = type;
+    this._selectedCatalog = catalog;
   }
   setSelectedBrand(brand) {
     this.setPage(1);
@@ -52,15 +52,15 @@ export default class ProductStore {
   getBrand(id) {
     return this._brands.filter((brand) => brand.id === id)[0];
   }
-  getType(id) {
-    return this._types.filter((type) => type.id === id)[0];
+  getCatalog(id) {
+    return this._catalogs.filter((catalog) => catalog.id === id)[0];
   }
   getProperty(id) {
     return this._properties.filter((property) => property.id === id)[0];
   }
 
-  get types() {
-    return this._types;
+  get catalogs() {
+    return this._catalogs;
   }
   get brands() {
     return this._brands;
@@ -71,8 +71,8 @@ export default class ProductStore {
   get properties() {
     return this._properties;
   }
-  get selectedType() {
-    return this._selectedType;
+  get selectedCatalog() {
+    return this._selectedCatalog;
   }
   get selectedBrand() {
     return this._selectedBrand;

@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { Card, Col, Image } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { PRODUCT_ROUTE } from "../utils/constants";
 
 const ProductItem = ({ product, brand }) => {
-  const [imgIndex, setImgIndex] = useState(0);
+  const imgIndex = 0;
   const navigate = useNavigate();
 
   return (

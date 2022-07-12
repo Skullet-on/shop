@@ -8,8 +8,7 @@ import { fetchOneProduct, fetchProperties } from "../http/productApi";
 function ProductPage() {
   const { product } = useContext(Context);
   const [item, setItem] = useState({ info: [] });
-  const [imgIndex, setImgIndex] = useState(0);
-  console.log(product);
+  const imgIndex = 0;
   const { id } = useParams();
 
   useEffect(() => {
@@ -61,7 +60,6 @@ function ProductPage() {
               padding: 10,
             }}
           >
-            {console.log(product.getProperty(info.propertyId).name)}
             {product.getProperty(info.propertyId).name}: {info.description}
           </Row>
         ))}

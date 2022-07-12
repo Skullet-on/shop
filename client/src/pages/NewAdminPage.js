@@ -5,11 +5,11 @@ import CreateProductForm from "../components/CreateProductForm";
 import EditProductForm from "../components/EditProductForm";
 import CreateBrand from "../components/modals/CreateBrand";
 import CreateProperty from "../components/modals/CreateProperty";
-import CreateType from "../components/modals/CreateType";
+import CreateCatalog from "../components/modals/CreateCatalog";
 import {
   fetchBrands,
   fetchProducts,
-  fetchTypes,
+  fetchCatalogs,
   fetchProperties,
 } from "../http/productApi";
 import { Context } from "../index";
@@ -18,27 +18,27 @@ const NewAdminPage = observer(() => {
   const { product } = useContext(Context);
 
   const [brandVisible, setBrandVisible] = useState(false);
-  const [typeVisible, setTypeVisible] = useState(false);
+  const [catalogVisible, setCatalogVisible] = useState(false);
   const [propertyVisible, setPropertyVisible] = useState(false);
 
   const [tab, setTab] = useState("create");
 
   useEffect(() => {
-    fetchTypes().then((data) => product.setTypes(data));
+    fetchCatalogs().then((data) => product.setCatalogs(data));
     fetchBrands().then((data) => product.setBrands(data));
     fetchProducts().then((data) => product.setProducts(data.rows));
     fetchProperties().then((data) => product.setProperties(data));
   }, []);
 
   useEffect(() => {
-    fetchTypes().then((data) => product.setTypes(data));
+    fetchCatalogs().then((data) => product.setCatalogs(data));
     fetchBrands().then((data) => product.setBrands(data));
     fetchProperties().then((data) => product.setProperties(data));
-  }, [brandVisible, typeVisible, propertyVisible]);
+  }, [brandVisible, catalogVisible, propertyVisible]);
 
   return (
     <Container className="mt-3">
-      <Button variant="outline-dark" onClick={() => setTypeVisible(true)}>
+      <Button variant="outline-dark" onClick={() => setCatalogVisible(true)}>
         Добавить каталог
       </Button>
       <Button variant="outline-dark" onClick={() => setBrandVisible(true)}>
@@ -62,7 +62,10 @@ const NewAdminPage = observer(() => {
         </Tab>
       </Tabs>
       <CreateBrand show={brandVisible} onHide={() => setBrandVisible(false)} />
-      <CreateType show={typeVisible} onHide={() => setTypeVisible(false)} />
+      <CreateCatalog
+        show={catalogVisible}
+        onHide={() => setCatalogVisible(false)}
+      />
       <CreateProperty
         show={propertyVisible}
         onHide={() => setPropertyVisible(false)}

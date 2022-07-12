@@ -6,8 +6,9 @@ import {
   createProduct,
   fetchBrands,
   fetchProducts,
-  fetchTypes,
+  fetchCatalogs,
   fetchProperties,
+  fetchCatalogProperties,
 } from "../http/productApi";
 
 const CreateProductForm = () => {
@@ -18,14 +19,16 @@ const CreateProductForm = () => {
   const [count, setCount] = useState(0);
   const [file, setFile] = useState({});
   const [info, setInfo] = useState([]);
+  const [selectedBrand, setSelectedBrand] = useState({});
+  const [selectedCatalog, setSelectedCatalog] = useState({});
 
   useEffect(() => {
-    fetchTypes().then((data) => product.setTypes(data));
+    fetchCatalogs().then((data) => product.setCatalogs(data));
     fetchBrands().then((data) => product.setBrands(data));
     fetchProducts().then((data) => product.setProducts(data.rows));
     fetchProperties().then((data) => product.setProperties(data));
-    product.setSelectedBrand({});
-    product.setSelectedType({});
+    setSelectedBrand({});
+    setSelectedCatalog({});
   }, []);
 
   const selectFile = (e) => {
@@ -41,16 +44,34 @@ const CreateProductForm = () => {
 
     reader.readAsDataURL(file);
   };
-  const addInfo = () => {
-    setInfo([...info, { property: {}, description: "", number: Date.now() }]);
-  };
-  const removeInfo = (number) => {
-    setInfo(info.filter((i) => i.number !== number));
-  };
+
   const changeInfo = (key, value, number) => {
     setInfo(
       info.map((i) => (i.number === number ? { ...i, [key]: value } : i))
     );
+  };
+
+  const handleChangeCatalog = async (catalog) => {
+    setSelectedCatalog(catalog);
+
+    await fetchCatalogProperties(catalog.id).then((data) => {
+      if (data.length) {
+        const newData = data.reduce((result, current) => {
+          return [
+            ...result,
+            {
+              number: current.id,
+              description: "",
+              property: current.property,
+            },
+          ];
+        }, []);
+
+        setInfo(newData);
+      } else {
+        setInfo([]);
+      }
+    });
   };
 
   const addProduct = async () => {
@@ -61,8 +82,8 @@ const CreateProductForm = () => {
     formData.append("color", color);
     formData.append("count", `${count}`);
     formData.append("img", file.file);
-    formData.append("typeId", product.selectedType.id);
-    formData.append("brandId", product.selectedBrand.id);
+    formData.append("catalogId", selectedCatalog.id);
+    formData.append("brandId", selectedBrand.id);
     formData.append("info", JSON.stringify(info));
     await createProduct(formData).then((data) => {
       setName("");
@@ -157,15 +178,15 @@ const CreateProductForm = () => {
             <Col md={4}>
               <Dropdown className="mt-2 mb-2">
                 <Dropdown.Toggle>
-                  {product.selectedType.name || "Выберите каталог"}
+                  {selectedCatalog.name || "Выберите каталог"}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  {product.types.map((type) => (
+                  {product.catalogs.map((catalog) => (
                     <Dropdown.Item
-                      key={type.id}
-                      onClick={() => product.setSelectedType(type)}
+                      key={catalog.id}
+                      onClick={() => handleChangeCatalog(catalog)}
                     >
-                      {type.name}
+                      {catalog.name}
                     </Dropdown.Item>
                   ))}
                 </Dropdown.Menu>
@@ -179,13 +200,13 @@ const CreateProductForm = () => {
             <Col md={4}>
               <Dropdown className="mt-2 mb-2">
                 <Dropdown.Toggle>
-                  {product.selectedBrand.name || "Выберите бренд"}
+                  {selectedBrand.name || "Выберите бренд"}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   {Object.values(product.brands).map((brand) => (
                     <Dropdown.Item
                       key={brand.id}
-                      onClick={() => product.setSelectedBrand(brand)}
+                      onClick={() => setSelectedBrand(brand)}
                     >
                       {brand.name}
                     </Dropdown.Item>
@@ -198,29 +219,15 @@ const CreateProductForm = () => {
       </Row>
       <hr />
       <Row>
-        <Button variant="outline-dark" onClick={addInfo}>
-          Добавить свойство
-        </Button>
+        <h2>Параметры</h2>
         {info.map((i) => (
           <Row key={i.number} className="mt-3">
             <Col md={3}>
-              <Dropdown className=" mb-2">
-                <Dropdown.Toggle>
-                  {i.property.name || "Выберите свойство"}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  {product.properties.map((property) => (
-                    <Dropdown.Item
-                      key={property.id}
-                      onClick={() => changeInfo("property", property, i.number)}
-                    >
-                      {property.name}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
+              <Form.Label column md={3}>
+                {i.property.name}:
+              </Form.Label>
             </Col>
-            <Col md={3}>
+            <Col md={9}>
               <Form.Control
                 value={i.description}
                 onChange={(e) =>
@@ -228,14 +235,6 @@ const CreateProductForm = () => {
                 }
                 placeholder="Введите значение"
               />
-            </Col>
-            <Col md={3}>
-              <Button
-                variant="outline-danger"
-                onClick={() => removeInfo(i.number)}
-              >
-                Удалить
-              </Button>
             </Col>
           </Row>
         ))}
