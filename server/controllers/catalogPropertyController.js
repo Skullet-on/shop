@@ -13,7 +13,7 @@ class CatalogPropertyController {
     return res.json(catalogProperty);
   }
 
-  async remove(req, res) {
+  async removeProperty(req, res) {
     const { catalogId, propertyId } = req.body;
 
     let property = CatalogProperty.destroy({

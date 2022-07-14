@@ -7,7 +7,7 @@ import { addCatalogProperty } from "../../http/productApi";
 const AddProperty = ({ show, onHide, catalogId }) => {
   const { product } = useContext(Context);
   const [value, setValue] = useState({});
-  console.log(catalogId);
+
   const handleAddProperty = () => {
     addCatalogProperty(catalogId, [value]).then((data) => {
       setValue({});

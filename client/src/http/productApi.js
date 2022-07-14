@@ -27,6 +27,17 @@ export const addCatalogProperty = async (catalogId, properties) => {
   return data;
 };
 
+export const removeCatalogProperty = async (catalogId, propertyId) => {
+  const { data } = await $authHost.delete("/api/catalog-property", {
+    data: {
+      catalogId,
+      propertyId,
+    },
+  });
+
+  return data;
+};
+
 export const createBrand = async (brand) => {
   const { data } = await $authHost.post("/api/brand", brand);
 

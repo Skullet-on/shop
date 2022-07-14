@@ -1,6 +1,7 @@
 const Router = require("express");
 const router = new Router();
 const CatalogController = require("../controllers/catalogController");
+const catalogPropertyController = require("../controllers/catalogPropertyController");
 const authMiddleware = require("../middleware/authMiddleware");
 
 router.get("/", CatalogController.getAll);
