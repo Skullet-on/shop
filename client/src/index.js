@@ -4,6 +4,7 @@ import App from "./App";
 import UserStore from "./store/UserStore";
 import ProductStore from "./store/ProductStore";
 import FilterStore from "./store/FilterStore";
+import ModalStore from "./store/ModalStore";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -16,6 +17,7 @@ root.render(
         user: new UserStore(),
         product: new ProductStore(),
         filter: new FilterStore(),
+        modal: new ModalStore(),
       }}
     >
       <App />

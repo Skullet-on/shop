@@ -3,7 +3,7 @@ import { makeAutoObservable } from "mobx";
 export default class ProductStore {
   constructor() {
     this._catalogs = [];
-    this._brands = {};
+    this._brands = [];
     this._products = [];
     this._properties = [];
     this._selectedCatalog = {};
@@ -12,6 +12,7 @@ export default class ProductStore {
     this._page = 1;
     this._totalCount = 0;
     this._limit = 10;
+    this._search = "";
 
     makeAutoObservable(this);
   }
@@ -47,6 +48,9 @@ export default class ProductStore {
   }
   setLimit(limit) {
     this._limit = limit;
+  }
+  setSearch(search) {
+    this._search = search;
   }
 
   getBrand(id) {
@@ -88,5 +92,8 @@ export default class ProductStore {
   }
   get limit() {
     return this._limit;
+  }
+  get search() {
+    return this._search;
   }
 }

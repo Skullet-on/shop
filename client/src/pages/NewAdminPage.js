@@ -13,15 +13,13 @@ import {
   fetchProperties,
 } from "../http/productApi";
 import { Context } from "../index";
+import CatalogList from "../components/CatalogList";
+import AddProperty from "../components/modals/AddProperty";
 
 const NewAdminPage = observer(() => {
-  const { product } = useContext(Context);
+  const { product, modal } = useContext(Context);
 
-  const [brandVisible, setBrandVisible] = useState(false);
-  const [catalogVisible, setCatalogVisible] = useState(false);
-  const [propertyVisible, setPropertyVisible] = useState(false);
-
-  const [tab, setTab] = useState("create");
+  const [tab, setTab] = useState("catalogs");
 
   useEffect(() => {
     fetchCatalogs().then((data) => product.setCatalogs(data));
@@ -32,19 +30,34 @@ const NewAdminPage = observer(() => {
 
   useEffect(() => {
     fetchCatalogs().then((data) => product.setCatalogs(data));
+  }, [modal.createCatalogModal.show, modal.addPropertyModal.show]);
+
+  useEffect(() => {
     fetchBrands().then((data) => product.setBrands(data));
+  }, [modal.createBrandModal.show]);
+
+  useEffect(() => {
     fetchProperties().then((data) => product.setProperties(data));
-  }, [brandVisible, catalogVisible, propertyVisible]);
+  }, [modal.createPropertyModal.show]);
 
   return (
     <Container className="mt-3">
-      <Button variant="outline-dark" onClick={() => setCatalogVisible(true)}>
+      <Button
+        variant="outline-dark"
+        onClick={() => modal.createCatalogModal.setShow(true)}
+      >
         Добавить каталог
       </Button>
-      <Button variant="outline-dark" onClick={() => setBrandVisible(true)}>
+      <Button
+        variant="outline-dark"
+        onClick={() => modal.createBrandModal.setShow(true)}
+      >
         Добавить бренд
       </Button>
-      <Button variant="outline-dark" onClick={() => setPropertyVisible(true)}>
+      <Button
+        variant="outline-dark"
+        onClick={() => modal.createPropertyModal.setShow(true)}
+      >
         Добавить свойство товара
       </Button>
 
@@ -54,6 +67,9 @@ const NewAdminPage = observer(() => {
         onSelect={(t) => setTab(t)}
         className="mb-3 mt-3"
       >
+        <Tab eventKey="catalogs" title="Каталоги">
+          <CatalogList />
+        </Tab>
         <Tab eventKey="create" title="Добавить товар">
           <CreateProductForm />
         </Tab>
@@ -61,14 +77,25 @@ const NewAdminPage = observer(() => {
           <EditProductForm />
         </Tab>
       </Tabs>
-      <CreateBrand show={brandVisible} onHide={() => setBrandVisible(false)} />
+      <CreateBrand
+        show={modal.createBrandModal.show}
+        onHide={() => modal.createBrandModal.setShow(false)}
+      />
       <CreateCatalog
-        show={catalogVisible}
-        onHide={() => setCatalogVisible(false)}
+        show={modal.createCatalogModal.show}
+        onHide={() => modal.createCatalogModal.setShow(false)}
       />
       <CreateProperty
-        show={propertyVisible}
-        onHide={() => setPropertyVisible(false)}
+        show={modal.createPropertyModal.show}
+        onHide={() => modal.createPropertyModal.setShow(false)}
+      />
+      <AddProperty
+        show={modal.addPropertyModal.show}
+        onHide={() => {
+          modal.addPropertyModal.setShow(false);
+          modal.addPropertyModal.setCatalogId(null);
+        }}
+        catalogId={modal.addPropertyModal.catalogId}
       />
     </Container>
   );

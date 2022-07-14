@@ -4,6 +4,7 @@ const {
   Product,
   ProductProperties,
   ProductColors,
+  Brand,
 } = require("../models/models");
 const ApiError = require("../error/ApiError");
 const { Op } = require("sequelize");
@@ -23,15 +24,15 @@ class ProductController {
       } = req.body;
 
       let fileName = "no-image.jpg";
-      console.log(oldPrice);
+
       if (req.files) {
         const { img } = req.files;
         fileName = uuid.v4() + ".jpg";
         img.mv(path.resolve(__dirname, "..", "static", fileName));
       }
-
+      console.log(info);
       const product = await Product.create({
-        name,
+        name: name.toLowerCase(),
         price,
         oldPrice,
         img: fileName,
@@ -40,7 +41,7 @@ class ProductController {
       });
 
       await ProductColors.create({
-        name: color,
+        name: color.toLowerCase(),
         img: fileName,
         count,
         productId: product.id,
@@ -49,11 +50,19 @@ class ProductController {
       if (info) {
         info = JSON.parse(info);
         info.forEach((element) => {
-          ProductProperties.create({
-            productId: product.id,
-            description: element.description,
-            propertyId: element.property.id,
-          });
+          if (element.property.type === "number") {
+            ProductProperties.create({
+              productId: product.id,
+              value: element.description,
+              propertyId: element.property.id,
+            });
+          } else {
+            ProductProperties.create({
+              productId: product.id,
+              description: element.description.toLowerCase(),
+              propertyId: element.property.id,
+            });
+          }
         });
       }
 
@@ -76,12 +85,18 @@ class ProductController {
         img.mv(path.resolve(__dirname, "..", "static", fileName));
 
         product = await Product.update(
-          { name, price, brandId, catalogId, img: fileName },
+          {
+            name: name.toLowerCase(),
+            price,
+            brandId,
+            catalogId,
+            img: fileName,
+          },
           { where: { id: id } }
         );
       } else {
         product = await Product.update(
-          { name, price, brandId, catalogId },
+          { name: name.toLowerCase(), price, brandId, catalogId },
           { where: { id: id } }
         );
       }
@@ -94,18 +109,29 @@ class ProductController {
             where: { id: element.property.id },
           });
           if (property) {
-            ProductProperties.update(
-              {
-                description: element.description,
-                propertyId: element.property.id,
-                productId: id,
-              },
-              { where: { id: property.dataValues.id } }
-            );
+            if (property.type === "number") {
+              ProductProperties.update(
+                {
+                  value: element.description,
+                  propertyId: element.property.id,
+                  productId: id,
+                },
+                { where: { id: property.dataValues.id } }
+              );
+            } else {
+              ProductProperties.update(
+                {
+                  description: element.description.toLowerCase(),
+                  propertyId: element.property.id,
+                  productId: id,
+                },
+                { where: { id: property.dataValues.id } }
+              );
+            }
           } else {
             ProductProperties.create({
               productId: product.id,
-              description: element.description,
+              description: element.description.toLowerCase(),
               propertyId: element.property.id,
             });
           }
@@ -134,31 +160,27 @@ class ProductController {
 
   async getAll(req, res) {
     let {
-      brandId = null,
       catalogId = null,
       limit,
       page,
-      minPrice = null,
-      maxPrice = null,
+      search = "",
+      brands = [],
+      weight = "",
     } = req.query;
     page = page || 1;
     limit = limit || 10;
     let offset = page * limit - limit;
-
     let products;
-
+    console.log(weight);
     products = await Product.findAndCountAll({
       where: {
         [Op.and]: [
-          { brandId: brandId || { [Op.ne]: brandId } },
+          {
+            brandId: brands.length ? { [Op.or]: brands } : { [Op.ne]: 0 },
+          },
           { catalogId: catalogId || { [Op.ne]: catalogId } },
           {
-            price: {
-              [Op.and]: [
-                { [Op.gte]: minPrice || 0 },
-                { [Op.lte]: maxPrice || 10000 },
-              ],
-            },
+            name: { [Op.like]: `%${search.toLowerCase()}%` },
           },
         ],
       },
@@ -167,11 +189,14 @@ class ProductController {
       include: [
         { model: ProductProperties, as: "info" },
         { model: ProductColors, as: "color" },
+        {
+          model: Brand,
+          as: "brand",
+        },
       ],
       order: [["color", "id"]],
       distinct: true,
     });
-    // }
 
     return res.json(products);
   }

@@ -33,6 +33,7 @@ const Product = sequelize.define("product", {
 const Property = sequelize.define("property", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
+  type: { type: DataTypes.STRING, allowNull: false },
 });
 
 const Catalog = sequelize.define("catalog", {
@@ -52,7 +53,8 @@ const Rating = sequelize.define("rating", {
 
 const ProductProperties = sequelize.define("product_properties", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  description: { type: DataTypes.STRING, allowNull: false },
+  description: { type: DataTypes.STRING, allowNull: false, defaultValue: "" },
+  value: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
 });
 
 const ProductColors = sequelize.define("product_colors", {
@@ -82,7 +84,7 @@ Catalog.hasMany(Product);
 Product.belongsTo(Catalog);
 
 Brand.hasMany(Product);
-Product.belongsTo(Brand);
+Product.belongsTo(Brand, { as: "brand" });
 
 Product.hasMany(Rating);
 Rating.belongsTo(Product);

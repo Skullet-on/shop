@@ -19,7 +19,11 @@ class UserController {
       }
 
       const { email, password, role } = req.body;
-      const userData = await userService.registration(email, password, role);
+      const userData = await userService.registration(
+        email.toLowerCase(),
+        password,
+        role.toUpperCase()
+      );
 
       res.cookie("refreshToken", userData.refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -35,7 +39,7 @@ class UserController {
     try {
       const { email, password } = req.body;
 
-      const userData = await userService.login(email, password);
+      const userData = await userService.login(email.toLowerCase(), password);
 
       res.cookie("refreshToken", userData.refreshToken, {
         maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -77,7 +81,11 @@ class UserController {
   }
 
   async check(req, res, next) {
-    const token = generateJwt(req.user.id, req.user.email, req.user.role);
+    const token = generateJwt(
+      req.user.id,
+      req.user.email.toLowerCase(),
+      req.user.role.toUpperCase()
+    );
 
     return res.json({ token });
   }

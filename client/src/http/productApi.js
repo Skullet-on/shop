@@ -18,6 +18,15 @@ export const fetchCatalogProperties = async (id) => {
   return data;
 };
 
+export const addCatalogProperty = async (catalogId, properties) => {
+  const { data } = await $authHost.post(
+    "/api/catalog/" + catalogId,
+    properties
+  );
+
+  return data;
+};
+
 export const createBrand = async (brand) => {
   const { data } = await $authHost.post("/api/brand", brand);
 
@@ -53,6 +62,7 @@ export const fetchProducts = async (
   brandId,
   page,
   limit = 10,
+  search,
   filter = {}
 ) => {
   const { data } = await $host.get("/api/product", {
@@ -61,8 +71,10 @@ export const fetchProducts = async (
       brandId,
       page,
       limit,
+      search,
       minPrice: filter.minPrice,
       maxPrice: filter.maxPrice,
+      brands: filter.brands,
     },
   });
 

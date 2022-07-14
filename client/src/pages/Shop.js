@@ -2,7 +2,6 @@ import { observer } from "mobx-react-lite";
 import React, { useContext, useEffect } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { Context } from "../index";
-import BrandBar from "../components/BrandBar";
 import ProductList from "../components/ProductList";
 import FilterBar from "../components/FilterBar";
 import { fetchCatalogs, fetchBrands, fetchProducts } from "../http/productApi";
@@ -10,9 +9,11 @@ import Pages from "../components/Pages";
 
 const Shop = observer(() => {
   const { product, filter } = useContext(Context);
-
   useEffect(() => {
-    fetchCatalogs().then((data) => product.setCatalogs(data));
+    fetchCatalogs().then((data) => {
+      product.setCatalogs(data);
+      product.setSelectedCatalog(data[0]);
+    });
     fetchBrands().then((data) => product.setBrands(data));
     fetchProducts(null, null, product.page, product.limit, filter).then(
       (data) => {
@@ -21,7 +22,6 @@ const Shop = observer(() => {
       }
     );
     product.setSelectedBrand({});
-    product.setSelectedCatalog({});
   }, []);
 
   useEffect(() => {
@@ -30,12 +30,18 @@ const Shop = observer(() => {
       product.selectedBrand.id,
       product.page,
       product.limit,
+      product.search,
       filter
     ).then((data) => {
       product.setProducts(data.rows);
       product.setTotalCount(data.count);
     });
-  }, [product.page, product.selectedCatalog, product.selectedBrand]);
+  }, [
+    product.page,
+    product.selectedCatalog,
+    product.selectedBrand,
+    product.search,
+  ]);
 
   const handleFilter = () => {
     fetchProducts(
@@ -43,6 +49,7 @@ const Shop = observer(() => {
       product.selectedBrand.id,
       product.page,
       product.limit,
+      product.search,
       filter
     ).then((data) => {
       product.setProducts(data.rows);
@@ -55,10 +62,14 @@ const Shop = observer(() => {
       <Row className="mt-2">
         <Col md={3}>
           <FilterBar />
-          <Button onClick={handleFilter}>Применить фильтр</Button>
+          <Row className="p-3">
+            <Button className="mt-2" onClick={handleFilter}>
+              Применить фильтр
+            </Button>
+          </Row>
         </Col>
         <Col md={9}>
-          <BrandBar />
+          <h1>{product.selectedCatalog.name || "Каталог"}</h1>
           <ProductList />
           <Pages />
         </Col>

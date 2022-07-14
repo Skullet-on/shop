@@ -229,6 +229,7 @@ const CreateProductForm = () => {
             </Col>
             <Col md={9}>
               <Form.Control
+                type={i.property.type}
                 value={i.description}
                 onChange={(e) =>
                   changeInfo("description", e.target.value, i.number)

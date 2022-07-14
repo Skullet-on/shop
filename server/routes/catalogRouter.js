@@ -9,4 +9,6 @@ router.post("/", authMiddleware, CatalogController.create);
 
 router.patch("/:id", authMiddleware, CatalogController.edit);
 
+router.post("/:id", CatalogController.createCatalogProperties);
+
 module.exports = router;

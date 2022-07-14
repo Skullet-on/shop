@@ -1,14 +1,33 @@
 import React, { useContext } from "react";
 import { Context } from "..";
-import { Navbar, Nav, Button, Container } from "react-bootstrap";
+import {
+  Navbar,
+  Nav,
+  Button,
+  Container,
+  NavDropdown,
+  Form,
+} from "react-bootstrap";
 import { ADMIN_ROUTE, LOGIN_ROUTE, SHOP_ROUTE } from "../utils/constants";
 import { observer } from "mobx-react-lite";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Person } from "react-bootstrap-icons";
+import { debounce } from "../helpers";
 
 const NavBar = observer(() => {
-  const { user } = useContext(Context);
+  const { user, product } = useContext(Context);
   const navigate = useNavigate();
+
+  const handleClickCatalog = (catalog) => {
+    product.setSelectedCatalog(catalog);
+
+    navigate(SHOP_ROUTE);
+  };
+
+  const handleSearch = debounce((value) => {
+    console.log(value);
+    product.setSearch(value);
+  }, 300);
 
   return (
     <Navbar
@@ -18,9 +37,29 @@ const NavBar = observer(() => {
       sticky="top"
     >
       <Container>
-        <NavLink style={{ color: "black" }} to={SHOP_ROUTE}>
-          Альпака
-        </NavLink>
+        <NavDropdown
+          id="nav-dropdown-category"
+          title="Каталог"
+          menuVariant="light"
+        >
+          {product.catalogs.map((catalog) => (
+            <NavDropdown.Item
+              key={catalog.id}
+              onClick={() => handleClickCatalog(catalog)}
+            >
+              {catalog.name}
+            </NavDropdown.Item>
+          ))}
+        </NavDropdown>
+        <Form className="d-flex" style={{ width: "100%" }}>
+          <Form.Control
+            type="search"
+            placeholder="Поиск"
+            className="me-2"
+            aria-label="Search"
+            onChange={(e) => handleSearch(e.target.value)}
+          />
+        </Form>
         {user.isAuth ? (
           <Nav className="ml-auto">
             {user.user.role === "ADMIN" ? (

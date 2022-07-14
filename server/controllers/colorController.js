@@ -12,7 +12,7 @@ class ColorController {
     console.log(name, productId, img);
 
     const color = await ProductColors.create({
-      name,
+      name: name.toLowerCase(),
       img: fileName,
       productId,
       count,
