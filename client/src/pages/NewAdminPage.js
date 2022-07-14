@@ -44,12 +44,6 @@ const NewAdminPage = observer(() => {
     <Container className="mt-3">
       <Button
         variant="outline-dark"
-        onClick={() => modal.createCatalogModal.setShow(true)}
-      >
-        Добавить каталог
-      </Button>
-      <Button
-        variant="outline-dark"
         onClick={() => modal.createBrandModal.setShow(true)}
       >
         Добавить бренд
@@ -68,6 +62,12 @@ const NewAdminPage = observer(() => {
         className="mb-3 mt-3"
       >
         <Tab eventKey="catalogs" title="Каталоги">
+          <Button
+            variant="outline-dark"
+            onClick={() => modal.createCatalogModal.setShow(true)}
+          >
+            Добавить каталог
+          </Button>
           <CatalogList />
         </Tab>
         <Tab eventKey="create" title="Добавить товар">

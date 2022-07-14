@@ -12,6 +12,12 @@ export const fetchCatalogs = async () => {
   return data;
 };
 
+export const editCatalog = async (id, name) => {
+  const { data } = await $authHost.patch("/api/catalog/" + id, { name });
+
+  return data;
+};
+
 export const fetchCatalogProperties = async (id) => {
   const { data } = await $host.get("/api/property/" + id);
 

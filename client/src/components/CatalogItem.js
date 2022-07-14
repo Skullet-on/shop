@@ -2,6 +2,7 @@ import { observer } from "mobx-react-lite";
 import React, { useContext, useEffect, useState } from "react";
 import { Button, Card, Form, InputGroup, ListGroup } from "react-bootstrap";
 import { Context } from "..";
+import { editCatalog } from "../http/productApi";
 
 const CatalogItem = ({ catalog, removeProperty }) => {
   const { modal } = useContext(Context);
@@ -12,9 +13,9 @@ const CatalogItem = ({ catalog, removeProperty }) => {
     setCatalogName(catalog.name);
   }, []);
 
-  const handleEdit = (edit) => {
+  const handleEdit = (catalogId, edit) => {
     if (edit) {
-      console.log(catalogName);
+      editCatalog(catalogId, catalogName);
     }
 
     setEdit(!edit);
@@ -35,7 +36,7 @@ const CatalogItem = ({ catalog, removeProperty }) => {
         />
         <Button
           variant={edit ? "outline-success" : "outline-warning"}
-          onClick={() => handleEdit(edit)}
+          onClick={() => handleEdit(catalog.id, edit)}
         >
           {edit ? "Применить" : "Изменить"}
         </Button>
