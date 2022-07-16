@@ -5,7 +5,7 @@ import { Context } from "../..";
 import { addCatalogProperty } from "../../http/productApi";
 
 const AddProperty = ({ show, onHide, catalogId }) => {
-  const { product } = useContext(Context);
+  const { product, toast } = useContext(Context);
   const [value, setValue] = useState({});
 
   const handleAddProperty = () => {
@@ -13,6 +13,10 @@ const AddProperty = ({ show, onHide, catalogId }) => {
       setValue({});
       onHide();
     });
+
+    toast.setMessage(`Свойство добавлено к продукту`);
+    toast.setVariant("info");
+    toast.setShow(true);
   };
 
   return (

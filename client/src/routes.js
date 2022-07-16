@@ -17,12 +17,19 @@ import {
 
 export const authRoutes = [
   {
-    path: ADMIN_ROUTE,
-    element: <NewAdminPage />,
-  },
-  {
     path: BASKET_ROUTE,
     element: <Basket />,
+  },
+  {
+    path: NOT_FOUND_ROUTE,
+    element: <PageNotFound />,
+  },
+];
+
+export const adminRoutes = [
+  {
+    path: ADMIN_ROUTE,
+    element: <NewAdminPage />,
   },
   {
     path: NOT_FOUND_ROUTE,

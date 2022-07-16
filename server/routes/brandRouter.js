@@ -9,4 +9,6 @@ router.post("/", authMiddleware, BrandController.create);
 
 router.patch("/:id", authMiddleware, BrandController.edit);
 
+router.delete("/:id", authMiddleware, BrandController.delete);
+
 module.exports = router;

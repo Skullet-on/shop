@@ -5,7 +5,7 @@ import { createProduct, fetchBrands, fetchProducts, fetchTypes } from '../../htt
 import { Context } from '../../index'
 
 const CreateProduct = observer(({show, onHide}) => {
-  const { product } = useContext(Context);
+  const { product, toast } = useContext(Context);
   const [name, setName] = useState('');
   const [price, setPrice] = useState(0);
   const [file, setFile] = useState(null);
@@ -40,6 +40,10 @@ const CreateProduct = observer(({show, onHide}) => {
     formData.append('brandId', product.selectedBrand.id);
     formData.append('info', JSON.stringify(info));
     createProduct(formData).then(data => onHide())
+
+    toast.setMessage(`Продукт успешно добавлен`);
+    toast.setVariant("info");
+    toast.setShow(true);
   }
 
   return (

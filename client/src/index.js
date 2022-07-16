@@ -5,6 +5,7 @@ import UserStore from "./store/UserStore";
 import ProductStore from "./store/ProductStore";
 import FilterStore from "./store/FilterStore";
 import ModalStore from "./store/ModalStore";
+import ToastStore from "./store/ToastStore";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -18,6 +19,7 @@ root.render(
         product: new ProductStore(),
         filter: new FilterStore(),
         modal: new ModalStore(),
+        toast: new ToastStore(),
       }}
     >
       <App />

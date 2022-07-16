@@ -6,6 +6,7 @@ import ProductList from "../components/ProductList";
 import FilterBar from "../components/FilterBar";
 import { fetchCatalogs, fetchBrands, fetchProducts } from "../http/productApi";
 import Pages from "../components/Pages";
+import ToastMessage from "../components/ToastMessage";
 
 const Shop = observer(() => {
   const { product, filter } = useContext(Context);
@@ -74,6 +75,7 @@ const Shop = observer(() => {
           <Pages />
         </Col>
       </Row>
+      <ToastMessage />
     </Container>
   );
 });

@@ -2,7 +2,12 @@ import { observer } from "mobx-react-lite";
 import React, { useContext } from "react";
 import { Container } from "react-bootstrap";
 import { Context } from "..";
-import { fetchCatalogs, removeCatalogProperty } from "../http/productApi";
+import {
+  editCatalog,
+  fetchCatalogs,
+  removeCatalog,
+  removeCatalogProperty,
+} from "../http/productApi";
 import CatalogItem from "./CatalogItem";
 
 const CatalogList = () => {
@@ -14,6 +19,18 @@ const CatalogList = () => {
     );
   };
 
+  const handleRemoveCatalog = (catalogId) => {
+    removeCatalog(catalogId).then(() =>
+      fetchCatalogs().then((data) => product.setCatalogs(data))
+    );
+  };
+
+  const handleEditCatalog = (catalogId, catalogName) => {
+    editCatalog(catalogId, catalogName).then(() =>
+      fetchCatalogs().then((data) => product.setCatalogs(data))
+    );
+  };
+
   return (
     <Container>
       {product.catalogs.map((catalog, index) => (
@@ -21,6 +38,8 @@ const CatalogList = () => {
           key={index}
           catalog={catalog}
           removeProperty={removeProperty}
+          removeCatalog={handleRemoveCatalog}
+          editCatalog={handleEditCatalog}
         />
       ))}
     </Container>

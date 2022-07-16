@@ -8,7 +8,7 @@ const CreateColor = ({ show, onHide, productId }) => {
   const [name, setName] = useState("");
   const [count, setCount] = useState(0);
   const [file, setFile] = useState({});
-  const { product } = useContext(Context);
+  const { product, toast } = useContext(Context);
 
   const selectFile = (e) => {
     let reader = new FileReader();
@@ -39,6 +39,9 @@ const CreateColor = ({ show, onHide, productId }) => {
     setName("");
     setFile({});
     setCount(0);
+    toast.setMessage(`Цвет успешно добавлен`);
+    toast.setVariant("info");
+    toast.setShow(true);
   };
 
   return (

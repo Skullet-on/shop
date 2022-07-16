@@ -60,7 +60,9 @@ function ProductPage() {
               padding: 10,
             }}
           >
-            {product.getProperty(info.propertyId).name}: {info.description}
+            {console.log(info)}
+            {product.getProperty(info.propertyId).name}:{" "}
+            {info.value ? info.value : info.description}
           </Row>
         ))}
       </Row>

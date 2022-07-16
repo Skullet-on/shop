@@ -3,14 +3,18 @@ const { CatalogProperty } = require("../models/models");
 
 class CatalogPropertyController {
   async create(req, res) {
-    const { catalogId, propertyId } = req.body;
+    try {
+      const { catalogId, propertyId } = req.body;
 
-    const catalogProperty = CatalogProperty.create({
-      catalogId,
-      propertyId,
-    });
+      const catalogProperty = CatalogProperty.create({
+        catalogId,
+        propertyId,
+      });
 
-    return res.json(catalogProperty);
+      return res.json(catalogProperty);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async removeProperty(req, res) {

@@ -26,6 +26,16 @@ class BrandController {
 
     return res.json(brands);
   }
+
+  async delete(req, res) {
+    const { id } = req.params;
+
+    const brand = await Brand.destroy({
+      where: { id },
+    });
+
+    return res.json(brand);
+  }
 }
 
 module.exports = new BrandController();

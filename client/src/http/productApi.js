@@ -18,6 +18,12 @@ export const editCatalog = async (id, name) => {
   return data;
 };
 
+export const removeCatalog = async (id) => {
+  const { data } = await $authHost.delete("/api/catalog/" + id);
+
+  return data;
+};
+
 export const fetchCatalogProperties = async (id) => {
   const { data } = await $host.get("/api/property/" + id);
 
@@ -46,6 +52,18 @@ export const removeCatalogProperty = async (catalogId, propertyId) => {
 
 export const createBrand = async (brand) => {
   const { data } = await $authHost.post("/api/brand", brand);
+
+  return data;
+};
+
+export const editBrand = async (id, name) => {
+  const { data } = await $authHost.patch("/api/brand/" + id, { name });
+
+  return data;
+};
+
+export const removeBrand = async (id) => {
+  const { data } = await $authHost.delete("/api/brand/" + id);
 
   return data;
 };

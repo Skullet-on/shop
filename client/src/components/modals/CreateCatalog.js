@@ -5,7 +5,7 @@ import { Context } from "../..";
 import { createCatalog } from "../../http/productApi";
 
 const CreateCatalog = ({ show, onHide }) => {
-  const { product } = useContext(Context);
+  const { product, toast } = useContext(Context);
 
   const [value, setValue] = useState("");
   const [properties, setProperties] = useState([]);
@@ -15,6 +15,10 @@ const CreateCatalog = ({ show, onHide }) => {
       setValue("");
       onHide();
     });
+
+    toast.setMessage(`Каталог ${value} успешно создан`);
+    toast.setVariant("info");
+    toast.setShow(true);
   };
 
   const handleCheckProperty = (property) => {

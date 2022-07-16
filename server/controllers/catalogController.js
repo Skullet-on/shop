@@ -28,6 +28,16 @@ class CatalogController {
     return res.json(catalog);
   }
 
+  async delete(req, res) {
+    const { id } = req.params;
+
+    const catalog = await Catalog.destroy({
+      where: { id },
+    });
+
+    return res.json(catalog);
+  }
+
   async getAll(req, res) {
     const catalogs = await Catalog.findAll({
       include: "properties",

@@ -15,6 +15,7 @@ import {
 import { Context } from "../index";
 import CatalogList from "../components/CatalogList";
 import AddProperty from "../components/modals/AddProperty";
+import BrandList from "../components/BrandList";
 
 const NewAdminPage = observer(() => {
   const { product, modal } = useContext(Context);
@@ -42,19 +43,6 @@ const NewAdminPage = observer(() => {
 
   return (
     <Container className="mt-3">
-      <Button
-        variant="outline-dark"
-        onClick={() => modal.createBrandModal.setShow(true)}
-      >
-        Добавить бренд
-      </Button>
-      <Button
-        variant="outline-dark"
-        onClick={() => modal.createPropertyModal.setShow(true)}
-      >
-        Добавить свойство товара
-      </Button>
-
       <Tabs
         defaultActiveKey="profile"
         activeKey={tab}
@@ -69,6 +57,15 @@ const NewAdminPage = observer(() => {
             Добавить каталог
           </Button>
           <CatalogList />
+        </Tab>
+        <Tab eventKey="brands" title="Бренды">
+          <Button
+            variant="outline-dark"
+            onClick={() => modal.createBrandModal.setShow(true)}
+          >
+            Добавить бренд
+          </Button>
+          <BrandList />
         </Tab>
         <Tab eventKey="create" title="Добавить товар">
           <CreateProductForm />
