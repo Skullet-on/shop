@@ -7,4 +7,6 @@ router.get("/", ColorController.getAll);
 
 router.post("/", authMiddleware, ColorController.create);
 
+router.patch("/:id", authMiddleware, ColorController.edit);
+
 module.exports = router;

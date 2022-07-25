@@ -9,8 +9,6 @@ class ColorController {
     let fileName = uuid.v4() + ".jpg";
     img.mv(path.resolve(__dirname, "..", "static", fileName));
 
-    console.log(name, productId, img);
-
     const color = await ProductColors.create({
       name: name.toLowerCase(),
       img: fileName,
@@ -25,6 +23,22 @@ class ColorController {
     const colors = await ProductColors.findAll();
 
     return res.json(colors);
+  }
+
+  async edit(req, res) {
+    const { id } = req.params;
+    const { img } = req.files;
+    let fileName = uuid.v4() + ".jpg";
+    img.mv(path.resolve(__dirname, "..", "static", fileName));
+
+    const color = await ProductColors.update(
+      {
+        img: fileName,
+      },
+      { where: { id } }
+    );
+
+    return res.json(color);
   }
 }
 

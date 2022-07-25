@@ -139,3 +139,9 @@ export const createColor = async (color) => {
 
   return data;
 };
+
+export const editColor = async (id, color) => {
+  const { data } = await $authHost.patch("/api/color/" + id, color);
+
+  return data;
+};

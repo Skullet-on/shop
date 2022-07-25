@@ -17,10 +17,6 @@ import {
 
 export const authRoutes = [
   {
-    path: BASKET_ROUTE,
-    element: <Basket />,
-  },
-  {
     path: NOT_FOUND_ROUTE,
     element: <PageNotFound />,
   },
@@ -53,6 +49,10 @@ export const publicRoutes = [
   {
     path: PRODUCT_ROUTE + "/:id",
     element: <ProductPage />,
+  },
+  {
+    path: BASKET_ROUTE,
+    element: <Basket />,
   },
   {
     path: NOT_FOUND_ROUTE,

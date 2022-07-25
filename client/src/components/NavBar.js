@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import { Person } from "react-bootstrap-icons";
 import { debounce } from "../helpers";
 import { fetchCatalogs } from "../http/productApi";
+import NavBasket from "./NavBasket";
 
 const NavBar = observer(() => {
   const { user, product, toast } = useContext(Context);
@@ -70,9 +71,11 @@ const NavBar = observer(() => {
             onChange={(e) => handleSearch(e.target.value)}
           />
         </Form>
+        <NavBasket />
         <NavDropdown
+          align="end"
           title={<Person width="24" height="24" />}
-          id="basic-nav-dropdown"
+          id="auth-dropdown"
         >
           {user.isAuth ? (
             <>

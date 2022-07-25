@@ -10,15 +10,18 @@ import {
   fetchProperties,
   fetchOneProduct,
   removeProduct,
+  editColor,
 } from "../http/productApi";
 import ChooseProduct from "./ChooseProduct";
 import ColorList from "./ColorList";
+import CreateColor from "./CreateColor";
 
 const EditProductForm = () => {
   const { product } = useContext(Context);
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [info, setInfo] = useState([]);
+  const [selectedColor, setSelectedColor] = useState(null);
 
   useEffect(() => {
     fetchCatalogs().then((data) => product.setCatalogs(data));
@@ -51,6 +54,7 @@ const EditProductForm = () => {
         } else {
           setInfo([]);
         }
+        setSelectedColor(product.selectedProduct.color[0]);
         product.setSelectedBrand(product.getBrand(data.brandId));
         product.setSelectedCatalog(product.getCatalog(data.catalogId));
       });
@@ -66,6 +70,29 @@ const EditProductForm = () => {
     setInfo(
       info.map((i) => (i.number === number ? { ...i, [key]: value } : i))
     );
+  };
+
+  const handleChooseColor = (color) => {
+    setSelectedColor(color);
+  };
+
+  const selectFile = (e) => {
+    let reader = new FileReader();
+    let file = e.target.files[0];
+
+    reader.onloadend = async () => {
+      const formData = new FormData();
+
+      formData.append("img", file);
+      await editColor(selectedColor.id, formData);
+      await fetchOneProduct(product.selectedProduct.id).then((data) =>
+        product.setSelectedProduct(data)
+      );
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleEditProduct = () => {
@@ -94,11 +121,36 @@ const EditProductForm = () => {
         {Object.keys(product.selectedProduct).length ? (
           <div>
             <Row>
-              <Col md={3} className="pt-2" style={{ position: "relative" }}>
+              <Col
+                md={3}
+                className="pt-2"
+                style={{ position: "relative", height: "100%" }}
+              >
                 <Image
-                  src={`${process.env.REACT_APP_API_URL}/${product.selectedProduct.color[0].img}`}
-                  style={{ width: "100%" }}
+                  rounded
+                  src={`${process.env.REACT_APP_API_URL}/${
+                    selectedColor ? selectedColor.img : "no-image.jpg"
+                  }`}
+                  style={{
+                    width: "100%",
+                    objectFit: "cover",
+                    aspectRatio: "16 / 9",
+                  }}
                 />
+                <Row className="mx-0 mt-1">
+                  <Form.Control
+                    type="file"
+                    style={{
+                      opacity: "0",
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      width: "100%",
+                      height: "100%",
+                    }}
+                    onChange={selectFile}
+                  />
+                </Row>
               </Col>
               <Col md={9}>
                 <Form.Group as={Row} className="d-flex align-items-center">
@@ -171,7 +223,11 @@ const EditProductForm = () => {
                     </Dropdown>
                   </Col>
                 </Form.Group>
-                <ColorList product={product.selectedProduct} />
+                <ColorList
+                  product={product.selectedProduct}
+                  changeColor={handleChooseColor}
+                />
+                <CreateColor product={product.selectedProduct} />
               </Col>
             </Row>
             <hr />

@@ -4,7 +4,7 @@ import { Button, Col, Form, Image, Modal, Row } from "react-bootstrap";
 import { Context } from "../..";
 import { createColor, fetchOneProduct } from "../../http/productApi";
 
-const CreateColor = ({ show, onHide, productId }) => {
+const CreateColorModal = ({ show, onHide, productId }) => {
   const [name, setName] = useState("");
   const [count, setCount] = useState(0);
   const [file, setFile] = useState({});
@@ -103,4 +103,4 @@ const CreateColor = ({ show, onHide, productId }) => {
   );
 };
 
-export default observer(CreateColor);
+export default observer(CreateColorModal);

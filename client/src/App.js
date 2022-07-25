@@ -7,16 +7,21 @@ import NavBar from "./components/NavBar";
 import { Spinner } from "react-bootstrap";
 
 const App = () => {
-  const { user } = useContext(Context);
+  const { user, basket } = useContext(Context);
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
       user.check();
     }
+    if (localStorage.getItem("basket")) {
+      const items = JSON.parse(localStorage.getItem("basket"));
+
+      basket.setItems(items);
+    }
   }, []);
 
   if (user.isLoading) {
-    return <Spinner animation="grow" />;
+    return <Spinner animation="border" />;
   }
 
   return (
