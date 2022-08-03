@@ -23,6 +23,17 @@ export default class ModalStore {
       },
     };
 
+    this._oneClickBuyModal = {
+      show: false,
+      setShow: function(value) {
+        this.show = value;
+      },
+      product: null,
+      setProduct: function(value) {
+        this.product = value;
+      },
+    };
+
     this._addPropertyModal = {
       show: false,
       setShow: function(value) {
@@ -47,6 +58,10 @@ export default class ModalStore {
 
   get createPropertyModal() {
     return this._createPropertyModal;
+  }
+
+  get oneClickBuyModal() {
+    return this._oneClickBuyModal;
   }
 
   get addPropertyModal() {

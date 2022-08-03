@@ -8,7 +8,7 @@ const ProductList = observer(() => {
   const { product } = useContext(Context);
 
   return (
-    <Row className="d-flex">
+    <Row className="d-flex me-2">
       {product.products.map((prod) => (
         <ProductItem
           key={prod.id}

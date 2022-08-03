@@ -1,0 +1,18 @@
+$primary: #8a2be2;
+$secondary: #e6e6fb;
+$body-bg: #e6e6fb;
+
+@import "../../node_modules/bootstrap/scss/bootstrap.scss";
+
+:root {
+  --bs-body-font-family: cursive;
+}
+
+.nav-link {
+  color: white
+}
+
+.nav-link:active, .nav-link:hover, .nav-link:focus {
+  color: var(--bs-gray-300)
+}
+

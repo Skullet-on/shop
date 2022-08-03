@@ -1,13 +1,13 @@
 import { observer } from "mobx-react-lite";
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Card, Col, Form, Image } from "react-bootstrap";
+import { Button, ButtonGroup, Card, Col, Form, Image } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Context } from "..";
 import { PRODUCT_ROUTE } from "../utils/constants";
 import ColorList from "./ColorList";
 
 const ProductItem = ({ product, brand }) => {
-  const { basket } = useContext(Context);
+  const { basket, modal } = useContext(Context);
   const [count, setCount] = useState(1);
   const [selectedColor, setSelectedColor] = useState(null);
 
@@ -80,6 +80,17 @@ const ProductItem = ({ product, brand }) => {
     }
   };
 
+  const handleOneClickBuy = (e) => {
+    e.stopPropagation();
+
+    modal.oneClickBuyModal.setProduct({
+      product: product,
+      color: selectedColor,
+      count: count,
+    });
+    modal.oneClickBuyModal.setShow(true);
+  };
+
   const handleChangeColor = (e, color) => {
     e.stopPropagation();
 
@@ -92,7 +103,7 @@ const ProductItem = ({ product, brand }) => {
       className="mt-3 p-1"
       onClick={() => navigate(PRODUCT_ROUTE + "/" + product.id)}
     >
-      <Card style={{ cursor: "pointer" }} border={"dark"}>
+      <Card style={{ cursor: "pointer" }}>
         <Image
           src={
             selectedColor
@@ -102,7 +113,16 @@ const ProductItem = ({ product, brand }) => {
           style={{ objectFit: "cover", aspectRatio: "16 / 9" }}
         />
         <Card.Body>
-          <Card.Title>{product.name}</Card.Title>
+          <Card.Title
+            className="fs-6"
+            style={{
+              overflow: "hidden",
+              whiteSpace: "nowrap",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {product.name}
+          </Card.Title>
           <Card.Text className="mb-1">
             Цена:
             <b> {product.price} руб. </b>
@@ -118,12 +138,18 @@ const ProductItem = ({ product, brand }) => {
           />
           <ColorList product={product} changeColor={handleChangeColor} />
         </Card.Body>
-        <Button variant="primary" onClick={handleAddToCart}>
-          Добавить в корзину
-        </Button>
-        <Button variant="primary" onClick={handleAddToCart}>
-          Купить в 1 клик
-        </Button>
+        <ButtonGroup aria-label="Basic example">
+          <Button size="sm" variant="primary" onClick={handleAddToCart}>
+            Добавить в корзину
+          </Button>
+          <Button
+            size="sm"
+            variant="outline-primary"
+            onClick={(e) => handleOneClickBuy(e)}
+          >
+            Купить в 1 клик
+          </Button>
+        </ButtonGroup>
       </Card>
     </Col>
   );

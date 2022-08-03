@@ -43,16 +43,12 @@ const NavBar = observer(() => {
   return (
     <Navbar
       className="d-flex justify-content-between"
-      bg="light"
       variant="light"
+      bg="primary"
       sticky="top"
     >
       <Container>
-        <NavDropdown
-          id="nav-dropdown-category"
-          title="Каталог"
-          menuVariant="light"
-        >
+        <NavDropdown id="nav-dropdown-category" title="Каталог">
           {product.catalogs.map((catalog) => (
             <NavDropdown.Item
               key={catalog.id}

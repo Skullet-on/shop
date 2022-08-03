@@ -7,9 +7,10 @@ import FilterBar from "../components/FilterBar";
 import { fetchCatalogs, fetchBrands, fetchProducts } from "../http/productApi";
 import Pages from "../components/Pages";
 import ToastMessage from "../components/ToastMessage";
+import OneClickBuy from "../components/modals/OneClickBuy";
 
 const Shop = observer(() => {
-  const { product, filter } = useContext(Context);
+  const { product, filter, modal } = useContext(Context);
   useEffect(() => {
     fetchCatalogs().then((data) => {
       product.setCatalogs(data);
@@ -64,7 +65,11 @@ const Shop = observer(() => {
         <Col md={3}>
           <FilterBar />
           <Row className="p-3">
-            <Button className="mt-2" onClick={handleFilter}>
+            <Button
+              className="mt-2"
+              variant="outline-primary"
+              onClick={handleFilter}
+            >
               Применить фильтр
             </Button>
           </Row>
@@ -76,6 +81,10 @@ const Shop = observer(() => {
         </Col>
       </Row>
       <ToastMessage />
+      <OneClickBuy
+        show={modal.oneClickBuyModal.show}
+        onHide={() => modal.oneClickBuyModal.setShow(false)}
+      />
     </Container>
   );
 });

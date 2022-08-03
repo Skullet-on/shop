@@ -5,6 +5,7 @@ import { Context } from "./index";
 import AppRouter from "./components/AppRouter";
 import NavBar from "./components/NavBar";
 import { Spinner } from "react-bootstrap";
+import TopBar from "./components/TopBar";
 
 const App = () => {
   const { user, basket } = useContext(Context);
@@ -26,6 +27,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
+      <TopBar />
       <NavBar />
       <AppRouter />
     </BrowserRouter>

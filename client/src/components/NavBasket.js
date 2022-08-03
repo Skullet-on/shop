@@ -19,7 +19,8 @@ const NavBasket = () => {
           <Cart2 width="24" height="24" />
           <Badge
             pill
-            bg="primary"
+            bg="light"
+            text="primary"
             style={{ position: "absolute", right: 10, top: 3 }}
           >
             {basket.items.length}
