@@ -4,6 +4,7 @@ import { Button, ButtonGroup, Card, Col, Form, Image } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Context } from "..";
 import { PRODUCT_ROUTE } from "../utils/constants";
+import Badge from "./basic/Badge";
 import ColorList from "./ColorList";
 
 const ProductItem = ({ product, brand }) => {
@@ -128,7 +129,20 @@ const ProductItem = ({ product, brand }) => {
             <b> {product.price} руб. </b>
             {count > 1 && `(${product.price * count} руб)`}
           </Card.Text>
-          Количество:{" "}
+          <Card.Text className="mb-1">
+            {selectedColor && selectedColor.count > 0 ? (
+              <Badge type="dot" bg="success">
+                В наличии
+              </Badge>
+            ) : (
+              <Badge type="dot" bg="warning">
+                Под заказ
+              </Badge>
+            )}
+          </Card.Text>
+          <ColorList product={product} changeColor={handleChangeColor} />
+        </Card.Body>
+        <ButtonGroup aria-label="Basic example">
           <Form.Control
             type="number"
             placeholder="Количество"
@@ -136,18 +150,8 @@ const ProductItem = ({ product, brand }) => {
             onChange={(e) => handleSetCount(e)}
             onClick={(e) => e.stopPropagation()}
           />
-          <ColorList product={product} changeColor={handleChangeColor} />
-        </Card.Body>
-        <ButtonGroup aria-label="Basic example">
           <Button size="sm" variant="primary" onClick={handleAddToCart}>
-            Добавить в корзину
-          </Button>
-          <Button
-            size="sm"
-            variant="outline-primary"
-            onClick={(e) => handleOneClickBuy(e)}
-          >
-            Купить в 1 клик
+            Купить
           </Button>
         </ButtonGroup>
       </Card>
