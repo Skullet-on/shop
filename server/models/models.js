@@ -28,6 +28,7 @@ const Product = sequelize.define("product", {
   oldPrice: { type: DataTypes.INTEGER, defaultValue: 0 },
   rating: { type: DataTypes.INTEGER, defaultValue: 0 },
   img: { type: DataTypes.STRING, allowNull: false },
+  additionalImg: { type: DataTypes.STRING },
 });
 
 const Property = sequelize.define("property", {
@@ -49,6 +50,13 @@ const Brand = sequelize.define("brand", {
 const Rating = sequelize.define("rating", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   rate: { type: DataTypes.INTEGER, allowNull: false },
+});
+
+const Order = sequelize.define("order", {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  email: { type: DataTypes.STRING, allowNull: false },
+  phone: { type: DataTypes.STRING, allowNull: false },
+  description: { type: DataTypes.STRING },
 });
 
 const ProductProperties = sequelize.define("product_properties", {
@@ -121,4 +129,5 @@ module.exports = {
   Rating,
   ProductColors,
   ProductProperties,
+  Order,
 };

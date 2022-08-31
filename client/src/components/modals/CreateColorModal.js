@@ -8,7 +8,7 @@ const CreateColorModal = ({ show, onHide, productId }) => {
   const [name, setName] = useState("");
   const [count, setCount] = useState(0);
   const [file, setFile] = useState({});
-  const { product, toast } = useContext(Context);
+  const { productStore, toastStore } = useContext(Context);
 
   const selectFile = (e) => {
     let reader = new FileReader();
@@ -33,15 +33,15 @@ const CreateColorModal = ({ show, onHide, productId }) => {
     formData.append("img", file.file);
     await createColor(formData).then((data) => onHide());
     await fetchOneProduct(productId).then((data) =>
-      product.setSelectedProduct(data)
+      productStore.setSelectedProduct(data)
     );
 
     setName("");
     setFile({});
     setCount(0);
-    toast.setMessage(`Цвет успешно добавлен`);
-    toast.setVariant("info");
-    toast.setShow(true);
+    toastStore.setMessage(`Цвет успешно добавлен`);
+    toastStore.setVariant("info");
+    toastStore.setShow(true);
   };
 
   return (

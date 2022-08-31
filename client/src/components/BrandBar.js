@@ -4,25 +4,27 @@ import { Card, Row } from "react-bootstrap";
 import { Context } from "../index";
 
 const BrandBar = observer(() => {
-  const { product } = useContext(Context);
+  const { productStore } = useContext(Context);
 
   const handleChangeBrand = (brand) => {
-    if (brand.id === product.selectedBrand.id) {
-      product.setSelectedBrand({});
+    if (brand.id === productStore.selectedBrand.id) {
+      productStore.setSelectedBrand({});
     } else {
-      product.setSelectedBrand(brand);
+      productStore.setSelectedBrand(brand);
     }
   };
 
   return (
     <Row xs={2} md={6} className="d-flex">
-      {Object.values(product.brands).map((brand) => (
+      {Object.values(productStore.brands).map((brand) => (
         <Card
           key={brand.id}
           style={{ cursor: "pointer" }}
           className="p-3"
           onClick={() => handleChangeBrand(brand)}
-          border={brand.id === product.selectedBrand.id ? "danger" : "dark"}
+          border={
+            brand.id === productStore.selectedBrand.id ? "danger" : "dark"
+          }
         >
           {brand.name}
         </Card>

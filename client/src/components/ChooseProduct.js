@@ -4,18 +4,18 @@ import { Dropdown } from "react-bootstrap";
 import { Context } from "..";
 
 const ChooseProduct = () => {
-  const { product } = useContext(Context);
+  const { productStore } = useContext(Context);
 
   return (
     <Dropdown className="mt-2 mb-2">
       <Dropdown.Toggle>
-        {product.selectedProduct.name || "Выберите продукт"}
+        {productStore.selectedProduct.name || "Выберите продукт"}
       </Dropdown.Toggle>
       <Dropdown.Menu>
-        {product.products.map((prod) => (
+        {productStore.products.map((prod) => (
           <Dropdown.Item
             key={prod.id}
-            onClick={() => product.setSelectedProduct(prod)}
+            onClick={() => productStore.setSelectedProduct(prod)}
           >
             {prod.name}
           </Dropdown.Item>

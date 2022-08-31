@@ -10,52 +10,56 @@ import ToastMessage from "../components/ToastMessage";
 import OneClickBuy from "../components/modals/OneClickBuy";
 
 const Shop = observer(() => {
-  const { product, filter, modal } = useContext(Context);
+  const { productStore, filterStore, modalStore } = useContext(Context);
   useEffect(() => {
     fetchCatalogs().then((data) => {
-      product.setCatalogs(data);
-      product.setSelectedCatalog(data[0]);
+      productStore.setCatalogs(data);
+      productStore.setSelectedCatalog(data[0] || {});
     });
-    fetchBrands().then((data) => product.setBrands(data));
-    fetchProducts(null, null, product.page, product.limit, filter).then(
-      (data) => {
-        product.setProducts(data.rows);
-        product.setTotalCount(data.count);
-      }
-    );
-    product.setSelectedBrand({});
+    fetchBrands().then((data) => productStore.setBrands(data));
+    fetchProducts(
+      null,
+      null,
+      productStore.page,
+      productStore.limit,
+      filterStore
+    ).then((data) => {
+      productStore.setProducts(data.rows);
+      productStore.setTotalCount(data.count);
+    });
+    productStore.setSelectedBrand({});
   }, []);
 
   useEffect(() => {
     fetchProducts(
-      product.selectedCatalog.id,
-      product.selectedBrand.id,
-      product.page,
-      product.limit,
-      product.search,
-      filter
+      productStore.selectedCatalog.id,
+      productStore.selectedBrand.id,
+      productStore.page,
+      productStore.limit,
+      productStore.search,
+      filterStore
     ).then((data) => {
-      product.setProducts(data.rows);
-      product.setTotalCount(data.count);
+      productStore.setProducts(data.rows);
+      productStore.setTotalCount(data.count);
     });
   }, [
-    product.page,
-    product.selectedCatalog,
-    product.selectedBrand,
-    product.search,
+    productStore.page,
+    productStore.selectedCatalog,
+    productStore.selectedBrand,
+    productStore.search,
   ]);
 
   const handleFilter = () => {
     fetchProducts(
-      product.selectedCatalog.id,
-      product.selectedBrand.id,
-      product.page,
-      product.limit,
-      product.search,
-      filter
+      productStore.selectedCatalog.id,
+      productStore.selectedBrand.id,
+      productStore.page,
+      productStore.limit,
+      productStore.search,
+      filterStore
     ).then((data) => {
-      product.setProducts(data.rows);
-      product.setTotalCount(data.count);
+      productStore.setProducts(data.rows);
+      productStore.setTotalCount(data.count);
     });
   };
 
@@ -75,15 +79,15 @@ const Shop = observer(() => {
           </Row>
         </Col>
         <Col md={9}>
-          <h1>{product.selectedCatalog.name || "Каталог"}</h1>
+          <h1>{productStore.selectedCatalog.name || "Каталог"}</h1>
           <ProductList />
           <Pages />
         </Col>
       </Row>
       <ToastMessage />
       <OneClickBuy
-        show={modal.oneClickBuyModal.show}
-        onHide={() => modal.oneClickBuyModal.setShow(false)}
+        show={modalStore.oneClickBuyModal.show}
+        onHide={() => modalStore.oneClickBuyModal.setShow(false)}
       />
     </Container>
   );

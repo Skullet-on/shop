@@ -12,7 +12,7 @@ import {
 } from "../http/productApi";
 
 const CreateProductForm = () => {
-  const { product } = useContext(Context);
+  const { productStore } = useContext(Context);
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [color, setColor] = useState("");
@@ -23,10 +23,10 @@ const CreateProductForm = () => {
   const [selectedCatalog, setSelectedCatalog] = useState({});
 
   useEffect(() => {
-    fetchCatalogs().then((data) => product.setCatalogs(data));
-    fetchBrands().then((data) => product.setBrands(data));
-    fetchProducts().then((data) => product.setProducts(data.rows));
-    fetchProperties().then((data) => product.setProperties(data));
+    fetchCatalogs().then((data) => productStore.setCatalogs(data));
+    fetchBrands().then((data) => productStore.setBrands(data));
+    fetchProducts().then((data) => productStore.setProducts(data.rows));
+    fetchProperties().then((data) => productStore.setProperties(data));
     setSelectedBrand({});
     setSelectedCatalog({});
   }, []);
@@ -94,7 +94,7 @@ const CreateProductForm = () => {
       setInfo([]);
     });
 
-    await fetchProducts().then((data) => product.setProducts(data.rows));
+    await fetchProducts().then((data) => productStore.setProducts(data.rows));
   };
 
   return (
@@ -181,7 +181,7 @@ const CreateProductForm = () => {
                   {selectedCatalog.name || "Выберите каталог"}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  {product.catalogs.map((catalog) => (
+                  {productStore.catalogs.map((catalog) => (
                     <Dropdown.Item
                       key={catalog.id}
                       onClick={() => handleChangeCatalog(catalog)}
@@ -203,7 +203,7 @@ const CreateProductForm = () => {
                   {selectedBrand.name || "Выберите бренд"}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  {Object.values(product.brands).map((brand) => (
+                  {Object.values(productStore.brands).map((brand) => (
                     <Dropdown.Item
                       key={brand.id}
                       onClick={() => setSelectedBrand(brand)}

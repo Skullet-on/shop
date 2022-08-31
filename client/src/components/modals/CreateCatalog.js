@@ -5,7 +5,7 @@ import { Context } from "../..";
 import { createCatalog } from "../../http/productApi";
 
 const CreateCatalog = ({ show, onHide }) => {
-  const { product, toast } = useContext(Context);
+  const { productStore, toastStore } = useContext(Context);
 
   const [value, setValue] = useState("");
   const [properties, setProperties] = useState([]);
@@ -16,9 +16,9 @@ const CreateCatalog = ({ show, onHide }) => {
       onHide();
     });
 
-    toast.setMessage(`Каталог ${value} успешно создан`);
-    toast.setVariant("info");
-    toast.setShow(true);
+    toastStore.setMessage(`Каталог ${value} успешно создан`);
+    toastStore.setVariant("info");
+    toastStore.setShow(true);
   };
 
   const handleCheckProperty = (property) => {
@@ -46,7 +46,7 @@ const CreateCatalog = ({ show, onHide }) => {
           />
         </Form>
         <div className="mt-3">
-          {product.properties.map((property) => (
+          {productStore.properties.map((property) => (
             <InputGroup key={property.id}>
               <InputGroup.Checkbox
                 checked={properties.includes(property.id)}

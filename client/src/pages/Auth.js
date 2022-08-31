@@ -9,8 +9,8 @@ import {
   SHOP_ROUTE,
 } from "../utils/constants";
 
-const Auth = observer(() => {
-  const { user, toast } = useContext(Context);
+const Auth = () => {
+  const { userStore, toastStore } = useContext(Context);
   const location = useLocation();
   const isLogin = location.pathname === LOGIN_ROUTE;
   const [email, setEmail] = useState("");
@@ -20,21 +20,34 @@ const Auth = observer(() => {
   const handleClick = async () => {
     try {
       if (isLogin) {
-        await user.login(email, password);
-        toast.setMessage("Вы Успешно вошли," + email);
-        toast.setVariant("info");
-        toast.setShow(true);
+        await userStore.login(email, password);
       } else {
-        await user.registration(email, password);
-        toast.setMessage("Вы Успешно зарегистрировались, " + email);
-        toast.setVariant("info");
-        toast.setShow(true);
+        await userStore.registration(email, password);
       }
 
-      navigate(SHOP_ROUTE);
+      if (!Object.keys(userStore.errors).length) {
+        navigate(SHOP_ROUTE);
+
+        toastStore.setMessage(
+          isLogin
+            ? "Вы успешно вошли, " + email
+            : "Вы успешно зарегистрировались, " + email
+        );
+        toastStore.setVariant("info");
+        toastStore.setShow(true);
+      }
     } catch (e) {
       alert(e);
     }
+  };
+
+  const handleChange = (input, value) => {
+    if (input === "email") {
+      setEmail(value);
+    } else {
+      setPassword(value);
+    }
+    Object.keys(userStore.errors).length && userStore.setErrors({});
   };
 
   return (
@@ -48,15 +61,17 @@ const Auth = observer(() => {
           <Form.Control
             className="mt-3"
             placeholder="Введите email"
+            isInvalid={Object.keys(userStore.errors).length}
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => handleChange("email", e.target.value)}
           />
           <Form.Control
             className="mt-3"
             placeholder="Введите пароль"
+            isInvalid={Object.keys(userStore.errors).length}
             type="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => handleChange("password", e.target.value)}
           />
           <div className="d-flex justify-content-between mt-3">
             {isLogin ? (
@@ -77,6 +92,6 @@ const Auth = observer(() => {
       </Card>
     </Container>
   );
-});
+};
 
-export default Auth;
+export default observer(Auth);

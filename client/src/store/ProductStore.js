@@ -29,7 +29,7 @@ export default class ProductStore {
   setProperties(properties) {
     this._properties = properties;
   }
-  setSelectedCatalog(catalog) {
+  setSelectedCatalog(catalog = {}) {
     this.setPage(1);
     this._selectedCatalog = catalog;
   }
@@ -61,6 +61,12 @@ export default class ProductStore {
   }
   getProperty(id) {
     return this._properties.filter((property) => property.id === id)[0];
+  }
+  getPropertyName(id) {
+    return (
+      this._properties.filter((property) => property.id === id)[0] &&
+      this._properties.filter((property) => property.id === id)[0].name
+    );
   }
 
   get catalogs() {

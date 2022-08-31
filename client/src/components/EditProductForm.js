@@ -17,25 +17,25 @@ import ColorList from "./ColorList";
 import CreateColor from "./CreateColor";
 
 const EditProductForm = () => {
-  const { product } = useContext(Context);
+  const { productStore } = useContext(Context);
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [info, setInfo] = useState([]);
   const [selectedColor, setSelectedColor] = useState(null);
 
   useEffect(() => {
-    fetchCatalogs().then((data) => product.setCatalogs(data));
-    fetchBrands().then((data) => product.setBrands(data));
-    fetchProducts().then((data) => product.setProducts(data.rows));
-    fetchProperties().then((data) => product.setProperties(data));
-    product.setSelectedBrand({});
-    product.setSelectedCatalog({});
-    product.setSelectedProduct({});
+    fetchCatalogs().then((data) => productStore.setCatalogs(data));
+    fetchBrands().then((data) => productStore.setBrands(data));
+    fetchProducts().then((data) => productStore.setProducts(data.rows));
+    fetchProperties().then((data) => productStore.setProperties(data));
+    productStore.setSelectedBrand({});
+    productStore.setSelectedCatalog({});
+    productStore.setSelectedProduct({});
   }, []);
 
   useEffect(() => {
-    Object.keys(product.selectedProduct).length &&
-      fetchOneProduct(product.selectedProduct.id).then((data) => {
+    Object.keys(productStore.selectedProduct).length &&
+      fetchOneProduct(productStore.selectedProduct.id).then((data) => {
         setName(data.name);
         setPrice(data.price);
         if (data.info.length) {
@@ -45,7 +45,7 @@ const EditProductForm = () => {
               {
                 number: current.id,
                 description: current.description,
-                property: product.getProperty(current.propertyId),
+                property: productStore.getProperty(current.propertyId),
               },
             ];
           }, []);
@@ -54,11 +54,13 @@ const EditProductForm = () => {
         } else {
           setInfo([]);
         }
-        setSelectedColor(product.selectedProduct.color[0]);
-        product.setSelectedBrand(product.getBrand(data.brandId));
-        product.setSelectedCatalog(product.getCatalog(data.catalogId));
+        setSelectedColor(productStore.selectedProduct.color[0]);
+        productStore.setSelectedBrand(productStore.getBrand(data.brandId));
+        productStore.setSelectedCatalog(
+          productStore.getCatalog(data.catalogId)
+        );
       });
-  }, [product.selectedProduct]);
+  }, [productStore.selectedProduct]);
 
   const addInfo = () => {
     setInfo([...info, { property: {}, description: "", number: Date.now() }]);
@@ -85,8 +87,8 @@ const EditProductForm = () => {
 
       formData.append("img", file);
       await editColor(selectedColor.id, formData);
-      await fetchOneProduct(product.selectedProduct.id).then((data) =>
-        product.setSelectedProduct(data)
+      await fetchOneProduct(productStore.selectedProduct.id).then((data) =>
+        productStore.setSelectedProduct(data)
       );
     };
 
@@ -100,25 +102,25 @@ const EditProductForm = () => {
 
     formData.append("name", name);
     formData.append("price", price);
-    formData.append("catalogId", product.selectedCatalog.id);
-    formData.append("brandId", product.selectedBrand.id);
+    formData.append("catalogId", productStore.selectedCatalog.id);
+    formData.append("brandId", productStore.selectedBrand.id);
     formData.append("info", JSON.stringify(info));
-    editProduct(product.selectedProduct.id, formData).then((data) => {});
+    editProduct(productStore.selectedProduct.id, formData).then((data) => {});
   };
 
   const handleRemoveProduct = async () => {
-    await removeProduct(product.selectedProduct.id);
+    await removeProduct(productStore.selectedProduct.id);
 
-    await fetchProducts().then((data) => product.setProducts(data.rows));
-    product.setSelectedProduct({});
+    await fetchProducts().then((data) => productStore.setProducts(data.rows));
+    productStore.setSelectedProduct({});
   };
 
   return (
     <div>
       <Form>
         <h2>Редактирование товара</h2>
-        <ChooseProduct product={product} />
-        {Object.keys(product.selectedProduct).length ? (
+        <ChooseProduct product={productStore} />
+        {Object.keys(productStore.selectedProduct).length ? (
           <div>
             <Row>
               <Col
@@ -186,13 +188,16 @@ const EditProductForm = () => {
                   <Col md={4}>
                     <Dropdown className="mt-2 mb-2">
                       <Dropdown.Toggle>
-                        {product.selectedCatalog.name || "Выберите каталог"}
+                        {productStore.selectedCatalog.name ||
+                          "Выберите каталог"}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        {product.catalogs.map((catalog) => (
+                        {productStore.catalogs.map((catalog) => (
                           <Dropdown.Item
                             key={catalog.id}
-                            onClick={() => product.setSelectedCatalog(catalog)}
+                            onClick={() =>
+                              productStore.setSelectedCatalog(catalog)
+                            }
                           >
                             {catalog.name}
                           </Dropdown.Item>
@@ -208,13 +213,13 @@ const EditProductForm = () => {
                   <Col md={4}>
                     <Dropdown className="mt-2 mb-2">
                       <Dropdown.Toggle>
-                        {product.selectedBrand.name || "Выберите бренд"}
+                        {productStore.selectedBrand.name || "Выберите бренд"}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        {Object.values(product.brands).map((brand) => (
+                        {Object.values(productStore.brands).map((brand) => (
                           <Dropdown.Item
                             key={brand.id}
-                            onClick={() => product.setSelectedBrand(brand)}
+                            onClick={() => productStore.setSelectedBrand(brand)}
                           >
                             {brand.name}
                           </Dropdown.Item>
@@ -224,10 +229,10 @@ const EditProductForm = () => {
                   </Col>
                 </Form.Group>
                 <ColorList
-                  product={product.selectedProduct}
+                  product={productStore.selectedProduct}
                   changeColor={handleChooseColor}
                 />
-                <CreateColor product={product.selectedProduct} />
+                <CreateColor product={productStore.selectedProduct} />
               </Col>
             </Row>
             <hr />
@@ -243,7 +248,7 @@ const EditProductForm = () => {
                         {i.property.name || "Выберите свойство"}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        {product.properties.map((property) => (
+                        {productStore.properties.map((property) => (
                           <Dropdown.Item
                             key={property.id}
                             onClick={() =>

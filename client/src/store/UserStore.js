@@ -1,45 +1,55 @@
-import { makeAutoObservable } from 'mobx';
-import { login, registration, logout, check } from '../http/userApi';
+import { makeAutoObservable } from "mobx";
+import { LS_TOKEN } from "../Constants";
+import { login, registration, logout, check } from "../http/userApi";
 
 export default class UserStore {
   constructor() {
-    this._isAuth = false
-    this._user = {}
-    this._isLoading = false
-    makeAutoObservable(this)
+    this._isAuth = false;
+    this._user = {};
+    this._isLoading = false;
+    this._errors = {};
+    makeAutoObservable(this);
   }
 
   setIsAuth(bool) {
-    this._isAuth = bool
+    this._isAuth = bool;
   }
   setUser(user) {
-    this._user = user
+    this._user = user;
   }
   setIsLoading(bool) {
-    this._isLoading = bool
+    this._isLoading = bool;
+  }
+  setErrors(errors) {
+    this._errors = errors;
   }
 
   get isAuth() {
-    return this._isAuth
+    return this._isAuth;
   }
 
   get user() {
-    return this._user
+    return this._user;
   }
 
   get isLoading() {
-    return this._isLoading
+    return this._isLoading;
+  }
+
+  get errors() {
+    return this._errors;
   }
 
   async login(email, password) {
     try {
       const response = await login(email, password);
 
-      localStorage.setItem('token', response.data.accessToken);
+      localStorage.setItem(LS_TOKEN, response.data.accessToken);
       this.setIsAuth(true);
       this.setUser(response.data.user);
+      this.setErrors({});
     } catch (e) {
-      console.log(e);
+      this.setErrors(e.response.data);
     }
   }
 
@@ -47,11 +57,12 @@ export default class UserStore {
     try {
       const response = await registration(email, password);
 
-      localStorage.setItem('token', response.data.accessToken);
+      localStorage.setItem(LS_TOKEN, response.data.accessToken);
       this.setIsAuth(true);
       this.setUser(response.data.user);
+      this.setErrors({});
     } catch (e) {
-      console.log(e.response.data.message);
+      this.setErrors(e.response.data);
     }
   }
 
@@ -59,10 +70,11 @@ export default class UserStore {
     try {
       await logout();
 
-      localStorage.removeItem('token');
+      localStorage.removeItem(LS_TOKEN);
 
       this.setIsAuth(false);
       this.setUser({});
+      this.setErrors({});
     } catch (e) {
       console.log(e.response.data.message);
     }
@@ -73,7 +85,7 @@ export default class UserStore {
     try {
       const response = await check();
 
-      localStorage.setItem('token', response.data.accessToken);
+      localStorage.setItem(LS_TOKEN, response.data.accessToken);
 
       this.setIsAuth(true);
       this.setUser(response.data.user);

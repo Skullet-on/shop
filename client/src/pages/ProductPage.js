@@ -6,14 +6,14 @@ import { Context } from "..";
 import { fetchOneProduct, fetchProperties } from "../http/productApi";
 
 function ProductPage() {
-  const { product } = useContext(Context);
+  const { productStore } = useContext(Context);
   const [item, setItem] = useState({ info: [] });
   const imgIndex = 0;
   const { id } = useParams();
 
   useEffect(() => {
     fetchOneProduct(id).then((data) => setItem(data));
-    fetchProperties().then((data) => product.setProperties(data));
+    fetchProperties().then((data) => productStore.setProperties(data));
   }, []);
 
   return (
@@ -61,7 +61,7 @@ function ProductPage() {
             }}
           >
             {console.log(info)}
-            {product.getProperty(info.propertyId).name}:{" "}
+            {productStore.getProperty(info.propertyId).name}:{" "}
             {info.value ? info.value : info.description}
           </Row>
         ))}

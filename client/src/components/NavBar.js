@@ -15,29 +15,29 @@ import { fetchCatalogs } from "../http/productApi";
 import NavBasket from "./NavBasket";
 
 const NavBar = observer(() => {
-  const { user, product, toast } = useContext(Context);
+  const { userStore, productStore, toastStore } = useContext(Context);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchCatalogs().then((data) => product.setCatalogs(data));
+    fetchCatalogs().then((data) => productStore.setCatalogs(data));
   }, []);
 
   const handleClickCatalog = (catalog) => {
-    product.setSelectedCatalog(catalog);
+    productStore.setSelectedCatalog(catalog);
 
     navigate(SHOP_ROUTE);
   };
 
   const handleSearch = debounce((value) => {
-    product.setSearch(value);
+    productStore.setSearch(value);
   }, 300);
 
   const handleLogout = (user) => {
     user.logout();
     navigate(SHOP_ROUTE);
-    toast.setMessage("Вы вышли из аккаунта");
-    toast.setVariant("info");
-    toast.setShow(true);
+    toastStore.setMessage("Вы вышли из аккаунта");
+    toastStore.setVariant("info");
+    toastStore.setShow(true);
   };
 
   return (
@@ -49,7 +49,7 @@ const NavBar = observer(() => {
     >
       <Container>
         <NavDropdown id="nav-dropdown-category" title="Каталог">
-          {product.catalogs.map((catalog) => (
+          {productStore.catalogs.map((catalog) => (
             <NavDropdown.Item
               key={catalog.id}
               onClick={() => handleClickCatalog(catalog)}
@@ -73,12 +73,12 @@ const NavBar = observer(() => {
           title={<Person width="24" height="24" />}
           id="auth-dropdown"
         >
-          {user.isAuth ? (
+          {userStore.isAuth ? (
             <>
-              <NavDropdown.Item onClick={() => handleLogout(user)}>
+              <NavDropdown.Item onClick={() => handleLogout(userStore)}>
                 Выйти
               </NavDropdown.Item>
-              {user.user.role === "ADMIN" ? (
+              {userStore.user.role === "ADMIN" ? (
                 <>
                   <NavDropdown.Divider />
                   <NavDropdown.Item onClick={() => navigate(ADMIN_ROUTE)}>

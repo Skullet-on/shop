@@ -6,23 +6,23 @@ import { editBrand, fetchBrands, removeBrand } from "../http/productApi";
 import BrandItem from "./BrandItem";
 
 const BrandList = () => {
-  const { product } = useContext(Context);
+  const { productStore } = useContext(Context);
 
   const handleEditBrand = (brandId, brandName) => {
     editBrand(brandId, brandName).then(() =>
-      fetchBrands().then((data) => product.setBrands(data))
+      fetchBrands().then((data) => productStore.setBrands(data))
     );
   };
 
   const handleRemoveBrand = (brandId) => {
     removeBrand(brandId).then(() =>
-      fetchBrands().then((data) => product.setBrands(data))
+      fetchBrands().then((data) => productStore.setBrands(data))
     );
   };
 
   return (
     <Container className="mt-3">
-      {product.brands.map((brand, index) => (
+      {productStore.brands.map((brand, index) => (
         <BrandItem
           key={brand.id}
           brand={brand}

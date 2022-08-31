@@ -6,22 +6,33 @@ import AppRouter from "./components/AppRouter";
 import NavBar from "./components/NavBar";
 import { Spinner } from "react-bootstrap";
 import TopBar from "./components/TopBar";
+import { fetchBrands, fetchCatalogs, fetchProperties } from "./http/productApi";
+import { LS_BASKET, LS_TOKEN } from "./Constants";
 
 const App = () => {
-  const { user, basket } = useContext(Context);
+  const { productStore, userStore, basketStore } = useContext(Context);
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      user.check();
+    if (localStorage.getItem(LS_TOKEN)) {
+      userStore.check();
     }
-    if (localStorage.getItem("basket")) {
-      const items = JSON.parse(localStorage.getItem("basket"));
+    if (localStorage.getItem(LS_BASKET)) {
+      const items = JSON.parse(localStorage.getItem(LS_BASKET));
 
-      basket.setItems(items);
+      basketStore.setItems(items);
     }
+
+    fetchCatalogs().then((data) => {
+      productStore.setCatalogs(data);
+      productStore.setSelectedCatalog(data[0]);
+    });
+    fetchBrands().then((data) => productStore.setBrands(data));
+    fetchProperties().then((data) => {
+      productStore.setProperties(data);
+    });
   }, []);
 
-  if (user.isLoading) {
+  if (userStore.isLoading) {
     return <Spinner animation="border" />;
   }
 

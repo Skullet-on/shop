@@ -4,23 +4,23 @@ import { Context } from "../index";
 import { ListGroup } from "react-bootstrap";
 
 const CatalogBar = observer(() => {
-  const { product } = useContext(Context);
+  const { productStore } = useContext(Context);
 
   const handleChangeCatalog = (catalog) => {
-    if (catalog.id === product.selectedCatalog.id) {
-      product.setSelectedCatalog({});
+    if (catalog.id === productStore.selectedCatalog.id) {
+      productStore.setSelectedCatalog({});
     } else {
-      product.setSelectedCatalog(catalog);
+      productStore.setSelectedCatalog(catalog);
     }
   };
 
   return (
     <ListGroup>
-      {product.catalogs.map((catalog) => (
+      {productStore.catalogs.map((catalog) => (
         <ListGroup.Item
           key={catalog.id}
           style={{ cursor: "pointer" }}
-          active={catalog.id === product.selectedCatalog.id}
+          active={catalog.id === productStore.selectedCatalog.id}
           onClick={() => handleChangeCatalog(catalog)}
         >
           {catalog.name}

@@ -7,8 +7,8 @@ import { PRODUCT_ROUTE } from "../utils/constants";
 import Badge from "./basic/Badge";
 import ColorList from "./ColorList";
 
-const ProductItem = ({ product, brand }) => {
-  const { basket, modal } = useContext(Context);
+const ProductItem = ({ product }) => {
+  const { basketStore, productStore } = useContext(Context);
   const [count, setCount] = useState(1);
   const [selectedColor, setSelectedColor] = useState(null);
 
@@ -33,7 +33,7 @@ const ProductItem = ({ product, brand }) => {
 
     const identificator = product.id + selectedColor.name;
 
-    if (basket.items.some((item) => item.id === identificator)) {
+    if (basketStore.items.some((item) => item.id === identificator)) {
       const items = JSON.parse(localStorage.getItem("basket"));
 
       const newItems = items.reduce((acc, curr) => {
@@ -43,7 +43,7 @@ const ProductItem = ({ product, brand }) => {
       }, []);
       localStorage.setItem("basket", JSON.stringify(newItems));
 
-      basket.setItems(newItems);
+      basketStore.setItems(newItems);
     } else {
       const items = localStorage.getItem("basket");
 
@@ -72,24 +72,13 @@ const ProductItem = ({ product, brand }) => {
             ])
           );
 
-      basket.setItem({
+      basketStore.setItem({
         id: identificator,
         product: product,
         color: selectedColor,
         count: count,
       });
     }
-  };
-
-  const handleOneClickBuy = (e) => {
-    e.stopPropagation();
-
-    modal.oneClickBuyModal.setProduct({
-      product: product,
-      color: selectedColor,
-      count: count,
-    });
-    modal.oneClickBuyModal.setShow(true);
   };
 
   const handleChangeColor = (e, color) => {
@@ -140,6 +129,14 @@ const ProductItem = ({ product, brand }) => {
               </Badge>
             )}
           </Card.Text>
+          {product.info.length
+            ? product.info.map((property) => (
+                <Card.Text key={property.id} className="d-flex mb-1">
+                  {productStore.getPropertyName(property.id) || ""}:
+                  <div>{property.description}</div>
+                </Card.Text>
+              ))
+            : ""}
           <ColorList product={product} changeColor={handleChangeColor} />
         </Card.Body>
         <ButtonGroup aria-label="Basic example">

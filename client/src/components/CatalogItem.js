@@ -9,7 +9,7 @@ const CatalogItem = ({
   removeCatalog,
   editCatalog,
 }) => {
-  const { modal } = useContext(Context);
+  const { modalStore } = useContext(Context);
   const [edit, setEdit] = useState(false);
   const [catalogName, setCatalogName] = useState("");
 
@@ -26,8 +26,8 @@ const CatalogItem = ({
   };
 
   const handleAddCatalogProperty = (catalogId) => {
-    modal.addPropertyModal.setCatalogId(catalogId);
-    modal.addPropertyModal.setShow(true);
+    modalStore.addPropertyModal.setCatalogId(catalogId);
+    modalStore.addPropertyModal.setShow(true);
   };
 
   return (

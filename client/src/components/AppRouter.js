@@ -5,16 +5,16 @@ import { Context } from "..";
 import { adminRoutes, authRoutes, publicRoutes } from "../routes";
 
 function AppRouter() {
-  const { user } = useContext(Context);
+  const { userStore } = useContext(Context);
 
   return (
     <Routes>
-      {user.isAuth &&
-        user.user.role === "ADMIN" &&
+      {userStore.isAuth &&
+        userStore.user.role === "ADMIN" &&
         adminRoutes.map(({ path, element }) => (
           <Route key={path} path={path} element={element} />
         ))}
-      {user.isAuth &&
+      {userStore.isAuth &&
         authRoutes.map(({ path, element }) => (
           <Route key={path} path={path} element={element} />
         ))}

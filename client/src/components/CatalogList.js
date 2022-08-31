@@ -11,29 +11,29 @@ import {
 import CatalogItem from "./CatalogItem";
 
 const CatalogList = () => {
-  const { product } = useContext(Context);
+  const { productStore } = useContext(Context);
 
   const removeProperty = (catalogId, propertyId) => {
     removeCatalogProperty(catalogId, propertyId).then(() =>
-      fetchCatalogs().then((data) => product.setCatalogs(data))
+      fetchCatalogs().then((data) => productStore.setCatalogs(data))
     );
   };
 
   const handleRemoveCatalog = (catalogId) => {
     removeCatalog(catalogId).then(() =>
-      fetchCatalogs().then((data) => product.setCatalogs(data))
+      fetchCatalogs().then((data) => productStore.setCatalogs(data))
     );
   };
 
   const handleEditCatalog = (catalogId, catalogName) => {
     editCatalog(catalogId, catalogName).then(() =>
-      fetchCatalogs().then((data) => product.setCatalogs(data))
+      fetchCatalogs().then((data) => productStore.setCatalogs(data))
     );
   };
 
   return (
     <Container>
-      {product.catalogs.map((catalog, index) => (
+      {productStore.catalogs.map((catalog, index) => (
         <CatalogItem
           key={index}
           catalog={catalog}

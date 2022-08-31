@@ -8,7 +8,7 @@ import { BASKET_ROUTE } from "../utils/constants";
 import NavBasketItem from "./NavBasketItem";
 
 const NavBasket = () => {
-  const { basket } = useContext(Context);
+  const { basketStore } = useContext(Context);
   const navigate = useNavigate();
 
   return (
@@ -23,18 +23,18 @@ const NavBasket = () => {
             text="primary"
             style={{ position: "absolute", right: 10, top: 3 }}
           >
-            {basket.items.length}
+            {basketStore.items.length}
           </Badge>
         </>
       }
       id="header-basket"
     >
-      {basket.items.map((basketItem) => (
+      {basketStore.items.map((basketItem) => (
         <NavBasketItem key={basketItem.product.id} basketItem={basketItem} />
       ))}
       <NavDropdown.Divider />
       <NavDropdown.ItemText>
-        Сумма: <b>{basket.totalSum} руб.</b>
+        Сумма: <b>{basketStore.totalSum} руб.</b>
       </NavDropdown.ItemText>
       <NavDropdown.Divider />
       <NavDropdown.Item onClick={() => navigate(BASKET_ROUTE)}>

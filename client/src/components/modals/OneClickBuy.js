@@ -4,15 +4,15 @@ import { Button, Form, Modal } from "react-bootstrap";
 import { Context } from "../..";
 
 const OneClickBuy = ({ show, onHide }) => {
-  const { modal } = useContext(Context);
+  const { modalStore } = useContext(Context);
 
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
   const sendOrder = () => {
-    console.log(modal.oneClickBuyModal.product);
-    modal.oneClickBuyModal.setProduct(null);
+    console.log(modalStore.oneClickBuyModal.product);
+    modalStore.oneClickBuyModal.setProduct(null);
     setEmail("");
     setName("");
     setPhone("");

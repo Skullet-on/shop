@@ -5,24 +5,24 @@ import { Context } from "..";
 import { fetchCatalogProperties } from "../http/productApi";
 
 const FilterBar = () => {
-  const { product, filter } = useContext(Context);
+  const { productStore, filterStore } = useContext(Context);
   const [properties, setProperties] = useState([]);
 
   useEffect(() => {
-    filter.setBrands([]);
+    filterStore.setBrands([]);
 
-    if (product.selectedCatalog.id) {
-      fetchCatalogProperties(product.selectedCatalog.id).then((data) => {
+    if (productStore.selectedCatalog.id) {
+      fetchCatalogProperties(productStore.selectedCatalog.id).then((data) => {
         setProperties(data);
       });
     }
-  }, [product.selectedCatalog]);
+  }, [productStore.selectedCatalog]);
 
   const handleCheck = (brand) => {
-    if (filter.brands.includes(brand)) {
-      filter.setBrands(filter.brands.filter((id) => id !== brand));
+    if (filterStore.brands.includes(brand)) {
+      filterStore.setBrands(filterStore.brands.filter((id) => id !== brand));
     } else {
-      filter.setBrands([...filter.brands, brand]);
+      filterStore.setBrands([...filterStore.brands, brand]);
     }
   };
 
@@ -32,7 +32,7 @@ const FilterBar = () => {
         <Accordion.Header>Бренд</Accordion.Header>
         <Accordion.Body className="p-0">
           <ul className="list-group list-group-flush">
-            {product.brands.map((brand) => (
+            {productStore.brands.map((brand) => (
               <li
                 key={brand.id}
                 className="list-group-item"
@@ -42,7 +42,7 @@ const FilterBar = () => {
                 <input
                   className="form-check-input me-1"
                   type="checkbox"
-                  checked={filter.brands.includes(brand.id)}
+                  checked={filterStore.brands.includes(brand.id)}
                   onChange={() => {}}
                 />
                 {brand.name}
