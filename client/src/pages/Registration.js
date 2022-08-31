@@ -3,9 +3,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { Button, Card, Container, Form } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Context } from "../index";
-import { REGISTRATION_ROUTE, SHOP_ROUTE } from "../utils/constants";
+import { LOGIN_ROUTE, SHOP_ROUTE } from "../utils/constants";
 
-const Auth = () => {
+const Registration = () => {
   const { userStore, toastStore } = useContext(Context);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,12 +17,12 @@ const Auth = () => {
 
   const handleClick = async () => {
     try {
-      await userStore.login(email, password);
+      await userStore.registration(email, password);
 
       if (!Object.keys(userStore.errors).length) {
         navigate(SHOP_ROUTE);
 
-        toastStore.setMessage("Вы успешно вошли, " + email);
+        toastStore.setMessage("Вы успешно зарегистрировались, " + email);
         toastStore.setVariant("info");
         toastStore.setShow(true);
       }
@@ -31,13 +31,15 @@ const Auth = () => {
     }
   };
 
-  const handleChange = (input, value) => {
-    if (input === "email") {
+  const handleChange = (field, value) => {
+    if (field === "email") {
       setEmail(value);
     } else {
       setPassword(value);
     }
-    Object.keys(userStore.errors).length && userStore.setErrors({});
+    if (userStore.errors[field]) {
+      userStore.removeErrorField(field);
+    }
   };
 
   return (
@@ -46,33 +48,43 @@ const Auth = () => {
       style={{ height: window.innerHeight - 54 }}
     >
       <Card style={{ width: 600 }} className="p-5">
-        <h2 className="m-auto">Авторизация</h2>
+        <h2 className="m-auto">Регистрация</h2>
         <Form className="d-flex flex-column">
           <Form.Control
             className="mt-3"
             placeholder="Введите email"
-            isInvalid={Object.keys(userStore.errors).length}
+            isInvalid={
+              Object.keys(userStore.errors).length && userStore.errors.email
+            }
             value={email}
             onChange={(e) => handleChange("email", e.target.value)}
           />
+          <Form.Control.Feedback type={"invalid"}>
+            {Object.keys(userStore.errors).length &&
+              userStore.errors.email &&
+              userStore.errors.email.message}
+          </Form.Control.Feedback>
           <Form.Control
             className="mt-3"
             placeholder="Введите пароль"
-            isInvalid={Object.keys(userStore.errors).length}
+            isInvalid={
+              Object.keys(userStore.errors).length && userStore.errors.password
+            }
             type="password"
             value={password}
             onChange={(e) => handleChange("password", e.target.value)}
           />
           <Form.Control.Feedback type="invalid">
-            Неверное имя пользователя, или пароль
+            {Object.keys(userStore.errors).length &&
+              userStore.errors.password &&
+              userStore.errors.password.message}
           </Form.Control.Feedback>
           <div className="d-flex justify-content-between mt-3">
             <div>
-              Нет аккаунта?{" "}
-              <NavLink to={REGISTRATION_ROUTE}>Регистрация</NavLink>
+              Есть аккаунт? <NavLink to={LOGIN_ROUTE}>Войти</NavLink>
             </div>
             <Button variant={"outline-dark"} onClick={handleClick}>
-              Войти
+              Регистрация
             </Button>
           </div>
         </Form>
@@ -81,4 +93,4 @@ const Auth = () => {
   );
 };
 
-export default observer(Auth);
+export default observer(Registration);

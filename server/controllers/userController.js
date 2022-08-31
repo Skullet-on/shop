@@ -13,9 +13,14 @@ class UserController {
   async registration(req, res, next) {
     try {
       const { errors } = validationResult(req);
+      const formatErrors = errors.reduce((acc, curr) => {
+        return { ...acc, [curr.param]: { message: curr.msg } };
+      }, {});
 
       if (errors.length) {
-        return next(ApiError.badRequest("Ошибка при валидации", errors));
+        return next(
+          ApiError.badRequest(400, "Ошибка при валидации", formatErrors)
+        );
       }
 
       const { email, password, role } = req.body;

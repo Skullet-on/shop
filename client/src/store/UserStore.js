@@ -40,6 +40,10 @@ export default class UserStore {
     return this._errors;
   }
 
+  removeErrorField(field) {
+    delete this._errors[field];
+  }
+
   async login(email, password) {
     try {
       const response = await login(email, password);
@@ -62,7 +66,7 @@ export default class UserStore {
       this.setUser(response.data.user);
       this.setErrors({});
     } catch (e) {
-      this.setErrors(e.response.data);
+      this.setErrors(e.response.data.errors);
     }
   }
 

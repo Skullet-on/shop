@@ -4,6 +4,7 @@ import Basket from "./pages/Basket";
 import NewAdminPage from "./pages/NewAdminPage";
 import PageNotFound from "./pages/PageNotFound";
 import ProductPage from "./pages/ProductPage";
+import Registration from "./pages/Registration";
 import Shop from "./pages/Shop";
 import {
   ADMIN_ROUTE,
@@ -44,7 +45,7 @@ export const publicRoutes = [
   },
   {
     path: REGISTRATION_ROUTE,
-    element: <Auth />,
+    element: <Registration />,
   },
   {
     path: PRODUCT_ROUTE + "/:id",
