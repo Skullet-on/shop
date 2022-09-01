@@ -35,6 +35,7 @@ const Property = sequelize.define("property", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
   type: { type: DataTypes.STRING, allowNull: false },
+  currency: { type: DataTypes.STRING },
 });
 
 const Catalog = sequelize.define("catalog", {
@@ -45,6 +46,7 @@ const Catalog = sequelize.define("catalog", {
 const Brand = sequelize.define("brand", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, unique: true, allowNull: false },
+  label: { type: DataTypes.STRING, allowNull: false },
 });
 
 const Rating = sequelize.define("rating", {

@@ -10,13 +10,19 @@ import ToastMessage from "../components/ToastMessage";
 import OneClickBuy from "../components/modals/OneClickBuy";
 
 const Shop = observer(() => {
-  const { productStore, filterStore, modalStore } = useContext(Context);
+  const {
+    productStore,
+    brandStore,
+    catalogStore,
+    filterStore,
+    modalStore,
+  } = useContext(Context);
   useEffect(() => {
     fetchCatalogs().then((data) => {
-      productStore.setCatalogs(data);
-      productStore.setSelectedCatalog(data[0] || {});
+      catalogStore.setCatalogs(data);
+      catalogStore.setSelectedCatalog(data[0] || {});
     });
-    fetchBrands().then((data) => productStore.setBrands(data));
+    fetchBrands().then((data) => brandStore.setBrands(data));
     fetchProducts(
       null,
       null,
@@ -27,13 +33,13 @@ const Shop = observer(() => {
       productStore.setProducts(data.rows);
       productStore.setTotalCount(data.count);
     });
-    productStore.setSelectedBrand({});
+    brandStore.setSelectedBrand({});
   }, []);
 
   useEffect(() => {
     fetchProducts(
-      productStore.selectedCatalog.id,
-      productStore.selectedBrand.id,
+      catalogStore.selectedCatalog.id,
+      brandStore.selectedBrand.id,
       productStore.page,
       productStore.limit,
       productStore.search,
@@ -44,15 +50,15 @@ const Shop = observer(() => {
     });
   }, [
     productStore.page,
-    productStore.selectedCatalog,
-    productStore.selectedBrand,
+    catalogStore.selectedCatalog,
+    brandStore.selectedBrand,
     productStore.search,
   ]);
 
   const handleFilter = () => {
     fetchProducts(
-      productStore.selectedCatalog.id,
-      productStore.selectedBrand.id,
+      catalogStore.selectedCatalog.id,
+      brandStore.selectedBrand.id,
       productStore.page,
       productStore.limit,
       productStore.search,
@@ -79,7 +85,7 @@ const Shop = observer(() => {
           </Row>
         </Col>
         <Col md={9}>
-          <h1>{productStore.selectedCatalog.name || "Каталог"}</h1>
+          <h1>{catalogStore.selectedCatalog.name || "Каталог"}</h1>
           <ProductList />
           <Pages />
         </Col>

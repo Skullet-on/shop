@@ -1,14 +1,28 @@
 const Router = require("express");
 const router = new Router();
 const CatalogController = require("../controllers/catalogController");
-const catalogPropertyController = require("../controllers/catalogPropertyController");
 const authMiddleware = require("../middleware/authMiddleware");
+const { body } = require("express-validator");
 
 router.get("/", CatalogController.getAll);
 
-router.post("/", authMiddleware, CatalogController.create);
+router.post(
+  "/",
+  body("name")
+    .isLength({ min: 3, max: 32 })
+    .withMessage("Название должно содержать от 3 до 32 символов"),
+  authMiddleware,
+  CatalogController.create
+);
 
-router.patch("/:id", authMiddleware, CatalogController.edit);
+router.patch(
+  "/:id",
+  body("name")
+    .isLength({ min: 3, max: 32 })
+    .withMessage("Название должно содержать от 3 до 32 символов"),
+  authMiddleware,
+  CatalogController.edit
+);
 
 router.post("/:id", CatalogController.createCatalogProperties);
 

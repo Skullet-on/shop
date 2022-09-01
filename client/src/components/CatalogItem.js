@@ -2,14 +2,10 @@ import { observer } from "mobx-react-lite";
 import React, { useContext, useEffect, useState } from "react";
 import { Button, Card, Form, InputGroup, ListGroup } from "react-bootstrap";
 import { Context } from "..";
+import { editCatalog, fetchCatalogs } from "../http/productApi";
 
-const CatalogItem = ({
-  catalog,
-  removeProperty,
-  removeCatalog,
-  editCatalog,
-}) => {
-  const { modalStore } = useContext(Context);
+const CatalogItem = ({ catalog, removeProperty, removeCatalog }) => {
+  const { modalStore, catalogStore } = useContext(Context);
   const [edit, setEdit] = useState(false);
   const [catalogName, setCatalogName] = useState("");
 
@@ -19,10 +15,19 @@ const CatalogItem = ({
 
   const handleEdit = (catalogId, edit) => {
     if (edit) {
-      editCatalog(catalogId, catalogName);
+      editCatalog(catalogId, catalogName).then((data) => {
+        if (data.errors) {
+          catalogStore.setCatalogErrors(catalogId, data.errors);
+        } else {
+          fetchCatalogs().then((data) => {
+            catalogStore.setCatalogs(data);
+          });
+          setEdit(!edit);
+        }
+      });
+    } else {
+      setEdit(!edit);
     }
-
-    setEdit(!edit);
   };
 
   const handleAddCatalogProperty = (catalogId) => {
@@ -30,12 +35,18 @@ const CatalogItem = ({
     modalStore.addPropertyModal.setShow(true);
   };
 
+  const handleChangeCatalog = (value, catalogId) => {
+    setCatalogName(value);
+    catalogStore.setCatalogErrors(catalogId, undefined);
+  };
+
   return (
     <Card className="mt-3">
       <InputGroup>
         <Form.Control
           value={catalogName}
-          onChange={(e) => setCatalogName(e.target.value)}
+          isInvalid={catalog.errors}
+          onChange={(e) => handleChangeCatalog(e.target.value, catalog.id)}
           disabled={!edit}
         />
         <Button
@@ -50,6 +61,9 @@ const CatalogItem = ({
         >
           Удалить
         </Button>
+        <Form.Control.Feedback type={"invalid"}>
+          {catalog.errors && catalog.errors.name.message}
+        </Form.Control.Feedback>
       </InputGroup>
       <ListGroup variant="flush">
         {catalog.properties.map((property) => (

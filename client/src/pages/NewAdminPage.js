@@ -16,29 +16,36 @@ import { Context } from "../index";
 import CatalogList from "../components/CatalogList";
 import AddProperty from "../components/modals/AddProperty";
 import BrandList from "../components/BrandList";
+import PropertyList from "../components/PropertyList";
 
 const NewAdminPage = observer(() => {
-  const { productStore, modalStore } = useContext(Context);
+  const {
+    productStore,
+    brandStore,
+    catalogStore,
+    propertiesStore,
+    modalStore,
+  } = useContext(Context);
 
   const [tab, setTab] = useState("catalogs");
 
   useEffect(() => {
-    fetchCatalogs().then((data) => productStore.setCatalogs(data));
-    fetchBrands().then((data) => productStore.setBrands(data));
+    fetchCatalogs().then((data) => catalogStore.setCatalogs(data));
+    fetchBrands().then((data) => brandStore.setBrands(data));
     fetchProducts().then((data) => productStore.setProducts(data.rows));
-    fetchProperties().then((data) => productStore.setProperties(data));
+    fetchProperties().then((data) => propertiesStore.setProperties(data));
   }, []);
 
   useEffect(() => {
-    fetchCatalogs().then((data) => productStore.setCatalogs(data));
+    fetchCatalogs().then((data) => catalogStore.setCatalogs(data));
   }, [modalStore.createCatalogModal.show, modalStore.addPropertyModal.show]);
 
   useEffect(() => {
-    fetchBrands().then((data) => productStore.setBrands(data));
+    fetchBrands().then((data) => brandStore.setBrands(data));
   }, [modalStore.createBrandModal.show]);
 
   useEffect(() => {
-    fetchProperties().then((data) => productStore.setProperties(data));
+    fetchProperties().then((data) => propertiesStore.setProperties(data));
   }, [modalStore.createPropertyModal.show]);
 
   return (
@@ -57,6 +64,15 @@ const NewAdminPage = observer(() => {
             Добавить каталог
           </Button>
           <CatalogList />
+        </Tab>
+        <Tab eventKey="properties" title="Свойства">
+          <Button
+            variant="outline-dark"
+            onClick={() => modalStore.createPropertyModal.setShow(true)}
+          >
+            Добавить свойство
+          </Button>
+          <PropertyList />
         </Tab>
         <Tab eventKey="brands" title="Бренды">
           <Button

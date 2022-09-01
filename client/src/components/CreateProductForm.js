@@ -12,7 +12,12 @@ import {
 } from "../http/productApi";
 
 const CreateProductForm = () => {
-  const { productStore } = useContext(Context);
+  const {
+    productStore,
+    brandStore,
+    catalogStore,
+    propertiesStore,
+  } = useContext(Context);
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [color, setColor] = useState("");
@@ -23,10 +28,10 @@ const CreateProductForm = () => {
   const [selectedCatalog, setSelectedCatalog] = useState({});
 
   useEffect(() => {
-    fetchCatalogs().then((data) => productStore.setCatalogs(data));
-    fetchBrands().then((data) => productStore.setBrands(data));
+    fetchCatalogs().then((data) => catalogStore.setCatalogs(data));
+    fetchBrands().then((data) => brandStore.setBrands(data));
     fetchProducts().then((data) => productStore.setProducts(data.rows));
-    fetchProperties().then((data) => productStore.setProperties(data));
+    fetchProperties().then((data) => propertiesStore.setProperties(data));
     setSelectedBrand({});
     setSelectedCatalog({});
   }, []);
@@ -181,7 +186,7 @@ const CreateProductForm = () => {
                   {selectedCatalog.name || "Выберите каталог"}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  {productStore.catalogs.map((catalog) => (
+                  {catalogStore.catalogs.map((catalog) => (
                     <Dropdown.Item
                       key={catalog.id}
                       onClick={() => handleChangeCatalog(catalog)}
@@ -203,7 +208,7 @@ const CreateProductForm = () => {
                   {selectedBrand.name || "Выберите бренд"}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
-                  {Object.values(productStore.brands).map((brand) => (
+                  {Object.values(brandStore.brands).map((brand) => (
                     <Dropdown.Item
                       key={brand.id}
                       onClick={() => setSelectedBrand(brand)}

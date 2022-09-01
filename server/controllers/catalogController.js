@@ -1,31 +1,79 @@
 const { Catalog, CatalogProperty } = require("../models/models");
+const { validationResult } = require("express-validator");
+const ApiError = require("../error/ApiError");
 
 class CatalogController {
-  async create(req, res) {
-    const { name, properties = [] } = req.body;
-    const catalog = await Catalog.create({ name: name.toLowerCase() });
+  async create(req, res, next) {
+    try {
+      const { errors } = validationResult(req);
+      const formatErrors = errors.reduce((acc, curr) => {
+        return { ...acc, [curr.param]: { message: curr.msg } };
+      }, {});
 
-    if (properties.length) {
-      properties.forEach((property) => {
-        CatalogProperty.create({
-          catalogId: catalog.id,
-          propertyId: property,
+      if (errors.length) {
+        return next(
+          ApiError.badRequest(400, "Ошибка при валидации", formatErrors)
+        );
+      }
+
+      const { name, properties = [] } = req.body;
+      const catalog = await Catalog.create({ name: name.toLowerCase() });
+
+      if (properties.length) {
+        properties.forEach((property) => {
+          CatalogProperty.create({
+            catalogId: catalog.id,
+            propertyId: property,
+          });
         });
-      });
-    }
+      }
 
-    return res.json(catalog);
+      return res.json(catalog);
+    } catch (error) {
+      if (error.name === "SequelizeUniqueConstraintError") {
+        return next(
+          ApiError.badRequest(400, "Ошибка при валидации", {
+            name: { message: "Такое название уже есть" },
+          })
+        );
+      } else {
+        return next(ApiError.badRequest(400, "Ошибка при валидации", error));
+      }
+    }
   }
 
-  async edit(req, res) {
-    const { id } = req.params;
-    const { name } = req.body;
-    const catalog = await Catalog.update(
-      { name: name.toLowerCase() },
-      { where: { id } }
-    );
+  async edit(req, res, next) {
+    try {
+      const { errors } = validationResult(req);
+      const formatErrors = errors.reduce((acc, curr) => {
+        return { ...acc, [curr.param]: { message: curr.msg } };
+      }, {});
 
-    return res.json(catalog);
+      if (errors.length) {
+        return next(
+          ApiError.badRequest(400, "Ошибка при валидации", formatErrors)
+        );
+      }
+
+      const { id } = req.params;
+      const { name } = req.body;
+      const catalog = await Catalog.update(
+        { name: name.toLowerCase() },
+        { where: { id } }
+      );
+
+      return res.json(catalog);
+    } catch (error) {
+      if (error.name === "SequelizeUniqueConstraintError") {
+        return next(
+          ApiError.badRequest(400, "Ошибка при валидации", {
+            name: { message: "Такое название уже есть" },
+          })
+        );
+      } else {
+        return next(ApiError.badRequest(400, "Ошибка при валидации", error));
+      }
+    }
   }
 
   async delete(req, res) {

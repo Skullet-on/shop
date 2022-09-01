@@ -28,6 +28,7 @@ const errorInterceptor = async (error) => {
       console.log("НЕ АВТОРИЗОВАН");
     }
   }
+  return error.response;
 };
 
 $authHost.interceptors.request.use(authInterceptor);

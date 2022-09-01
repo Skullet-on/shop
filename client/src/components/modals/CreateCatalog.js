@@ -1,19 +1,24 @@
 import { observer } from "mobx-react-lite";
 import React, { useContext, useState } from "react";
-import { Button, Form, InputGroup, Modal } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
 import { Context } from "../..";
 import { createCatalog } from "../../http/productApi";
 
 const CreateCatalog = ({ show, onHide }) => {
-  const { productStore, toastStore } = useContext(Context);
+  const { toastStore, catalogStore } = useContext(Context);
 
   const [value, setValue] = useState("");
-  const [properties, setProperties] = useState([]);
 
   const addCatalog = () => {
-    createCatalog({ name: value, properties }).then((data) => {
-      setValue("");
-      onHide();
+    createCatalog({ name: value }).then((data) => {
+      if (data.errors) {
+        catalogStore.setErrors(data.errors);
+        console.log(catalogStore.errors.name.message);
+      } else {
+        console.log("data", data);
+        setValue("");
+        onHide();
+      }
     });
 
     toastStore.setMessage(`Каталог ${value} успешно создан`);
@@ -21,12 +26,10 @@ const CreateCatalog = ({ show, onHide }) => {
     toastStore.setShow(true);
   };
 
-  const handleCheckProperty = (property) => {
-    if (properties.includes(property.id)) {
-      console.log(property.id);
-      setProperties(properties.filter((id) => id !== property.id));
-    } else {
-      setProperties([...properties, property.id]);
+  const handleChange = (value) => {
+    setValue(value);
+    if (Object.keys(catalogStore.errors).length) {
+      catalogStore.setErrors({});
     }
   };
 
@@ -41,27 +44,15 @@ const CreateCatalog = ({ show, onHide }) => {
         <Form>
           <Form.Control
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => handleChange(e.target.value)}
+            isInvalid={Object.keys(catalogStore.errors).length}
             placeholder="Введите название каталога"
           />
+          <Form.Control.Feedback type={"invalid"}>
+            {Object.keys(catalogStore.errors).length &&
+              catalogStore.errors.name.message}
+          </Form.Control.Feedback>
         </Form>
-        <div className="mt-3">
-          {productStore.properties.map((property) => (
-            <InputGroup key={property.id}>
-              <InputGroup.Checkbox
-                checked={properties.includes(property.id)}
-                onChange={() => handleCheckProperty(property)}
-                aria-label="Checkbox for following text input"
-              />
-              <Form.Control
-                style={{ cursor: "pointer" }}
-                value={property.name}
-                readOnly
-                onClick={() => handleCheckProperty(property)}
-              />
-            </InputGroup>
-          ))}
-        </div>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="outline-success" onClick={addCatalog}>

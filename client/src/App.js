@@ -7,10 +7,16 @@ import NavBar from "./components/NavBar";
 import { Spinner } from "react-bootstrap";
 import TopBar from "./components/TopBar";
 import { fetchBrands, fetchCatalogs, fetchProperties } from "./http/productApi";
-import { LS_BASKET, LS_TOKEN } from "./Constants";
+import { LS_BASKET, LS_TOKEN } from "./utils/constants";
 
 const App = () => {
-  const { productStore, userStore, basketStore } = useContext(Context);
+  const {
+    brandStore,
+    catalogStore,
+    propertiesStore,
+    userStore,
+    basketStore,
+  } = useContext(Context);
 
   useEffect(() => {
     if (localStorage.getItem(LS_TOKEN)) {
@@ -23,12 +29,12 @@ const App = () => {
     }
 
     fetchCatalogs().then((data) => {
-      productStore.setCatalogs(data);
-      productStore.setSelectedCatalog(data[0]);
+      catalogStore.setCatalogs(data);
+      catalogStore.setSelectedCatalog(data[0]);
     });
-    fetchBrands().then((data) => productStore.setBrands(data));
+    fetchBrands().then((data) => brandStore.setBrands(data));
     fetchProperties().then((data) => {
-      productStore.setProperties(data);
+      propertiesStore.setProperties(data);
     });
   }, []);
 

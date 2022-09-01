@@ -123,7 +123,19 @@ export const fetchOneProduct = async (id) => {
 };
 
 export const createProperty = async (property) => {
-  const { data } = await $host.post("/api/property", property);
+  const { data } = await $authHost.post("/api/property", property);
+
+  return data;
+};
+
+export const editProperty = async (id, properties) => {
+  const { data } = await $authHost.patch("/api/property/" + id, properties);
+
+  return data;
+};
+
+export const removeProperty = async (id) => {
+  const { data } = await $authHost.delete("/api/property/" + id);
 
   return data;
 };

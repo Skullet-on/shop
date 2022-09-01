@@ -10,7 +10,7 @@ import {
 import { Context } from "../../index";
 
 const CreateProduct = observer(({ show, onHide }) => {
-  const { productStore, toastStore } = useContext(Context);
+  const { productStore, brandStore, toastStore } = useContext(Context);
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [file, setFile] = useState(null);
@@ -18,7 +18,7 @@ const CreateProduct = observer(({ show, onHide }) => {
 
   useEffect(() => {
     fetchTypes().then((data) => productStore.setTypes(data));
-    fetchBrands().then((data) => productStore.setBrands(data));
+    fetchBrands().then((data) => brandStore.setBrands(data));
     fetchProducts().then((data) => productStore.setProducts(data.rows));
   }, []);
 
@@ -44,7 +44,7 @@ const CreateProduct = observer(({ show, onHide }) => {
     formData.append("price", `${price}`);
     formData.append("img", file);
     formData.append("typeId", productStore.selectedType.id);
-    formData.append("brandId", productStore.selectedBrand.id);
+    formData.append("brandId", brandStore.selectedBrand.id);
     formData.append("info", JSON.stringify(info));
     createProduct(formData).then((data) => onHide());
 
@@ -79,13 +79,13 @@ const CreateProduct = observer(({ show, onHide }) => {
           </Dropdown>
           <Dropdown className="mt-2 mb-2">
             <Dropdown.Toggle>
-              {productStore.selectedBrand.name || "Выберите бренд"}
+              {brandStore.selectedBrand.name || "Выберите бренд"}
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              {productStore.brands.map((brand) => (
+              {brandStore.brands.map((brand) => (
                 <Dropdown.Item
                   key={brand.id}
-                  onClick={() => productStore.setSelectedBrand(brand)}
+                  onClick={() => brandStore.setSelectedBrand(brand)}
                 >
                   {brand.name}
                 </Dropdown.Item>

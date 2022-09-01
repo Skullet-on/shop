@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
-import { LS_TOKEN } from "../Constants";
 import { login, registration, logout, check } from "../http/userApi";
+import { LS_TOKEN } from "../utils/constants";
 
 export default class UserStore {
   constructor() {

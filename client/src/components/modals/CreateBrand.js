@@ -1,15 +1,31 @@
-import React, { useState } from "react";
+import { observer } from "mobx-react-lite";
+import React, { useContext, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
+import { Context } from "../..";
 import { createBrand } from "../../http/productApi";
 
 const CreateBrand = ({ show, onHide }) => {
+  const { brandStore } = useContext(Context);
   const [value, setValue] = useState("");
 
   const addBrand = () => {
     createBrand({ name: value }).then((data) => {
-      setValue("");
-      onHide();
+      if (data.errors) {
+        brandStore.setErrors(data.errors);
+        console.log(brandStore.errors.name.message);
+      } else {
+        console.log("data", data);
+        setValue("");
+        onHide();
+      }
     });
+  };
+
+  const handleChange = (value) => {
+    setValue(value);
+    if (Object.keys(brandStore.errors).length) {
+      brandStore.setErrors({});
+    }
   };
 
   return (
@@ -23,9 +39,14 @@ const CreateBrand = ({ show, onHide }) => {
         <Form>
           <Form.Control
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => handleChange(e.target.value)}
+            isInvalid={Object.keys(brandStore.errors).length}
             placeholder="Введите название бренда"
           />
+          <Form.Control.Feedback type={"invalid"}>
+            {Object.keys(brandStore.errors).length &&
+              brandStore.errors.name.message}
+          </Form.Control.Feedback>
         </Form>
       </Modal.Body>
       <Modal.Footer>
@@ -40,4 +61,4 @@ const CreateBrand = ({ show, onHide }) => {
   );
 };
 
-export default CreateBrand;
+export default observer(CreateBrand);

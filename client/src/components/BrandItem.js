@@ -1,27 +1,46 @@
-import React, { useEffect, useState } from "react";
+import { observer } from "mobx-react-lite";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Form, InputGroup } from "react-bootstrap";
+import { Context } from "..";
+import { editBrand, fetchBrands } from "../http/productApi";
 
-const BrandItem = ({ brand, editBrand, removeBrand }) => {
+const BrandItem = ({ brand, removeBrand }) => {
+  const { brandStore } = useContext(Context);
   const [edit, setEdit] = useState(false);
   const [brandName, setBrandName] = useState("");
 
   useEffect(() => {
-    setBrandName(brand.name);
+    setBrandName(brand.label);
   }, []);
 
   const handleEdit = (brandId, edit) => {
     if (edit) {
-      editBrand(brandId, brandName);
+      editBrand(brandId, brandName).then((data) => {
+        if (data.errors) {
+          brandStore.setBrandErrors(brandId, data.errors);
+        } else {
+          fetchBrands().then((data) => {
+            brandStore.setBrands(data);
+          });
+          setEdit(!edit);
+        }
+      });
+    } else {
+      setEdit(!edit);
     }
+  };
 
-    setEdit(!edit);
+  const handleChangeBrand = (value, brandId) => {
+    setBrandName(value);
+    brandStore.setBrandErrors(brandId, undefined);
   };
 
   return (
     <InputGroup>
       <Form.Control
         value={brandName}
-        onChange={(e) => setBrandName(e.target.value)}
+        isInvalid={brand.errors}
+        onChange={(e) => handleChangeBrand(e.target.value, brand.id)}
         disabled={!edit}
       />
       <Button
@@ -33,8 +52,11 @@ const BrandItem = ({ brand, editBrand, removeBrand }) => {
       <Button variant="outline-danger" onClick={() => removeBrand(brand.id)}>
         Удалить
       </Button>
+      <Form.Control.Feedback type={"invalid"}>
+        {brand.errors && brand.errors.name.message}
+      </Form.Control.Feedback>
     </InputGroup>
   );
 };
 
-export default BrandItem;
+export default observer(BrandItem);

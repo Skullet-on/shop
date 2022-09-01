@@ -5,7 +5,7 @@ import { Context } from "../..";
 import { addCatalogProperty } from "../../http/productApi";
 
 const AddProperty = ({ show, onHide, catalogId }) => {
-  const { productStore, toastStore } = useContext(Context);
+  const { toastStore, propertiesStore } = useContext(Context);
   const [value, setValue] = useState({});
 
   const handleAddProperty = () => {
@@ -30,7 +30,7 @@ const AddProperty = ({ show, onHide, catalogId }) => {
         <Dropdown>
           <Dropdown.Toggle>{value.name || "Выберите свойство"}</Dropdown.Toggle>
           <Dropdown.Menu>
-            {productStore.properties.map((property) => (
+            {propertiesStore.properties.map((property) => (
               <Dropdown.Item
                 key={property.id}
                 onClick={() => setValue(property)}

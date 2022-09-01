@@ -15,15 +15,17 @@ import { fetchCatalogs } from "../http/productApi";
 import NavBasket from "./NavBasket";
 
 const NavBar = observer(() => {
-  const { userStore, productStore, toastStore } = useContext(Context);
+  const { userStore, productStore, catalogStore, toastStore } = useContext(
+    Context
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchCatalogs().then((data) => productStore.setCatalogs(data));
+    fetchCatalogs().then((data) => catalogStore.setCatalogs(data));
   }, []);
 
   const handleClickCatalog = (catalog) => {
-    productStore.setSelectedCatalog(catalog);
+    catalogStore.setSelectedCatalog(catalog);
 
     navigate(SHOP_ROUTE);
   };
@@ -49,7 +51,7 @@ const NavBar = observer(() => {
     >
       <Container>
         <NavDropdown id="nav-dropdown-category" title="Каталог">
-          {productStore.catalogs.map((catalog) => (
+          {catalogStore.catalogs.map((catalog) => (
             <NavDropdown.Item
               key={catalog.id}
               onClick={() => handleClickCatalog(catalog)}

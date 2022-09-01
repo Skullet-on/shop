@@ -5,18 +5,18 @@ import { Context } from "..";
 import { fetchCatalogProperties } from "../http/productApi";
 
 const FilterBar = () => {
-  const { productStore, filterStore } = useContext(Context);
+  const { brandStore, catalogStore, filterStore } = useContext(Context);
   const [properties, setProperties] = useState([]);
 
   useEffect(() => {
     filterStore.setBrands([]);
 
-    if (productStore.selectedCatalog.id) {
-      fetchCatalogProperties(productStore.selectedCatalog.id).then((data) => {
+    if (catalogStore.selectedCatalog.id) {
+      fetchCatalogProperties(catalogStore.selectedCatalog.id).then((data) => {
         setProperties(data);
       });
     }
-  }, [productStore.selectedCatalog]);
+  }, [catalogStore.selectedCatalog]);
 
   const handleCheck = (brand) => {
     if (filterStore.brands.includes(brand)) {
@@ -32,7 +32,7 @@ const FilterBar = () => {
         <Accordion.Header>Бренд</Accordion.Header>
         <Accordion.Body className="p-0">
           <ul className="list-group list-group-flush">
-            {productStore.brands.map((brand) => (
+            {brandStore.brands.map((brand) => (
               <li
                 key={brand.id}
                 className="list-group-item"
@@ -58,7 +58,7 @@ const FilterBar = () => {
             <ul className="list-group list-group-flush">
               {properties.map((property) => (
                 <li
-                  key={property.property.id}
+                  key={property.property && property.property.id}
                   className="list-group-item"
                   style={{ cursor: "pointer" }}
                   onClick={() => console.log()}
