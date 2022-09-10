@@ -30,9 +30,7 @@ const CreateProperty = ({ show, onHide }) => {
     }).then((data) => {
       if (data.errors) {
         propertiesStore.setErrors(data.errors);
-        console.log(propertiesStore.errors.name.message);
       } else {
-        console.log("data", data);
         setValue("");
         setCurrency("");
         onHide();

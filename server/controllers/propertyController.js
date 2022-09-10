@@ -77,9 +77,6 @@ class PropertyController {
 
       return res.json(property);
     } catch (error) {
-      console.log("====================================");
-      console.log(error);
-      console.log("====================================");
       if (error.name === "SequelizeUniqueConstraintError") {
         return next(
           ApiError.badRequest(400, "Ошибка при валидации", {

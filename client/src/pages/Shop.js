@@ -7,16 +7,12 @@ import FilterBar from "../components/FilterBar";
 import { fetchCatalogs, fetchBrands, fetchProducts } from "../http/productApi";
 import Pages from "../components/Pages";
 import ToastMessage from "../components/ToastMessage";
-import OneClickBuy from "../components/modals/OneClickBuy";
+import { ucFirst } from "../helpers";
 
 const Shop = observer(() => {
-  const {
-    productStore,
-    brandStore,
-    catalogStore,
-    filterStore,
-    modalStore,
-  } = useContext(Context);
+  const { productStore, brandStore, catalogStore, filterStore } = useContext(
+    Context
+  );
   useEffect(() => {
     fetchCatalogs().then((data) => {
       catalogStore.setCatalogs(data);
@@ -85,16 +81,16 @@ const Shop = observer(() => {
           </Row>
         </Col>
         <Col md={9}>
-          <h1>{catalogStore.selectedCatalog.name || "Каталог"}</h1>
+          <h1>
+            {(catalogStore.selectedCatalog.name &&
+              ucFirst(catalogStore.selectedCatalog.name)) ||
+              "Каталог"}
+          </h1>
           <ProductList />
           <Pages />
         </Col>
       </Row>
       <ToastMessage />
-      <OneClickBuy
-        show={modalStore.oneClickBuyModal.show}
-        onHide={() => modalStore.oneClickBuyModal.setShow(false)}
-      />
     </Container>
   );
 });

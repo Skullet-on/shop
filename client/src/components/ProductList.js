@@ -4,8 +4,8 @@ import { Row } from "react-bootstrap";
 import { Context } from "../index";
 import ProductItem from "./ProductItem";
 
-const ProductList = observer(() => {
-  const { productStore } = useContext(Context);
+const ProductList = () => {
+  const { productStore, brandStore } = useContext(Context);
 
   return (
     <Row className="d-flex me-2">
@@ -13,11 +13,11 @@ const ProductList = observer(() => {
         <ProductItem
           key={prod.id}
           product={prod}
-          brand={productStore.getBrand(prod.brandId).name}
+          brand={brandStore.getBrand(prod.brandId).name}
         />
       ))}
     </Row>
   );
-});
+};
 
-export default ProductList;
+export default observer(ProductList);

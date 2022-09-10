@@ -28,11 +28,11 @@ class ProductController {
       if (req.files) {
         const { img } = req.files;
         fileName = uuid.v4() + ".jpg";
-        img.mv(path.resolve(__dirname, "..", "static", fileName));
+        img.mv(path.resolve(__dirname, "..", "static/images", fileName));
       }
-      console.log(info);
+
       const product = await Product.create({
-        name: name.toLowerCase(),
+        name,
         price,
         oldPrice,
         img: fileName,
@@ -86,7 +86,7 @@ class ProductController {
 
         product = await Product.update(
           {
-            name: name.toLowerCase(),
+            name,
             price,
             brandId,
             catalogId,
@@ -201,18 +201,26 @@ class ProductController {
     return res.json(products);
   }
 
-  async getOne(req, res) {
-    const { id } = req.params;
-    const product = await Product.findOne({
-      where: { id },
-      include: [
-        { model: ProductProperties, as: "info" },
-        { model: ProductColors, as: "color" },
-      ],
-      order: [["color", "id"]],
-    });
+  async getOne(req, res, next) {
+    try {
+      const { id } = req.params;
+      const product = await Product.findOne({
+        where: { id },
+        include: [
+          { model: ProductProperties, as: "info" },
+          { model: ProductColors, as: "color" },
+        ],
+        order: [["color", "id"]],
+      });
 
-    return res.json(product);
+      if (!product) {
+        return res.status(404).send("Not found");
+      }
+
+      return res.json(product);
+    } catch (error) {
+      next(ApiError.badRequest(error.message));
+    }
   }
 }
 

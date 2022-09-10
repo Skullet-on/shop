@@ -1,16 +1,17 @@
 import React, { useContext, useEffect } from "react";
 import { Context } from "..";
-import { Navbar, Container, NavDropdown, Form } from "react-bootstrap";
+import { Navbar, Container, NavDropdown, Form, Nav } from "react-bootstrap";
 import {
   ADMIN_ROUTE,
   LOGIN_ROUTE,
+  PAID_AND_DELIVERY,
   REGISTRATION_ROUTE,
   SHOP_ROUTE,
 } from "../utils/constants";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
 import { Person } from "react-bootstrap-icons";
-import { debounce } from "../helpers";
+import { debounce, ucFirst } from "../helpers";
 import { fetchCatalogs } from "../http/productApi";
 import NavBasket from "./NavBasket";
 
@@ -42,6 +43,11 @@ const NavBar = observer(() => {
     toastStore.setShow(true);
   };
 
+  const handleClickPaid = (e) => {
+    e.preventDefault();
+    navigate(PAID_AND_DELIVERY);
+  };
+
   return (
     <Navbar
       className="d-flex justify-content-between"
@@ -56,10 +62,13 @@ const NavBar = observer(() => {
               key={catalog.id}
               onClick={() => handleClickCatalog(catalog)}
             >
-              {catalog.name}
+              {ucFirst(catalog.name)}
             </NavDropdown.Item>
           ))}
         </NavDropdown>
+        <Nav.Link href={PAID_AND_DELIVERY} onClick={(e) => handleClickPaid(e)}>
+          Доставка и оплата
+        </Nav.Link>
         <Form className="d-flex" style={{ width: "100%" }}>
           <Form.Control
             type="search"

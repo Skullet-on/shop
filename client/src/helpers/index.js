@@ -19,3 +19,7 @@ export const debounce = (func, wait = 300, immediate) => {
     if (callNow) func.apply(context, args);
   };
 };
+
+export const ucFirst = (str) => {
+  return str[0].toUpperCase() + str.slice(1);
+};

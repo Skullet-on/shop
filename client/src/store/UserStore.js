@@ -80,7 +80,7 @@ export default class UserStore {
       this.setUser({});
       this.setErrors({});
     } catch (e) {
-      console.log(e.response.data.message);
+      console.log(e);
     }
   }
 
@@ -94,7 +94,7 @@ export default class UserStore {
       this.setIsAuth(true);
       this.setUser(response.data.user);
     } catch (e) {
-      console.log(e.response.data.message);
+      console.log(e);
     } finally {
       this.setIsLoading(false);
     }

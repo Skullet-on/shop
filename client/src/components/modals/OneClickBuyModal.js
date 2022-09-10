@@ -11,7 +11,6 @@ const OneClickBuy = ({ show, onHide }) => {
   const [phone, setPhone] = useState("");
 
   const sendOrder = () => {
-    console.log(modalStore.oneClickBuyModal.product);
     modalStore.oneClickBuyModal.setProduct(null);
     setEmail("");
     setName("");

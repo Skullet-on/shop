@@ -3,12 +3,12 @@ import React, { useContext, useEffect, useState } from "react";
 import { Button, ButtonGroup, Card, Col, Form, Image } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Context } from "..";
-import { PRODUCT_ROUTE } from "../utils/constants";
+import { LS_BASKET, PRODUCT_ROUTE } from "../utils/constants";
 import Badge from "./basic/Badge";
 import ColorList from "./ColorList";
 
 const ProductItem = ({ product }) => {
-  const { basketStore, productStore } = useContext(Context);
+  const { basketStore, propertiesStore } = useContext(Context);
   const [count, setCount] = useState(1);
   const [selectedColor, setSelectedColor] = useState(null);
 
@@ -17,6 +17,8 @@ const ProductItem = ({ product }) => {
   useEffect(() => {
     setSelectedColor(product.color[0]);
   }, []);
+
+  console.log(product);
 
   const handleSetCount = (e) => {
     e.stopPropagation();
@@ -34,22 +36,22 @@ const ProductItem = ({ product }) => {
     const identificator = product.id + selectedColor.name;
 
     if (basketStore.items.some((item) => item.id === identificator)) {
-      const items = JSON.parse(localStorage.getItem("basket"));
+      const items = JSON.parse(localStorage.getItem(LS_BASKET));
 
       const newItems = items.reduce((acc, curr) => {
         return curr.id === identificator
           ? [...acc, { ...curr, count: +curr.count + +count }]
           : [...acc, { ...curr }];
       }, []);
-      localStorage.setItem("basket", JSON.stringify(newItems));
+      localStorage.setItem(LS_BASKET, JSON.stringify(newItems));
 
       basketStore.setItems(newItems);
     } else {
-      const items = localStorage.getItem("basket");
+      const items = localStorage.getItem(LS_BASKET);
 
       items
         ? localStorage.setItem(
-            "basket",
+            LS_BASKET,
             JSON.stringify([
               ...JSON.parse(items),
               {
@@ -61,7 +63,7 @@ const ProductItem = ({ product }) => {
             ])
           )
         : localStorage.setItem(
-            "basket",
+            LS_BASKET,
             JSON.stringify([
               {
                 id: identificator,
@@ -130,12 +132,20 @@ const ProductItem = ({ product }) => {
             )}
           </Card.Text>
           {product.info.length
-            ? product.info.map((property) => (
-                <Card.Text key={property.id} className="d-flex mb-1">
-                  {productStore.getPropertyName(property.id) || ""}:
-                  <div>{property.description}</div>
-                </Card.Text>
-              ))
+            ? product.info.map((property) => {
+                const prop = propertiesStore.getProperty(property.propertyId);
+
+                return (
+                  <Card.Text key={property.id} className="d-flex mb-1">
+                    {prop.name || ""}:
+                    <div className="ms-2">
+                      {prop.type === "string"
+                        ? `${property.description} ${prop.currency}`
+                        : `${property.value} ${prop.currency}`}
+                    </div>
+                  </Card.Text>
+                );
+              })
             : ""}
           <ColorList product={product} changeColor={handleChangeColor} />
         </Card.Body>

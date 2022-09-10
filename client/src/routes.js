@@ -3,6 +3,7 @@ import Auth from "./pages/Auth";
 import Basket from "./pages/Basket";
 import NewAdminPage from "./pages/NewAdminPage";
 import PageNotFound from "./pages/PageNotFound";
+import PaidAndDelivery from "./pages/PaidAndDelivery";
 import ProductPage from "./pages/ProductPage";
 import Registration from "./pages/Registration";
 import Shop from "./pages/Shop";
@@ -11,6 +12,7 @@ import {
   BASKET_ROUTE,
   LOGIN_ROUTE,
   NOT_FOUND_ROUTE,
+  PAID_AND_DELIVERY,
   PRODUCT_ROUTE,
   REGISTRATION_ROUTE,
   SHOP_ROUTE,
@@ -58,5 +60,9 @@ export const publicRoutes = [
   {
     path: NOT_FOUND_ROUTE,
     element: <PageNotFound />,
+  },
+  {
+    path: PAID_AND_DELIVERY,
+    element: <PaidAndDelivery />,
   },
 ];

@@ -28,7 +28,6 @@ const Product = sequelize.define("product", {
   oldPrice: { type: DataTypes.INTEGER, defaultValue: 0 },
   rating: { type: DataTypes.INTEGER, defaultValue: 0 },
   img: { type: DataTypes.STRING, allowNull: false },
-  additionalImg: { type: DataTypes.STRING },
 });
 
 const Property = sequelize.define("property", {
@@ -71,6 +70,7 @@ const ProductColors = sequelize.define("product_colors", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING, allowNull: false },
   img: { type: DataTypes.STRING, allowNull: false },
+  additionalImg: { type: DataTypes.STRING },
   count: { type: DataTypes.INTEGER, defaultValue: 0 },
 });
 
@@ -102,7 +102,7 @@ Rating.belongsTo(Product);
 Product.hasMany(BasketProduct);
 BasketProduct.belongsTo(Product);
 
-Property.hasMany(ProductProperties);
+Property.hasMany(ProductProperties, { as: "prop" });
 ProductProperties.belongsTo(Property);
 
 Product.hasMany(ProductProperties, { as: "info" });

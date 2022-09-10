@@ -12,9 +12,7 @@ const CreateBrand = ({ show, onHide }) => {
     createBrand({ name: value }).then((data) => {
       if (data.errors) {
         brandStore.setErrors(data.errors);
-        console.log(brandStore.errors.name.message);
       } else {
-        console.log("data", data);
         setValue("");
         onHide();
       }

@@ -13,9 +13,7 @@ const CreateCatalog = ({ show, onHide }) => {
     createCatalog({ name: value }).then((data) => {
       if (data.errors) {
         catalogStore.setErrors(data.errors);
-        console.log(catalogStore.errors.name.message);
       } else {
-        console.log("data", data);
         setValue("");
         onHide();
       }

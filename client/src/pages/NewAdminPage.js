@@ -3,9 +3,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { Button, Container, Tab, Tabs } from "react-bootstrap";
 import CreateProductForm from "../components/CreateProductForm";
 import EditProductForm from "../components/EditProductForm";
-import CreateBrand from "../components/modals/CreateBrand";
-import CreateProperty from "../components/modals/CreateProperty";
-import CreateCatalog from "../components/modals/CreateCatalog";
+import CreateBrand from "../components/modals/CreateBrandModal";
+import CreateProperty from "../components/modals/CreatePropertyModal";
+import CreateCatalog from "../components/modals/CreateCatalogModal";
 import {
   fetchBrands,
   fetchProducts,
@@ -14,7 +14,7 @@ import {
 } from "../http/productApi";
 import { Context } from "../index";
 import CatalogList from "../components/CatalogList";
-import AddProperty from "../components/modals/AddProperty";
+import AddProperty from "../components/modals/AddPropertyModal";
 import BrandList from "../components/BrandList";
 import PropertyList from "../components/PropertyList";
 

@@ -18,15 +18,21 @@ const TopBar = () => {
         <Col>
           <div>
             <Phone />
-            <b> +375 (xx) xxx-xx-xx</b>
+            <a className="ms-2" href="tel:+375293407694">
+              +375 (29) 340-76-94
+            </a>
           </div>
           <div>
             <Instagram />
-            <b> milaya-alpaca</b>
+            <a className="ms-2" href="https://deeplink.hoverlanding.com/lhhfjt">
+              pryazhamilalpaka
+            </a>
           </div>
           <div>
             <Envelope />
-            <b> milaya-alpaca@gmail.com</b>
+            <a className="ms-2" href="mailto:skullet-on@mail.ru">
+              skullet-on@mail.ru
+            </a>
           </div>
         </Col>
       </Row>

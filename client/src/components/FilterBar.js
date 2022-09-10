@@ -1,21 +1,13 @@
 import { observer } from "mobx-react-lite";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { Accordion } from "react-bootstrap";
 import { Context } from "..";
-import { fetchCatalogProperties } from "../http/productApi";
 
 const FilterBar = () => {
   const { brandStore, catalogStore, filterStore } = useContext(Context);
-  const [properties, setProperties] = useState([]);
 
   useEffect(() => {
     filterStore.setBrands([]);
-
-    if (catalogStore.selectedCatalog.id) {
-      fetchCatalogProperties(catalogStore.selectedCatalog.id).then((data) => {
-        setProperties(data);
-      });
-    }
   }, [catalogStore.selectedCatalog]);
 
   const handleCheck = (brand) => {
@@ -51,27 +43,6 @@ const FilterBar = () => {
           </ul>
         </Accordion.Body>
       </Accordion.Item>
-      {properties.length ? (
-        <Accordion.Item eventKey="1">
-          <Accordion.Header>Properties</Accordion.Header>
-          <Accordion.Body className="p-0">
-            <ul className="list-group list-group-flush">
-              {properties.map((property) => (
-                <li
-                  key={property.property && property.property.id}
-                  className="list-group-item"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => console.log()}
-                >
-                  {property.property.name}
-                </li>
-              ))}
-            </ul>
-          </Accordion.Body>
-        </Accordion.Item>
-      ) : (
-        ""
-      )}
     </Accordion>
   );
 };
