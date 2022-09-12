@@ -8,6 +8,7 @@ export default class ProductStore {
     this._totalCount = 0;
     this._limit = 10;
     this._search = "";
+    this._errors = {};
 
     makeAutoObservable(this);
   }
@@ -30,6 +31,19 @@ export default class ProductStore {
   setSearch(search) {
     this._search = search;
   }
+  setErrors(errors) {
+    this._errors = errors;
+  }
+  removeFieldErrors(field) {
+    delete this._errors[field];
+  }
+  removePropertyErrors(field) {
+    delete this._errors.properties[field];
+  }
+
+  getProduct(id) {
+    return this._products.filter((product) => product.id === id)[0];
+  }
 
   get products() {
     return this._products;
@@ -48,5 +62,8 @@ export default class ProductStore {
   }
   get search() {
     return this._search;
+  }
+  get errors() {
+    return this._errors;
   }
 }

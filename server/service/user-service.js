@@ -1,6 +1,6 @@
 const ApiError = require("../error/ApiError");
 const bcrypt = require("bcrypt");
-const { User, Basket } = require("../models/models");
+const { User } = require("../models");
 const tokenService = require("../service/token-service");
 const UserDto = require("../dtos/user-dto");
 
@@ -14,7 +14,6 @@ class UserService {
 
     const hashPassword = await bcrypt.hash(password, 5);
     const user = await User.create({ email, role, password: hashPassword });
-    const basket = await Basket.create({ userId: user.id });
     const userDto = new UserDto(user);
     const tokens = tokenService.generateTokens({ ...userDto });
 
@@ -33,7 +32,7 @@ class UserService {
     }
 
     let comparePassword = bcrypt.compareSync(password, user.password);
-    console.log("comparePassword", password, user.password);
+
     if (!comparePassword) {
       throw ApiError.internal("Неверный логин, или пароль");
     }

@@ -88,13 +88,15 @@ export default class UserStore {
     this.setIsLoading(true);
     try {
       const response = await check();
-
+      if (response.status === 500) {
+        return;
+      }
       localStorage.setItem(LS_TOKEN, response.data.accessToken);
 
       this.setIsAuth(true);
       this.setUser(response.data.user);
     } catch (e) {
-      console.log(e);
+      console.log("e", e);
     } finally {
       this.setIsLoading(false);
     }

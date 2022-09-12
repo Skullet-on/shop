@@ -3,26 +3,22 @@ import React, { useContext, useEffect, useState } from "react";
 import { Button, ButtonGroup, Card, Col, Form, Image } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Context } from "..";
-import { LS_BASKET, PRODUCT_ROUTE } from "../utils/constants";
+import { imagesUrl, LS_BASKET, PRODUCT_ROUTE } from "../utils/constants";
 import Badge from "./basic/Badge";
 import ColorList from "./ColorList";
 
 const ProductItem = ({ product }) => {
-  const { basketStore, propertiesStore } = useContext(Context);
+  const { basketStore } = useContext(Context);
   const [count, setCount] = useState(1);
   const [selectedColor, setSelectedColor] = useState(null);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    setSelectedColor(product.color[0]);
+    setSelectedColor(product.colors[0]);
   }, []);
 
-  console.log(product);
-
   const handleSetCount = (e) => {
-    e.stopPropagation();
-
     if (e.target.value < 1) {
       setCount(1);
     } else {
@@ -31,8 +27,6 @@ const ProductItem = ({ product }) => {
   };
 
   const handleAddToCart = (e) => {
-    e.stopPropagation();
-
     const identificator = product.id + selectedColor.name;
 
     if (basketStore.items.some((item) => item.id === identificator)) {
@@ -84,25 +78,24 @@ const ProductItem = ({ product }) => {
   };
 
   const handleChangeColor = (e, color) => {
-    e.stopPropagation();
-
     setSelectedColor(color);
   };
 
   return (
-    <Col
-      md={3}
-      className="mt-3 p-1"
-      onClick={() => navigate(PRODUCT_ROUTE + "/" + product.id)}
-    >
-      <Card style={{ cursor: "pointer" }}>
+    <Col md={3} className="mt-3 p-1">
+      <Card>
         <Image
           src={
             selectedColor
-              ? process.env.REACT_APP_API_URL + "/" + selectedColor.img
-              : process.env.REACT_APP_API_URL + "/no-image.jpg"
+              ? imagesUrl + "/" + selectedColor.img
+              : imagesUrl + "/no-image.jpg"
           }
-          style={{ objectFit: "cover", aspectRatio: "16 / 9" }}
+          onClick={() => navigate(PRODUCT_ROUTE + "/" + product.id)}
+          style={{
+            objectFit: "cover",
+            aspectRatio: "16 / 9",
+            cursor: "pointer",
+          }}
         />
         <Card.Body>
           <Card.Title
@@ -117,6 +110,7 @@ const ProductItem = ({ product }) => {
           </Card.Title>
           <Card.Text className="mb-1">
             Цена:
+            {product.oldPrice ? <s> {product.oldPrice} руб.</s> : ""}
             <b> {product.price} руб. </b>
             {count > 1 && `(${product.price * count} руб)`}
           </Card.Text>
@@ -131,17 +125,15 @@ const ProductItem = ({ product }) => {
               </Badge>
             )}
           </Card.Text>
-          {product.info.length
-            ? product.info.map((property) => {
-                const prop = propertiesStore.getProperty(property.propertyId);
-
+          {product.properties.length
+            ? product.properties.map((property) => {
                 return (
                   <Card.Text key={property.id} className="d-flex mb-1">
-                    {prop.name || ""}:
+                    {property.name || ""}:
                     <div className="ms-2">
-                      {prop.type === "string"
-                        ? `${property.description} ${prop.currency}`
-                        : `${property.value} ${prop.currency}`}
+                      {property.ProductProperty.type === "string"
+                        ? `${property.ProductProperty.description} ${property.currency}`
+                        : `${property.ProductProperty.value} ${property.currency}`}
                     </div>
                   </Card.Text>
                 );

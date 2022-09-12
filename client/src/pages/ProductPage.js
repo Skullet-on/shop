@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { Context } from "..";
 import ColorList from "../components/ColorList";
 import { fetchOneProduct } from "../http/productApi";
-import { baseUrl, imagesUrl } from "../utils/constants";
+import { imagesUrl } from "../utils/constants";
 
 function ProductPage() {
   const { propertiesStore } = useContext(Context);
@@ -18,9 +18,7 @@ function ProductPage() {
       .then((data) => {
         setItem(data);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   }, []);
 
   return (

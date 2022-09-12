@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-const { CatalogProperty } = require("../models/models");
+const { CatalogProperty } = require("../models");
 
 class CatalogPropertyController {
   async create(req, res) {

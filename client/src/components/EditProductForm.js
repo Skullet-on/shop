@@ -12,6 +12,7 @@ import {
   removeProduct,
   editColor,
 } from "../http/productApi";
+import { imagesUrl } from "../utils/constants";
 import ChooseProduct from "./ChooseProduct";
 import ColorList from "./ColorList";
 import CreateColor from "./CreateColor";
@@ -135,7 +136,7 @@ const EditProductForm = () => {
               >
                 <Image
                   rounded
-                  src={`${process.env.REACT_APP_API_URL}/${
+                  src={`${imagesUrl}/${
                     selectedColor ? selectedColor.img : "no-image.jpg"
                   }`}
                   style={{

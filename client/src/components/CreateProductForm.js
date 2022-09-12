@@ -1,42 +1,32 @@
 import { observer } from "mobx-react-lite";
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Col, Dropdown, Form, Image, Row } from "react-bootstrap";
+import { Button, Col, Form, Image, Row } from "react-bootstrap";
 import { Context } from "..";
-import {
-  createProduct,
-  fetchBrands,
-  fetchProducts,
-  fetchCatalogs,
-  fetchProperties,
-  fetchCatalogProperties,
-} from "../http/productApi";
+import { createProduct, fetchProducts } from "../http/productApi";
+import { imagesUrl } from "../utils/constants";
 
 const CreateProductForm = () => {
-  const {
-    productStore,
-    brandStore,
-    catalogStore,
-    propertiesStore,
-  } = useContext(Context);
+  const { productStore, brandStore, catalogStore } = useContext(Context);
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
+  const [oldPrice, setOldPrice] = useState(0);
   const [color, setColor] = useState("");
   const [count, setCount] = useState(0);
   const [file, setFile] = useState({});
-  const [info, setInfo] = useState([]);
+  const [properties, setProperties] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState({});
   const [selectedCatalog, setSelectedCatalog] = useState({});
 
   useEffect(() => {
-    fetchCatalogs().then((data) => catalogStore.setCatalogs(data));
-    fetchBrands().then((data) => brandStore.setBrands(data));
-    fetchProducts().then((data) => productStore.setProducts(data.rows));
-    fetchProperties().then((data) => propertiesStore.setProperties(data));
     setSelectedBrand({});
     setSelectedCatalog({});
   }, []);
 
   const selectFile = (e) => {
+    if (productStore.errors.img) {
+      productStore.removeFieldErrors("img");
+    }
+
     let reader = new FileReader();
     let file = e.target.files[0];
 
@@ -51,32 +41,60 @@ const CreateProductForm = () => {
   };
 
   const changeInfo = (key, value, number) => {
-    setInfo(
-      info.map((i) => (i.number === number ? { ...i, [key]: value } : i))
+    if (
+      productStore.errors.properties &&
+      productStore.errors.properties[number]
+    ) {
+      productStore.removePropertyErrors(number);
+    }
+    setProperties(
+      properties.map((i) => (i.number === number ? { ...i, [key]: value } : i))
     );
   };
 
-  const handleChangeCatalog = async (catalog) => {
+  const handleChangeCatalog = (id) => {
+    if (productStore.errors.catalogId) {
+      productStore.removeFieldErrors("catalogId");
+    }
+
+    if (productStore.errors.properties) {
+      productStore.removeFieldErrors("properties");
+    }
+
+    if (id < 0) {
+      return setSelectedCatalog({});
+    }
+
+    const catalog = catalogStore.getCatalog(+id);
+
     setSelectedCatalog(catalog);
 
-    await fetchCatalogProperties(catalog.id).then((data) => {
-      if (data.length) {
-        const newData = data.reduce((result, current) => {
-          return [
-            ...result,
-            {
-              number: current.id,
-              description: "",
-              property: current.property,
-            },
-          ];
-        }, []);
+    const newData = catalog.properties.reduce((result, current) => {
+      return [
+        ...result,
+        {
+          number: current.id,
+          description: "",
+          property: current,
+        },
+      ];
+    }, []);
 
-        setInfo(newData);
-      } else {
-        setInfo([]);
-      }
-    });
+    setProperties(newData);
+  };
+
+  const handleChangeBrand = (id) => {
+    if (productStore.errors.brandId) {
+      productStore.removeFieldErrors("brandId");
+    }
+
+    if (id < 0) {
+      return setSelectedBrand({});
+    }
+
+    const brand = brandStore.getBrand(+id);
+
+    setSelectedBrand(brand);
   };
 
   const addProduct = async () => {
@@ -84,22 +102,82 @@ const CreateProductForm = () => {
 
     formData.append("name", name);
     formData.append("price", `${price}`);
+    formData.append("oldPrice", `${oldPrice}`);
     formData.append("color", color);
     formData.append("count", `${count}`);
     formData.append("img", file.file);
     formData.append("catalogId", selectedCatalog.id);
     formData.append("brandId", selectedBrand.id);
-    formData.append("info", JSON.stringify(info));
+    formData.append("properties", JSON.stringify(properties));
     await createProduct(formData).then((data) => {
-      setName("");
-      setPrice(0);
-      setColor("");
-      setCount(0);
-      setFile({});
-      setInfo([]);
+      if (data.errors) {
+        productStore.setErrors(data.errors);
+      } else {
+        setName("");
+        setPrice(0);
+        setOldPrice(0);
+        setColor("");
+        setCount(0);
+        setFile({});
+        setProperties([]);
+        setSelectedBrand({});
+        setSelectedCatalog({});
+        fetchProducts().then((data) => productStore.setProducts(data.rows));
+      }
     });
+  };
 
-    await fetchProducts().then((data) => productStore.setProducts(data.rows));
+  const handleChangeName = (value) => {
+    if (productStore.errors.name) {
+      productStore.removeFieldErrors("name");
+    }
+    setName(value);
+  };
+
+  const handleChangePrice = (value) => {
+    if (productStore.errors.price) {
+      productStore.removeFieldErrors("price");
+    }
+    if (value < 0 || !value) {
+      setPrice(0);
+    } else if (value > 1000) {
+      setPrice(1000);
+    } else {
+      setPrice(value);
+    }
+  };
+
+  const handleChangeOldPrice = (value) => {
+    if (productStore.errors.oldPrice) {
+      productStore.removeFieldErrors("oldPrice");
+    }
+    if (value < 0 || !value) {
+      setOldPrice(0);
+    } else if (value > 1000) {
+      setOldPrice(1000);
+    } else {
+      setOldPrice(value);
+    }
+  };
+
+  const handleChangeCount = (value) => {
+    if (productStore.errors.count) {
+      productStore.removeFieldErrors("count");
+    }
+    if (value < 0 || !value) {
+      setCount(0);
+    } else if (value > 1000) {
+      setCount(1000);
+    } else {
+      setCount(value);
+    }
+  };
+
+  const handleChangeColor = (value) => {
+    if (productStore.errors.color) {
+      productStore.removeFieldErrors("color");
+    }
+    setColor(value);
   };
 
   return (
@@ -108,9 +186,7 @@ const CreateProductForm = () => {
       <Row>
         <Col md={3} className="pt-2" style={{ position: "relative" }}>
           <Image
-            src={
-              file.preview || process.env.REACT_APP_API_URL + "/no-image.jpg"
-            }
+            src={file.preview || imagesUrl + "/no-image.jpg"}
             style={{ width: "100%" }}
           />
           <Form.Control
@@ -122,8 +198,12 @@ const CreateProductForm = () => {
               width: "100%",
               height: "100%",
             }}
+            isInvalid={productStore.errors.img && productStore.errors.img}
             onChange={selectFile}
           />
+          <Form.Control.Feedback type={"invalid"}>
+            {productStore.errors.img && productStore.errors.img.message}
+          </Form.Control.Feedback>
         </Col>
         <Col md={9}>
           <Form.Group as={Row} className="d-flex align-items-center">
@@ -134,9 +214,13 @@ const CreateProductForm = () => {
               <Form.Control
                 type="text"
                 value={name}
+                isInvalid={productStore.errors.name && productStore.errors.name}
                 placeholder="Введите название товара"
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => handleChangeName(e.target.value)}
               />
+              <Form.Control.Feedback type={"invalid"}>
+                {productStore.errors.name && productStore.errors.name.message}
+              </Form.Control.Feedback>
             </Col>
           </Form.Group>
           <Form.Group as={Row} className="d-flex align-items-center">
@@ -147,9 +231,34 @@ const CreateProductForm = () => {
               <Form.Control
                 type="number"
                 value={price}
+                isInvalid={
+                  productStore.errors.price && productStore.errors.price
+                }
                 placeholder="Введите цену товара"
-                onChange={(e) => setPrice(e.target.value)}
+                onChange={(e) => handleChangePrice(e.target.value)}
               />
+              <Form.Control.Feedback type={"invalid"}>
+                {productStore.errors.price && productStore.errors.price.message}
+              </Form.Control.Feedback>
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row} className="d-flex align-items-center">
+            <Form.Label column md={2}>
+              Старая цена:{" "}
+            </Form.Label>
+            <Col md={10} className="mt-2">
+              <Form.Control
+                type="number"
+                value={oldPrice}
+                isInvalid={
+                  productStore.errors.oldPrice && productStore.errors.oldPrice
+                }
+                placeholder="Введите старую цену товара"
+                onChange={(e) => handleChangeOldPrice(e.target.value)}
+              />
+              <Form.Control.Feedback type={"invalid"}>
+                {productStore.errors.price && productStore.errors.price.message}
+              </Form.Control.Feedback>
             </Col>
           </Form.Group>
           <Form.Group as={Row} className="d-flex align-items-center">
@@ -160,20 +269,32 @@ const CreateProductForm = () => {
               <Form.Control
                 type="string"
                 value={color}
+                isInvalid={
+                  productStore.errors.color && productStore.errors.color
+                }
                 placeholder="Введите код цвета"
-                onChange={(e) => setColor(e.target.value)}
+                onChange={(e) => handleChangeColor(e.target.value)}
               />
+              <Form.Control.Feedback type={"invalid"}>
+                {productStore.errors.color && productStore.errors.color.message}
+              </Form.Control.Feedback>
             </Col>
             <Form.Label className="mt-2" column md={2}>
               Количество:
             </Form.Label>
             <Col md={4} className="mt-2">
               <Form.Control
-                type="string"
+                type="number"
                 value={count}
+                isInvalid={
+                  productStore.errors.count && productStore.errors.count
+                }
                 placeholder="Введите количество товара данного цвета"
-                onChange={(e) => setCount(e.target.value)}
+                onChange={(e) => handleChangeCount(e.target.value)}
               />
+              <Form.Control.Feedback type={"invalid"}>
+                {productStore.errors.count && productStore.errors.count.message}
+              </Form.Control.Feedback>
             </Col>
           </Form.Group>
           <Form.Group as={Row} className="d-flex align-items-center">
@@ -181,21 +302,24 @@ const CreateProductForm = () => {
               Выберите каталог:{" "}
             </Form.Label>
             <Col md={4}>
-              <Dropdown className="mt-2 mb-2">
-                <Dropdown.Toggle>
-                  {selectedCatalog.name || "Выберите каталог"}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  {catalogStore.catalogs.map((catalog) => (
-                    <Dropdown.Item
-                      key={catalog.id}
-                      onClick={() => handleChangeCatalog(catalog)}
-                    >
+              <Form.Select
+                onChange={(e) => handleChangeCatalog(e.target.value)}
+                value={selectedCatalog.id || -1}
+                isInvalid={productStore.errors.catalogId}
+              >
+                <option value={-1}>Выберите каталог</option>
+                {catalogStore.catalogs.map((catalog) => {
+                  return (
+                    <option key={catalog.id} value={catalog.id}>
                       {catalog.name}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
+                    </option>
+                  );
+                })}
+              </Form.Select>
+              <Form.Control.Feedback type={"invalid"}>
+                {productStore.errors.catalogId &&
+                  productStore.errors.catalogId.message}
+              </Form.Control.Feedback>
             </Col>
           </Form.Group>
           <Form.Group as={Row} className="d-flex align-items-center">
@@ -203,21 +327,24 @@ const CreateProductForm = () => {
               Выберите бренд:{" "}
             </Form.Label>
             <Col md={4}>
-              <Dropdown className="mt-2 mb-2">
-                <Dropdown.Toggle>
-                  {selectedBrand.name || "Выберите бренд"}
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                  {Object.values(brandStore.brands).map((brand) => (
-                    <Dropdown.Item
-                      key={brand.id}
-                      onClick={() => setSelectedBrand(brand)}
-                    >
+              <Form.Select
+                onChange={(e) => handleChangeBrand(e.target.value)}
+                value={selectedBrand.id || -1}
+                isInvalid={productStore.errors.brandId}
+              >
+                <option value={-1}>Выберите бренд</option>
+                {brandStore.brands.map((brand) => {
+                  return (
+                    <option key={brand.id} value={brand.id}>
                       {brand.name}
-                    </Dropdown.Item>
-                  ))}
-                </Dropdown.Menu>
-              </Dropdown>
+                    </option>
+                  );
+                })}
+              </Form.Select>
+              <Form.Control.Feedback type={"invalid"}>
+                {productStore.errors.brandId &&
+                  productStore.errors.brandId.message}
+              </Form.Control.Feedback>
             </Col>
           </Form.Group>
         </Col>
@@ -225,7 +352,7 @@ const CreateProductForm = () => {
       <hr />
       <Row>
         <h2>Параметры</h2>
-        {info.map((i) => (
+        {properties.map((i) => (
           <Row key={i.number} className="mt-3">
             <Col md={3}>
               <Form.Label column md={3}>
@@ -236,11 +363,19 @@ const CreateProductForm = () => {
               <Form.Control
                 type={i.property.type}
                 value={i.description}
+                isInvalid={
+                  productStore.errors.properties &&
+                  productStore.errors.properties[i.number]
+                }
                 onChange={(e) =>
                   changeInfo("description", e.target.value, i.number)
                 }
                 placeholder="Введите значение"
               />
+              <Form.Control.Feedback type={"invalid"}>
+                {productStore.errors.properties &&
+                  productStore.errors.properties[i.number]}
+              </Form.Control.Feedback>
             </Col>
           </Row>
         ))}

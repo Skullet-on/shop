@@ -1,6 +1,6 @@
 const uuid = require("uuid");
 const path = require("path");
-const { ProductColors } = require("../models/models");
+const { Color } = require("../models");
 
 class ColorController {
   async create(req, res) {
@@ -9,7 +9,7 @@ class ColorController {
     let fileName = uuid.v4() + ".jpg";
     img.mv(path.resolve(__dirname, "..", "static", fileName));
 
-    const color = await ProductColors.create({
+    const color = await Color.create({
       name: name.toLowerCase(),
       img: fileName,
       productId,
@@ -20,7 +20,7 @@ class ColorController {
   }
 
   async getAll(req, res) {
-    const colors = await ProductColors.findAll();
+    const colors = await Color.findAll();
 
     return res.json(colors);
   }
@@ -31,7 +31,7 @@ class ColorController {
     let fileName = uuid.v4() + ".jpg";
     img.mv(path.resolve(__dirname, "..", "static", fileName));
 
-    const color = await ProductColors.update(
+    const color = await Color.update(
       {
         img: fileName,
       },

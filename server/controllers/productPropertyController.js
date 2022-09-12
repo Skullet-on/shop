@@ -1,10 +1,10 @@
-const { ProductProperties } = require("../models/models");
+const { ProductProperty } = require("../models/index.js");
 
 class ProductPropertyController {
   async getAll(req, res) {
     try {
       const { propertyId } = req.params;
-      const productProperty = await ProductProperties.findAll({
+      const productProperty = await ProductProperty.findAll({
         where: { propertyId: Number(propertyId) },
       });
 

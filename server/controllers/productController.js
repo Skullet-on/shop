@@ -1,11 +1,7 @@
 const uuid = require("uuid");
 const path = require("path");
-const {
-  Product,
-  ProductProperties,
-  ProductColors,
-  Brand,
-} = require("../models/models");
+const { Product, ProductProperty, Color } = require("../models");
+const { validationResult } = require("express-validator");
 const ApiError = require("../error/ApiError");
 const { Op } = require("sequelize");
 
@@ -17,11 +13,51 @@ class ProductController {
         price,
         brandId,
         catalogId,
-        info,
+        properties,
         color,
         count,
         oldPrice = 0,
       } = req.body;
+
+      const { errors } = validationResult(req);
+
+      if (!req.files) {
+        errors.push({
+          msg: "Фото не выбрано",
+          param: "img",
+        });
+      }
+
+      if (JSON.parse(properties).length) {
+        const propErrors = {};
+        JSON.parse(properties).map((property) => {
+          if (!property.description) {
+            propErrors[property.number] = "Поле не должно быть пустым";
+          } else if (
+            property.property.type === "number" &&
+            property.description < 0
+          ) {
+            propErrors[property.number] = "Число не должно быть отрицательным";
+          }
+        });
+        if (Object.keys(propErrors).length) {
+          errors.push({
+            msg: "Свойства не должны быть пустыми",
+            param: "properties",
+            data: propErrors,
+          });
+        }
+      }
+
+      const formatErrors = errors.reduce((acc, curr) => {
+        return { ...acc, [curr.param]: { message: curr.msg, ...curr.data } };
+      }, {});
+
+      if (errors.length) {
+        return next(
+          ApiError.badRequest(400, "Ошибка при валидации", formatErrors)
+        );
+      }
 
       let fileName = "no-image.jpg";
 
@@ -40,24 +76,24 @@ class ProductController {
         catalogId,
       });
 
-      await ProductColors.create({
+      await Color.create({
         name: color.toLowerCase(),
         img: fileName,
         count,
         productId: product.id,
       });
 
-      if (info) {
-        info = JSON.parse(info);
-        info.forEach((element) => {
+      if (properties.length) {
+        properties = JSON.parse(properties);
+        properties.forEach((element) => {
           if (element.property.type === "number") {
-            ProductProperties.create({
+            ProductProperty.create({
               productId: product.id,
               value: element.description,
               propertyId: element.property.id,
             });
           } else {
-            ProductProperties.create({
+            ProductProperty.create({
               productId: product.id,
               description: element.description.toLowerCase(),
               propertyId: element.property.id,
@@ -74,7 +110,7 @@ class ProductController {
 
   async edit(req, res, next) {
     try {
-      let { name, price, brandId, catalogId, info, color } = req.body;
+      let { name, price, brandId, catalogId, properties, color } = req.body;
       const { id } = req.params;
       let product;
 
@@ -101,16 +137,16 @@ class ProductController {
         );
       }
 
-      if (info) {
-        info = JSON.parse(info);
+      if (properties) {
+        properties = JSON.parse(properties);
 
-        info.forEach(async (element) => {
-          const property = await ProductProperties.findOne({
+        properties.forEach(async (element) => {
+          const property = await ProductProperty.findOne({
             where: { id: element.property.id },
           });
           if (property) {
             if (property.type === "number") {
-              ProductProperties.update(
+              ProductProperty.update(
                 {
                   value: element.description,
                   propertyId: element.property.id,
@@ -119,7 +155,7 @@ class ProductController {
                 { where: { id: property.dataValues.id } }
               );
             } else {
-              ProductProperties.update(
+              ProductProperty.update(
                 {
                   description: element.description.toLowerCase(),
                   propertyId: element.property.id,
@@ -129,7 +165,7 @@ class ProductController {
               );
             }
           } else {
-            ProductProperties.create({
+            ProductProperty.create({
               productId: product.id,
               description: element.description.toLowerCase(),
               propertyId: element.property.id,
@@ -147,7 +183,7 @@ class ProductController {
   async remove(req, res) {
     const { id } = req.params;
 
-    await ProductProperties.destroy({
+    await ProductProperty.destroy({
       where: { productId: id },
     });
 
@@ -171,7 +207,7 @@ class ProductController {
     limit = limit || 10;
     let offset = page * limit - limit;
     let products;
-    console.log(weight);
+
     products = await Product.findAndCountAll({
       where: {
         [Op.and]: [
@@ -186,15 +222,8 @@ class ProductController {
       },
       limit,
       offset,
-      include: [
-        { model: ProductProperties, as: "info" },
-        { model: ProductColors, as: "color" },
-        {
-          model: Brand,
-          as: "brand",
-        },
-      ],
-      order: [["color", "id"]],
+      include: ["properties", "brand", "catalog", "colors"],
+      order: [["colors", "id"]],
       distinct: true,
     });
 
@@ -206,10 +235,7 @@ class ProductController {
       const { id } = req.params;
       const product = await Product.findOne({
         where: { id },
-        include: [
-          { model: ProductProperties, as: "info" },
-          { model: ProductColors, as: "color" },
-        ],
+        include: ["properties", "colors"],
         order: [["color", "id"]],
       });
 

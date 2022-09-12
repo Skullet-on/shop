@@ -1,4 +1,4 @@
-const { Brand } = require("../models/models");
+const { Brand } = require("../models");
 const { validationResult } = require("express-validator");
 const ApiError = require("../error/ApiError");
 

@@ -1,6 +1,7 @@
 import React from "react";
 import { Col, Container, Image, Row } from "react-bootstrap";
 import { Phone, Instagram, Envelope } from "react-bootstrap-icons";
+import { imagesUrl } from "../utils/constants";
 
 const TopBar = () => {
   return (
@@ -8,7 +9,7 @@ const TopBar = () => {
       <Row style={{ height: 200 }} className="d-flex justify-content-between">
         <Col>
           <Image
-            src={process.env.REACT_APP_API_URL + "/alpaca.png"}
+            src={imagesUrl + "/alpaca.png"}
             style={{ height: 200, objectFit: "cover", aspectRatio: "16 / 9" }}
           />
         </Col>

@@ -7,7 +7,7 @@ module.exports = function (req, res, next) {
   }
   try {
     const authorizationHeader = req.headers.authorization;
-    console.log(authorizationHeader);
+
     if (!authorizationHeader) {
       return next(ApiError.unAuthorizedError());
     }
@@ -17,10 +17,7 @@ module.exports = function (req, res, next) {
       return next(ApiError.unAuthorizedError());
     }
 
-    console.log("accessToken", accessToken);
-
     const userData = tokenService.validateAccessToken(accessToken);
-    console.log("userData", userData);
 
     if (!userData) {
       return next(ApiError.unAuthorizedError());

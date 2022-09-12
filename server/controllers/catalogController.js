@@ -1,4 +1,4 @@
-const { Catalog, CatalogProperty } = require("../models/models");
+const { Catalog, CatalogProperty } = require("../models");
 const { validationResult } = require("express-validator");
 const ApiError = require("../error/ApiError");
 
@@ -88,7 +88,7 @@ class CatalogController {
 
   async getAll(req, res) {
     const catalogs = await Catalog.findAll({
-      include: "properties",
+      include: ["properties"],
       order: [["id"]],
     });
 

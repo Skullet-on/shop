@@ -1,7 +1,7 @@
 const Router = require("express");
 const router = new Router();
-const productPropertiesController = require("../controllers/productPropertiesController");
+const productPropertyController = require("../controllers/productPropertyController");
 
-router.get("/:propertyId", productPropertiesController.getAll);
+router.get("/:propertyId", productPropertyController.getAll);
 
 module.exports = router;
