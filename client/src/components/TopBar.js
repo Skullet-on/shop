@@ -7,29 +7,26 @@ const TopBar = () => {
   return (
     <Container>
       <Row style={{ height: 200 }} className="d-flex justify-content-between">
-        <Col>
-          <Image
-            src={imagesUrl + "/alpaca.png"}
-            style={{ height: 200, objectFit: "cover", aspectRatio: "16 / 9" }}
-          />
+        <Col md={3}>
+          <Image src={imagesUrl + "/alp.png"} style={{ height: 200 }} />
         </Col>
         <Col>
           <div></div>
         </Col>
-        <Col>
-          <div>
+        <Col md={3}>
+          <div className="d-flex">
             <Phone />
             <a className="ms-2" href="tel:+375293407694">
               +375 (29) 340-76-94
             </a>
           </div>
-          <div>
+          <div className="d-flex">
             <Instagram />
             <a className="ms-2" href="https://deeplink.hoverlanding.com/lhhfjt">
               pryazhamilalpaka
             </a>
           </div>
-          <div>
+          <div className="d-flex">
             <Envelope />
             <a className="ms-2" href="mailto:skullet-on@mail.ru">
               skullet-on@mail.ru

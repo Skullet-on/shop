@@ -1,5 +1,6 @@
 import React from "react";
 import { Card } from "react-bootstrap";
+import { imagesUrl } from "../utils/constants";
 
 const ColorItem = ({ color }) => {
   return (
@@ -7,7 +8,7 @@ const ColorItem = ({ color }) => {
       <Card.Img
         style={{ height: 25 }}
         variant="top"
-        src={process.env.REACT_APP_API_URL + "/" + color.img}
+        src={imagesUrl + "/" + color.img}
       />
     </Card>
   );

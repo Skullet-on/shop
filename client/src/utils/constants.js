@@ -1,4 +1,5 @@
 export const ADMIN_ROUTE = "/admin";
+export const ORDERS_ROUTE = "/orders";
 export const LOGIN_ROUTE = "/login";
 export const REGISTRATION_ROUTE = "/registration";
 export const SHOP_ROUTE = "/";
@@ -12,3 +13,5 @@ export const LS_TOKEN = "TOKEN";
 
 export const baseUrl = process.env.REACT_APP_API_URL;
 export const imagesUrl = process.env.REACT_APP_API_URL + "/images";
+
+export const address = "ул. В.Хоружей, ТЦ 'Импульс', павильон 20";

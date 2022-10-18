@@ -2,6 +2,7 @@ import React from "react";
 import Auth from "./pages/Auth";
 import Basket from "./pages/Basket";
 import NewAdminPage from "./pages/NewAdminPage";
+import Orders from "./pages/Orders";
 import PageNotFound from "./pages/PageNotFound";
 import PaidAndDelivery from "./pages/PaidAndDelivery";
 import ProductPage from "./pages/ProductPage";
@@ -12,6 +13,7 @@ import {
   BASKET_ROUTE,
   LOGIN_ROUTE,
   NOT_FOUND_ROUTE,
+  ORDERS_ROUTE,
   PAID_AND_DELIVERY,
   PRODUCT_ROUTE,
   REGISTRATION_ROUTE,
@@ -33,6 +35,10 @@ export const adminRoutes = [
   {
     path: NOT_FOUND_ROUTE,
     element: <PageNotFound />,
+  },
+  {
+    path: ORDERS_ROUTE,
+    element: <Orders />,
   },
 ];
 

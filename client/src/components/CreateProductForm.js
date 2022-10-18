@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Col, Form, Image, Row } from "react-bootstrap";
+import { Button, Col, Form, Image, InputGroup, Row } from "react-bootstrap";
 import { Context } from "..";
 import { createProduct, fetchProducts } from "../http/productApi";
 import { imagesUrl } from "../utils/constants";
@@ -360,18 +360,23 @@ const CreateProductForm = () => {
               </Form.Label>
             </Col>
             <Col md={9}>
-              <Form.Control
-                type={i.property.type}
-                value={i.description}
-                isInvalid={
-                  productStore.errors.properties &&
-                  productStore.errors.properties[i.number]
-                }
-                onChange={(e) =>
-                  changeInfo("description", e.target.value, i.number)
-                }
-                placeholder="Введите значение"
-              />
+              <InputGroup className="mb-3">
+                <Form.Control
+                  type={i.property.type}
+                  value={i.description}
+                  isInvalid={
+                    productStore.errors.properties &&
+                    productStore.errors.properties[i.number]
+                  }
+                  onChange={(e) =>
+                    changeInfo("description", e.target.value, i.number)
+                  }
+                  placeholder="Введите значение"
+                />
+                <InputGroup.Text id="basic-addon2">
+                  {i.property.currency}
+                </InputGroup.Text>
+              </InputGroup>
               <Form.Control.Feedback type={"invalid"}>
                 {productStore.errors.properties &&
                   productStore.errors.properties[i.number]}

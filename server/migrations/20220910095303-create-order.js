@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      email: {
+      fio: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -18,6 +18,28 @@ module.exports = {
       },
       description: {
         type: Sequelize.STRING,
+      },
+      city: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      street: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      building: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      corp: {
+        type: Sequelize.STRING,
+      },
+      flat: {
+        type: Sequelize.STRING,
+      },
+      isDone: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
       },
       createdAt: {
         allowNull: false,

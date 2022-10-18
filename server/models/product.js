@@ -18,7 +18,12 @@ module.exports = (sequelize, DataTypes) => {
       });
       Product.hasMany(models.Color, {
         as: "colors",
-        foreignKey: "id",
+        foreignKey: "productId",
+      });
+      Product.belongsToMany(models.Order, {
+        as: "orders",
+        through: models.OrderProduct,
+        foreignKey: "productId",
       });
     }
   }

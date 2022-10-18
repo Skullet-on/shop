@@ -3,14 +3,18 @@ import React, { useContext, useState } from "react";
 import { Button, Col, Form, Image, Modal, Row } from "react-bootstrap";
 import { Context } from "../..";
 import { createColor, fetchOneProduct } from "../../http/productApi";
+import { imagesUrl } from "../../utils/constants";
 
 const CreateColorModal = ({ show, onHide, productId }) => {
   const [name, setName] = useState("");
   const [count, setCount] = useState(0);
   const [file, setFile] = useState({});
-  const { productStore, toastStore } = useContext(Context);
+  const { productStore, colorStore, toastStore } = useContext(Context);
 
   const selectFile = (e) => {
+    if (colorStore.errors.img) {
+      colorStore.removeFieldErrors("img");
+    }
     let reader = new FileReader();
     let file = e.target.files[0];
 
@@ -31,17 +35,44 @@ const CreateColorModal = ({ show, onHide, productId }) => {
     formData.append("count", count);
     formData.append("productId", productId);
     formData.append("img", file.file);
-    await createColor(formData).then((data) => onHide());
-    await fetchOneProduct(productId).then((data) =>
-      productStore.setSelectedProduct(data)
-    );
+    await createColor(formData).then((data) => {
+      if (data.errors) {
+        colorStore.setErrors(data.errors);
+      } else {
+        (async () =>
+          await fetchOneProduct(productId).then((data) =>
+            productStore.setSelectedProduct(data)
+          )
+        )();
+        setName("");
+        setFile({});
+        setCount(0);
+        toastStore.setMessage(`Цвет успешно добавлен`);
+        toastStore.setVariant("info");
+        toastStore.setShow(true);
+        onHide();
+      }
+    });
+  };
 
-    setName("");
-    setFile({});
-    setCount(0);
-    toastStore.setMessage(`Цвет успешно добавлен`);
-    toastStore.setVariant("info");
-    toastStore.setShow(true);
+  const handleChangeCount = (value) => {
+    if (colorStore.errors.count) {
+      colorStore.removeFieldErrors("count");
+    }
+    if (value < 0 || !value) {
+      setCount(0);
+    } else if (value > 1000) {
+      setCount(1000);
+    } else {
+      setCount(value);
+    }
+  };
+
+  const handleChangeName = (value) => {
+    if (colorStore.errors.name) {
+      colorStore.removeFieldErrors("name");
+    }
+    setName(value);
   };
 
   return (
@@ -56,10 +87,7 @@ const CreateColorModal = ({ show, onHide, productId }) => {
           <Row>
             <Col md={3} className="pt-2" style={{ position: "relative" }}>
               <Image
-                src={
-                  file.preview ||
-                  process.env.REACT_APP_API_URL + "/no-image.jpg"
-                }
+                src={file.preview || imagesUrl + "/no-image.jpg"}
                 style={{ width: "100%" }}
               />
               <Form.Control
@@ -71,23 +99,35 @@ const CreateColorModal = ({ show, onHide, productId }) => {
                   width: "100%",
                   height: "100%",
                 }}
+                isInvalid={colorStore.errors.img}
                 onChange={selectFile}
               />
+              <Form.Control.Feedback type={"invalid"}>
+                {colorStore.errors.img && colorStore.errors.img.message}
+              </Form.Control.Feedback>
             </Col>
           </Row>
           <Row className="mt-2">
             <Form.Control
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => handleChangeName(e.target.value)}
+              isInvalid={colorStore.errors.name}
               placeholder="Введите код цвета"
             />
+            <Form.Control.Feedback type={"invalid"}>
+              {colorStore.errors.name && colorStore.errors.name.message}
+            </Form.Control.Feedback>
           </Row>
           <Row className="mt-2">
             <Form.Control
               value={count}
-              onChange={(e) => setCount(e.target.value)}
+              onChange={(e) => handleChangeCount(e.target.value)}
+              isInvalid={colorStore.errors.count}
               placeholder="Введите количество"
             />
+            <Form.Control.Feedback type={"invalid"}>
+              {colorStore.errors.count && colorStore.errors.count.message}
+            </Form.Control.Feedback>
           </Row>
         </Form>
       </Modal.Body>

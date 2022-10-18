@@ -1,6 +1,6 @@
 const uuid = require("uuid");
 const path = require("path");
-const { Product, ProductProperty, Color } = require("../models");
+const { Product, Property, ProductProperty, Color } = require("../models");
 const { validationResult } = require("express-validator");
 const ApiError = require("../error/ApiError");
 const { Op } = require("sequelize");
@@ -110,20 +110,85 @@ class ProductController {
 
   async edit(req, res, next) {
     try {
-      let { name, price, brandId, catalogId, properties, color } = req.body;
+      const { errors } = validationResult(req);
+
+      let {
+        name,
+        price,
+        brandId,
+        catalogId,
+        properties,
+        color,
+        oldPrice = 0,
+      } = req.body;
+
+      if (JSON.parse(properties).length) {
+        const propErrors = {};
+        JSON.parse(properties).map((property) => {
+          if (!property.value) {
+            propErrors[property.id] = "Поле не должно быть пустым";
+          } else if (property.type === "number" && property.value < 0) {
+            propErrors[property.id] = "Число не должно быть отрицательным";
+          }
+        });
+        if (Object.keys(propErrors).length) {
+          errors.push({
+            msg: "Свойства не должны быть пустыми",
+            param: "properties",
+            data: propErrors,
+          });
+        }
+      }
+
+      const clr = JSON.parse(color);
+      if (!clr.name) {
+        errors.push({
+          msg: "Название цвета не может быть пустым",
+          param: "color",
+          data: clr,
+        });
+      }
+      if (clr.count < 0) {
+        errors.push({
+          msg: "Количество не может быть отрицательным",
+          param: "count",
+          data: clr,
+        });
+      }
+
+      const formatErrors = errors.reduce((acc, curr) => {
+        return { ...acc, [curr.param]: { message: curr.msg, ...curr.data } };
+      }, {});
+
+      if (errors.length) {
+        return next(
+          ApiError.badRequest(400, "Ошибка при валидации", formatErrors)
+        );
+      }
+
       const { id } = req.params;
       let product;
 
       if (req.files) {
         let fileName = "no-image.jpg";
         const { img } = req.files;
-        fileName = uuid.v4() + ".jpg";
-        img.mv(path.resolve(__dirname, "..", "static", fileName));
+        fileName = clr.img;
+        img.mv(path.resolve(__dirname, "..", "static/images", fileName));
+
+        await Color.update(
+          {
+            img,
+          },
+          {
+            where: { id: clr.id },
+          }
+        );
 
         product = await Product.update(
           {
             name,
             price,
+            oldPrice,
             brandId,
             catalogId,
             img: fileName,
@@ -137,38 +202,48 @@ class ProductController {
         );
       }
 
+      await Color.update(
+        {
+          name: clr.name,
+          count: clr.count,
+        },
+        {
+          where: { id: clr.id },
+        }
+      );
+
       if (properties) {
         properties = JSON.parse(properties);
 
         properties.forEach(async (element) => {
-          const property = await ProductProperty.findOne({
-            where: { id: element.property.id },
+          const property = await Property.findOne({
+            where: { id: element.id },
           });
           if (property) {
-            if (property.type === "number") {
+            if (property.dataValues.type === "number") {
               ProductProperty.update(
                 {
-                  value: element.description,
-                  propertyId: element.property.id,
+                  value: element.value,
+                  propertyId: element.id,
                   productId: id,
                 },
-                { where: { id: property.dataValues.id } }
+                { where: { productId: id, propertyId: element.id } }
               );
             } else {
               ProductProperty.update(
                 {
-                  description: element.description.toLowerCase(),
-                  propertyId: element.property.id,
+                  description: element.value.toLowerCase(),
+                  propertyId: element.id,
                   productId: id,
                 },
-                { where: { id: property.dataValues.id } }
+                { where: { productId: id, propertyId: element.id } }
               );
             }
           } else {
             ProductProperty.create({
               productId: product.id,
-              description: element.description.toLowerCase(),
-              propertyId: element.property.id,
+              description: element.value.toLowerCase(),
+              propertyId: element.id,
             });
           }
         });
@@ -195,14 +270,7 @@ class ProductController {
   }
 
   async getAll(req, res) {
-    let {
-      catalogId = null,
-      limit,
-      page,
-      search = "",
-      brands = [],
-      weight = "",
-    } = req.query;
+    let { catalogId = null, limit, page, search = "", brands = [] } = req.query;
     page = page || 1;
     limit = limit || 10;
     let offset = page * limit - limit;
@@ -236,7 +304,7 @@ class ProductController {
       const product = await Product.findOne({
         where: { id },
         include: ["properties", "colors"],
-        order: [["color", "id"]],
+        order: [["colors", "id"]],
       });
 
       if (!product) {

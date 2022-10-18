@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Image } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { PRODUCT_ROUTE } from "../utils/constants";
+import { imagesUrl, LS_BASKET, PRODUCT_ROUTE } from "../utils/constants";
 import { X } from "react-bootstrap-icons";
 
 const BasketItem = ({ item, basket }) => {
@@ -11,18 +11,18 @@ const BasketItem = ({ item, basket }) => {
     if (value < 1) {
       basket.setCount(item.id, 1);
 
-      localStorage.setItem("basket", JSON.stringify(basket.items));
+      localStorage.setItem(LS_BASKET, JSON.stringify(basket.items));
     } else {
       basket.setCount(item.id, value);
 
-      localStorage.setItem("basket", JSON.stringify(basket.items));
+      localStorage.setItem(LS_BASKET, JSON.stringify(basket.items));
     }
   };
 
   const handleRemoveItem = (id) => {
     basket.removeItem(id);
 
-    localStorage.setItem("basket", JSON.stringify(basket.items));
+    localStorage.setItem(LS_BASKET, JSON.stringify(basket.items));
   };
 
   return (
@@ -30,7 +30,7 @@ const BasketItem = ({ item, basket }) => {
       <td>
         <Image
           style={{ width: "100px" }}
-          src={process.env.REACT_APP_API_URL + "/" + item.color.img}
+          src={imagesUrl + "/" + item.color.img}
         />
       </td>
       <td

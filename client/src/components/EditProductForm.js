@@ -1,13 +1,10 @@
 import { observer } from "mobx-react-lite";
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Col, Dropdown, Form, Image, Row } from "react-bootstrap";
+import { Button, Col, Form, Image, InputGroup, Row } from "react-bootstrap";
 import { Context } from "..";
 import {
   editProduct,
-  fetchBrands,
   fetchProducts,
-  fetchCatalogs,
-  fetchProperties,
   fetchOneProduct,
   removeProduct,
   editColor,
@@ -18,22 +15,16 @@ import ColorList from "./ColorList";
 import CreateColor from "./CreateColor";
 
 const EditProductForm = () => {
-  const {
-    productStore,
-    brandStore,
-    catalogStore,
-    propertiesStore,
-  } = useContext(Context);
+  const { productStore, brandStore, catalogStore } = useContext(Context);
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
-  const [info, setInfo] = useState([]);
-  const [selectedColor, setSelectedColor] = useState(null);
+  const [oldPrice, setOldPrice] = useState(0);
+  const [selectedColor, setSelectedColor] = useState({});
+  const [selectedBrand, setSelectedBrand] = useState({});
+  const [selectedCatalog, setSelectedCatalog] = useState({});
+  const [properties, setProperties] = useState([]);
 
   useEffect(() => {
-    fetchCatalogs().then((data) => catalogStore.setCatalogs(data));
-    fetchBrands().then((data) => brandStore.setBrands(data));
-    fetchProducts().then((data) => productStore.setProducts(data.rows));
-    fetchProperties().then((data) => propertiesStore.setProperties(data));
     brandStore.setSelectedBrand({});
     catalogStore.setSelectedCatalog({});
     productStore.setSelectedProduct({});
@@ -44,39 +35,47 @@ const EditProductForm = () => {
       fetchOneProduct(productStore.selectedProduct.id).then((data) => {
         setName(data.name);
         setPrice(data.price);
-        if (data.info.length) {
-          const newInfo = data.info.reduce((result, current) => {
+        setOldPrice(data.oldPrice);
+        setSelectedCatalog(data.catalogId);
+        setSelectedBrand(data.brandId);
+        selectedColor.id
+          ? setSelectedColor(
+              data.colors.filter((color) => color.id === selectedColor.id)[0]
+            )
+          : setSelectedColor(data.colors[0]);
+
+        if (data.properties.length) {
+          const newInfo = data.properties.reduce((result, current) => {
             return [
               ...result,
               {
-                number: current.id,
-                description: current.description,
-                property: propertiesStore.getProperty(current.propertyId),
+                id: current.id,
+                name: current.name,
+                type: current.type,
+                currency: current.currency,
+                value:
+                  current.type === "number"
+                    ? current.ProductProperty.value
+                    : current.ProductProperty.description,
               },
             ];
           }, []);
 
-          setInfo(newInfo);
+          setProperties(newInfo);
         } else {
-          setInfo([]);
+          setProperties([]);
         }
-        setSelectedColor(productStore.selectedProduct.color[0]);
-        brandStore.setSelectedBrand(brandStore.getBrand(data.brandId));
-        catalogStore.setSelectedCatalog(
-          catalogStore.getCatalog(data.catalogId)
-        );
       });
   }, [productStore.selectedProduct]);
 
-  const addInfo = () => {
-    setInfo([...info, { property: {}, description: "", number: Date.now() }]);
-  };
-  const removeInfo = (number) => {
-    setInfo(info.filter((i) => i.number !== number));
-  };
-  const changeInfo = (key, value, number) => {
-    setInfo(
-      info.map((i) => (i.number === number ? { ...i, [key]: value } : i))
+  const changeProperty = (id, value) => {
+    if (productStore.errors.properties && productStore.errors.properties[id]) {
+      productStore.removePropertyErrors(id);
+    }
+    setProperties(
+      properties.map((property) =>
+        property.id === id ? { ...property, value: value } : property
+      )
     );
   };
 
@@ -103,15 +102,123 @@ const EditProductForm = () => {
     }
   };
 
+  const handleChangeCount = (value) => {
+    if (productStore.errors.count) {
+      productStore.removeFieldErrors("count");
+    }
+    if (value < 0 || !value) {
+      setSelectedColor({ ...selectedColor, count: 0 });
+    } else if (value > 1000) {
+      setSelectedColor({ ...selectedColor, count: 1000 });
+    } else {
+      setSelectedColor({ ...selectedColor, count: value });
+    }
+  };
+
+  const handleChangeColor = (value) => {
+    if (productStore.errors.color) {
+      productStore.removeFieldErrors("color");
+    }
+    setSelectedColor({ ...selectedColor, name: value });
+  };
+
+  const handleChangeCatalog = (id) => {
+    if (productStore.errors.catalogId) {
+      productStore.removeFieldErrors("catalogId");
+    }
+
+    if (productStore.errors.properties) {
+      productStore.removeFieldErrors("properties");
+    }
+
+    if (id < 0) {
+      return setSelectedCatalog({});
+    }
+
+    const catalog = catalogStore.getCatalog(+id);
+
+    setSelectedCatalog(id);
+
+    const newData = catalog.properties.reduce((result, current) => {
+      return [
+        ...result,
+        {
+          number: current.id,
+          description: "",
+          property: current,
+        },
+      ];
+    }, []);
+
+    setProperties(newData);
+  };
+
+  const handleChangeBrand = (id) => {
+    if (productStore.errors.brandId) {
+      productStore.removeFieldErrors("brandId");
+    }
+
+    if (id < 0) {
+      return setSelectedBrand({});
+    }
+
+    setSelectedBrand(id);
+  };
+
   const handleEditProduct = () => {
     const formData = new FormData();
 
     formData.append("name", name);
     formData.append("price", price);
-    formData.append("catalogId", catalogStore.selectedCatalog.id);
-    formData.append("brandId", brandStore.selectedBrand.id);
-    formData.append("info", JSON.stringify(info));
-    editProduct(productStore.selectedProduct.id, formData).then((data) => {});
+    formData.append("oldPrice", oldPrice);
+    formData.append("color", JSON.stringify(selectedColor));
+    formData.append("catalogId", selectedCatalog);
+    formData.append("brandId", selectedBrand);
+    formData.append("properties", JSON.stringify(properties));
+
+    editProduct(productStore.selectedProduct.id, formData).then((data) => {
+      if (data.errors) {
+        productStore.setErrors(data.errors);
+      } else {
+        (async () =>
+          fetchOneProduct(productStore.selectedProduct.id).then((data) => {
+            productStore.setSelectedProduct(data);
+          }))();
+      }
+    });
+  };
+
+  const handleChangeName = (value) => {
+    if (productStore.errors.name) {
+      productStore.removeFieldErrors("name");
+    }
+    setName(value);
+  };
+
+  const handleChangePrice = (value) => {
+    if (productStore.errors.price) {
+      productStore.removeFieldErrors("price");
+    }
+    if (value < 0 || !value) {
+      setPrice(0);
+    } else if (value > 1000) {
+      setPrice(1000);
+    } else {
+      setPrice(value);
+    }
+  };
+
+  const handleChangeOldPrice = (value) => {
+    if (productStore.errors.oldPrice) {
+      productStore.removeFieldErrors("oldPrice");
+    }
+    if (value < 0 || !value) {
+      setOldPrice(0);
+    } else if (value > 1000) {
+      setOldPrice(1000);
+    } else {
+      setOldPrice(value);
+    }
   };
 
   const handleRemoveProduct = async () => {
@@ -141,8 +248,6 @@ const EditProductForm = () => {
                   }`}
                   style={{
                     width: "100%",
-                    objectFit: "cover",
-                    aspectRatio: "16 / 9",
                   }}
                 />
                 <Row className="mx-0 mt-1">
@@ -169,9 +274,16 @@ const EditProductForm = () => {
                     <Form.Control
                       catalog="text"
                       value={name}
+                      isInvalid={
+                        productStore.errors.name && productStore.errors.name
+                      }
                       placeholder="Введите название товара"
-                      onChange={(e) => setName(e.target.value)}
+                      onChange={(e) => handleChangeName(e.target.value)}
                     />
+                    <Form.Control.Feedback type={"invalid"}>
+                      {productStore.errors.name &&
+                        productStore.errors.name.message}
+                    </Form.Control.Feedback>
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} className="d-flex align-items-center">
@@ -180,11 +292,77 @@ const EditProductForm = () => {
                   </Form.Label>
                   <Col md={10} className="mt-2">
                     <Form.Control
-                      catalog="number"
+                      type="number"
                       value={price}
+                      isInvalid={
+                        productStore.errors.price && productStore.errors.price
+                      }
                       placeholder="Введите цену товара"
-                      onChange={(e) => setPrice(e.target.value)}
+                      onChange={(e) => handleChangePrice(e.target.value)}
                     />
+                    <Form.Control.Feedback type={"invalid"}>
+                      {productStore.errors.price &&
+                        productStore.errors.price.message}
+                    </Form.Control.Feedback>
+                  </Col>
+                </Form.Group>
+                <Form.Group as={Row} className="d-flex align-items-center">
+                  <Form.Label column md={2}>
+                    Старая цена:{" "}
+                  </Form.Label>
+                  <Col md={10} className="mt-2">
+                    <Form.Control
+                      type="number"
+                      value={oldPrice}
+                      isInvalid={
+                        productStore.errors.oldPrice &&
+                        productStore.errors.oldPrice
+                      }
+                      placeholder="Введите цену товара"
+                      onChange={(e) => handleChangeOldPrice(e.target.value)}
+                    />
+                    <Form.Control.Feedback type={"invalid"}>
+                      {productStore.errors.oldPrice &&
+                        productStore.errors.oldPrice.message}
+                    </Form.Control.Feedback>
+                  </Col>
+                </Form.Group>
+                <Form.Group as={Row} className="d-flex align-items-center">
+                  <Form.Label className="mt-2" column md={2}>
+                    Цвет:
+                  </Form.Label>
+                  <Col md={4} className="mt-2">
+                    <Form.Control
+                      type="string"
+                      value={selectedColor.name || ""}
+                      isInvalid={
+                        productStore.errors.color && productStore.errors.color
+                      }
+                      placeholder="Введите код цвета"
+                      onChange={(e) => handleChangeColor(e.target.value)}
+                    />
+                    <Form.Control.Feedback type={"invalid"}>
+                      {productStore.errors.color &&
+                        productStore.errors.color.message}
+                    </Form.Control.Feedback>
+                  </Col>
+                  <Form.Label className="mt-2" column md={2}>
+                    Количество:
+                  </Form.Label>
+                  <Col md={4} className="mt-2">
+                    <Form.Control
+                      type="number"
+                      value={selectedColor.count}
+                      isInvalid={
+                        productStore.errors.count && productStore.errors.count
+                      }
+                      placeholder="Введите количество товара данного цвета"
+                      onChange={(e) => handleChangeCount(e.target.value)}
+                    />
+                    <Form.Control.Feedback type={"invalid"}>
+                      {productStore.errors.count &&
+                        productStore.errors.count.message}
+                    </Form.Control.Feedback>
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} className="d-flex align-items-center">
@@ -192,24 +370,23 @@ const EditProductForm = () => {
                     Выберите каталог:{" "}
                   </Form.Label>
                   <Col md={4}>
-                    <Dropdown className="mt-2 mb-2">
-                      <Dropdown.Toggle>
-                        {catalogStore.selectedCatalog.name ||
-                          "Выберите каталог"}
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        {catalogStore.catalogs.map((catalog) => (
-                          <Dropdown.Item
-                            key={catalog.id}
-                            onClick={() =>
-                              catalogStore.setSelectedCatalog(catalog)
-                            }
-                          >
+                    <Form.Select
+                      onChange={(e) => handleChangeCatalog(e.target.value)}
+                      value={selectedCatalog}
+                      isInvalid={productStore.errors.catalogId}
+                    >
+                      {catalogStore.catalogs.map((catalog) => {
+                        return (
+                          <option key={catalog.id} value={catalog.id}>
                             {catalog.name}
-                          </Dropdown.Item>
-                        ))}
-                      </Dropdown.Menu>
-                    </Dropdown>
+                          </option>
+                        );
+                      })}
+                    </Form.Select>
+                    <Form.Control.Feedback type={"invalid"}>
+                      {productStore.errors.catalogId &&
+                        productStore.errors.catalogId.message}
+                    </Form.Control.Feedback>
                   </Col>
                 </Form.Group>
                 <Form.Group as={Row} className="d-flex align-items-center">
@@ -217,21 +394,23 @@ const EditProductForm = () => {
                     Выберите бренд:{" "}
                   </Form.Label>
                   <Col md={4}>
-                    <Dropdown className="mt-2 mb-2">
-                      <Dropdown.Toggle>
-                        {brandStore.selectedBrand.name || "Выберите бренд"}
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        {Object.values(brandStore.brands).map((brand) => (
-                          <Dropdown.Item
-                            key={brand.id}
-                            onClick={() => brandStore.setSelectedBrand(brand)}
-                          >
+                    <Form.Select
+                      onChange={(e) => handleChangeBrand(e.target.value)}
+                      value={selectedBrand}
+                      isInvalid={productStore.errors.brandId}
+                    >
+                      {brandStore.brands.map((brand) => {
+                        return (
+                          <option key={brand.id} value={brand.id}>
                             {brand.name}
-                          </Dropdown.Item>
-                        ))}
-                      </Dropdown.Menu>
-                    </Dropdown>
+                          </option>
+                        );
+                      })}
+                    </Form.Select>
+                    <Form.Control.Feedback type={"invalid"}>
+                      {productStore.errors.brandId &&
+                        productStore.errors.brandId.message}
+                    </Form.Control.Feedback>
                   </Col>
                 </Form.Group>
                 <ColorList
@@ -243,46 +422,31 @@ const EditProductForm = () => {
             </Row>
             <hr />
             <Row>
-              <Button variant="outline-dark" onClick={addInfo}>
-                Добавить свойство
-              </Button>
-              {info.map((i) => (
-                <Row key={i.number} className="mt-3">
-                  <Col md={3}>
-                    <Dropdown className=" mb-2">
-                      <Dropdown.Toggle>
-                        {i.property.name || "Выберите свойство"}
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        {propertiesStore.properties.map((property) => (
-                          <Dropdown.Item
-                            key={property.id}
-                            onClick={() =>
-                              changeInfo("property", property, i.number)
-                            }
-                          >
-                            {property.name}
-                          </Dropdown.Item>
-                        ))}
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </Col>
-                  <Col md={3}>
-                    <Form.Control
-                      value={i.description}
-                      onChange={(e) =>
-                        changeInfo("description", e.target.value, i.number)
-                      }
-                      placeholder="Введите значение"
-                    />
-                  </Col>
-                  <Col md={3}>
-                    <Button
-                      variant="outline-danger"
-                      onClick={() => removeInfo(i.number)}
-                    >
-                      Удалить
-                    </Button>
+              {properties.map((property) => (
+                <Row key={property.id} className="mt-3">
+                  <Col md={3}>{property.name}</Col>
+                  <Col md={9}>
+                    <InputGroup className="mb-3">
+                      <Form.Control
+                        type={property.type}
+                        value={property.value}
+                        isInvalid={
+                          productStore.errors.properties &&
+                          productStore.errors.properties[property.id]
+                        }
+                        onChange={(e) =>
+                          changeProperty(property.id, e.target.value)
+                        }
+                        placeholder="Введите значение"
+                      />
+                      <InputGroup.Text id="basic-addon2">
+                        {property.currency}
+                      </InputGroup.Text>
+                    </InputGroup>
+                    <Form.Control.Feedback type={"invalid"}>
+                      {productStore.errors.properties &&
+                        productStore.errors.properties[property.id]}
+                    </Form.Control.Feedback>
                   </Col>
                 </Row>
               ))}

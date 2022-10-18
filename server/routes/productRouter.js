@@ -16,6 +16,11 @@ router.post(
     .withMessage("Цена должна быть числом")
     .isInt({ min: 0 })
     .withMessage("Цена не должна быть отрицательна"),
+  body("oldPrice")
+    .isNumeric()
+    .withMessage("Цена должна быть числом")
+    .isInt({ min: 0 })
+    .withMessage("Цена не должна быть отрицательна"),
   body("color")
     .isLength({ min: 1 })
     .withMessage("Название цвета не может быть пустым"),
@@ -30,7 +35,26 @@ router.post(
   ProductController.create
 );
 
-router.patch("/:id", authMiddleware, ProductController.edit);
+router.patch(
+  "/:id",
+  body("name")
+    .isLength({ min: 5, max: 100 })
+    .withMessage("Название должно содержать от 5 до 100 символов"),
+  body("price")
+    .isNumeric()
+    .withMessage("Цена должна быть числом")
+    .isInt({ min: 0 })
+    .withMessage("Цена не должна быть отрицательна"),
+  body("oldPrice")
+    .isNumeric()
+    .withMessage("Цена должна быть числом")
+    .isInt({ min: 0 })
+    .withMessage("Цена не должна быть отрицательна"),
+  body("catalogId").isNumeric().withMessage("Каталог не выбран"),
+  body("brandId").isNumeric().withMessage("Бренд не выбран"),
+  authMiddleware,
+  ProductController.edit
+);
 
 router.delete("/:id", authMiddleware, ProductController.remove);
 

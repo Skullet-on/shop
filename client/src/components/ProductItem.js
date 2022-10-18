@@ -77,12 +77,12 @@ const ProductItem = ({ product }) => {
     }
   };
 
-  const handleChangeColor = (e, color) => {
+  const handleChangeColor = (color) => {
     setSelectedColor(color);
   };
 
   return (
-    <Col md={3} className="mt-3 p-1">
+    <Col sm={12} md={6} xl={4} xxl={3} className="mt-3 p-1">
       <Card>
         <Image
           src={
@@ -131,7 +131,7 @@ const ProductItem = ({ product }) => {
                   <Card.Text key={property.id} className="d-flex mb-1">
                     {property.name || ""}:
                     <div className="ms-2">
-                      {property.ProductProperty.type === "string"
+                      {property.type === "string"
                         ? `${property.ProductProperty.description} ${property.currency}`
                         : `${property.ProductProperty.value} ${property.currency}`}
                     </div>

@@ -157,3 +157,27 @@ export const editColor = async (id, color) => {
 
   return data;
 };
+
+export const addOrder = async (order) => {
+  const { data } = await $host.post("/api/order", order);
+
+  return data;
+};
+
+export const fetchOrders = async () => {
+  const { data } = await $authHost.get("/api/order");
+
+  return data;
+};
+
+export const fetchOrdersProduct = async (id) => {
+  const { data } = await $authHost.get("/api/order-product/" + id);
+
+  return data;
+};
+
+export const finishOrder = async (id) => {
+  const { data } = await $authHost.post("/api/order/" + id);
+
+  return data;
+};

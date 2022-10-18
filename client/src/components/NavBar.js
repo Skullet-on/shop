@@ -4,6 +4,7 @@ import { Navbar, Container, NavDropdown, Form, Nav } from "react-bootstrap";
 import {
   ADMIN_ROUTE,
   LOGIN_ROUTE,
+  ORDERS_ROUTE,
   PAID_AND_DELIVERY,
   REGISTRATION_ROUTE,
   SHOP_ROUTE,
@@ -94,6 +95,9 @@ const NavBar = observer(() => {
                   <NavDropdown.Divider />
                   <NavDropdown.Item onClick={() => navigate(ADMIN_ROUTE)}>
                     Админка
+                  </NavDropdown.Item>
+                  <NavDropdown.Item onClick={() => navigate(ORDERS_ROUTE)}>
+                    Заказы
                   </NavDropdown.Item>
                 </>
               ) : (

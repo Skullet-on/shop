@@ -45,6 +45,13 @@ export default class ProductStore {
     return this._products.filter((product) => product.id === id)[0];
   }
 
+  getProductColor(productId, colorId) {
+    const product = this._products.filter(
+      (product) => product.id === productId
+    )[0];
+    return product.colors.filter((color) => color.id === colorId);
+  }
+
   get products() {
     return this._products;
   }
