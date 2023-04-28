@@ -20,6 +20,8 @@ module.exports = (sequelize, DataTypes) => {
       building: DataTypes.STRING,
       corp: DataTypes.STRING,
       flat: DataTypes.STRING,
+      postoffice: DataTypes.STRING,
+      deliveryType: DataTypes.STRING,
       isDone: DataTypes.BOOLEAN,
     },
     {

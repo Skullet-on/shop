@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Container, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Context } from "..";
@@ -10,11 +10,12 @@ import { LS_BASKET, SHOP_ROUTE } from "../utils/constants";
 
 const Basket = () => {
   const { basketStore } = useContext(Context);
+  const [deliveryType, setDeliveryType] = useState("deliveryCheck")
   const navigate = useNavigate();
 
   const handleSubmitForm = (
     e,
-    { fio, phone, description, city, street, building, corp, flat }
+    { fio, phone, description, city, street, building, corp, flat, postoffice }
   ) => {
     e.preventDefault();
     let products = [];
@@ -36,6 +37,8 @@ const Basket = () => {
       building,
       corp,
       flat,
+      postoffice,
+      deliveryType,
       products,
     })
       .then((data) => {
@@ -83,7 +86,25 @@ const Basket = () => {
               </tr>
             </tfoot>
           </Table>
-          <OrderForm submitForm={handleSubmitForm} />
+          <div class="form-check" onClick={() => setDeliveryType("deliveryCheck")}>
+            <input class="form-check-input" type="radio" name="deliveryCheck" id="deliveryCheck" checked={deliveryType === 'deliveryCheck'} />
+            <label class="form-check-label" for="deliveryCheck">
+              Доставка
+            </label>
+          </div>
+          <div class="form-check" onClick={() => setDeliveryType("pickupCheck")}>
+            <input class="form-check-input" type="radio" name="pickupCheck" id="pickupCheck" checked={deliveryType === 'pickupCheck'} />
+            <label class="form-check-label" for="pickupCheck">
+              Самовывоз
+            </label>
+          </div>
+          <div class="form-check" onClick={() => setDeliveryType("postCheck")}>
+            <input class="form-check-input" type="radio" name="postCheck" id="postCheck" checked={deliveryType === 'postCheck'} />
+            <label class="form-check-label" for="postCheck">
+              Европочта
+            </label>
+          </div>
+          <OrderForm submitForm={handleSubmitForm} deliveryType={deliveryType} />
         </>
       ) : (
         <div>Корзина пуста</div>

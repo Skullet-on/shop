@@ -18,7 +18,7 @@ const OrderItem = ({ order, doneOrder }) => {
           curr.productId,
           curr.colorId
         );
-        console.log(productById);
+
         return [
           ...acc,
           {

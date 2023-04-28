@@ -14,8 +14,8 @@ router.post(
   body("price")
     .isNumeric()
     .withMessage("Цена должна быть числом")
-    .isInt({ min: 0 })
-    .withMessage("Цена не должна быть отрицательна"),
+    .isInt({ min: 1 })
+    .withMessage("Цена не указана"),
   body("oldPrice")
     .isNumeric()
     .withMessage("Цена должна быть числом")

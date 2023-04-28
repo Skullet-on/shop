@@ -25,6 +25,8 @@ class OrderController {
         building,
         corp,
         flat,
+        postoffice,
+        deliveryType,
         products,
       } = req.body;
 
@@ -37,6 +39,8 @@ class OrderController {
         building,
         corp,
         flat,
+        postoffice,
+        deliveryType
       });
 
       products.map(async (product) => {

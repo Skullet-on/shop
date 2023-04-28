@@ -37,6 +37,12 @@ module.exports = {
       flat: {
         type: Sequelize.STRING,
       },
+      postoffice: {
+        type: Sequelize.STRING,
+      },
+      deliveryType: {
+        type: Sequelize.STRING,
+      },
       isDone: {
         type: Sequelize.BOOLEAN,
         defaultValue: false,

@@ -3,7 +3,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import { Context } from "..";
 
-const OrderForm = ({ submitForm }) => {
+const OrderForm = ({ submitForm, deliveryType }) => {
   const { basketStore } = useContext(Context);
   const [fio, setFio] = useState("");
   const [phone, setPhone] = useState("");
@@ -13,6 +13,7 @@ const OrderForm = ({ submitForm }) => {
   const [building, setBuilding] = useState("");
   const [corp, setCorp] = useState("");
   const [flat, setFlat] = useState("");
+  const [postoffice, setPostoffice] = useState("");
 
   useEffect(() => {
     setFio("");
@@ -23,6 +24,7 @@ const OrderForm = ({ submitForm }) => {
     setBuilding("");
     setCorp("");
     setFlat("");
+    setPostoffice("");
     basketStore.setErrors({});
   }, []);
 
@@ -75,8 +77,15 @@ const OrderForm = ({ submitForm }) => {
     setFlat(value);
   };
 
+  const handleChangePostoffice = (value) => {
+    if (basketStore.errors.postoffice) {
+      basketStore.removeFieldErrors("postoffice");
+    }
+    setPostoffice(value);
+  };
+
   return (
-    <Form>
+    <Form className="my-3">
       <Form.Group md="4">
         <Form.Label>ФИО</Form.Label>
         <Form.Control
@@ -96,7 +105,7 @@ const OrderForm = ({ submitForm }) => {
         <Form.Control
           required
           type="text"
-          data-inputmask="'alias': 'email'"
+          data-inputmask="'alias': 'decimal', 'groupSeparator': '-'"
           value={phone}
           onChange={(e) => handleChangePhone(e.target.value)}
           placeholder="+375 (xx) xxx-xx-xx"
@@ -106,78 +115,97 @@ const OrderForm = ({ submitForm }) => {
           {basketStore.errors.phone && basketStore.errors.phone.message}
         </Form.Control.Feedback>
       </Form.Group>
-      <Row>
-        <Col md={9}>
+      { deliveryType !== 'pickupCheck' && 
+        <Row>
+          <Col md={9}>
+            <Form.Group>
+              <Form.Label>Город</Form.Label>
+              <Form.Control
+                type="text"
+                value={city}
+                onChange={(e) => handleChangeCity(e.target.value)}
+                placeholder="Город"
+                isInvalid={basketStore.errors.city}
+              />
+              <Form.Control.Feedback type={"invalid"}>
+                {basketStore.errors.city && basketStore.errors.city.message}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Улица</Form.Label>
+              <Form.Control
+                type="text"
+                value={street}
+                onChange={(e) => handleChangeStreet(e.target.value)}
+                placeholder="Улица"
+                isInvalid={basketStore.errors.street}
+              />
+              <Form.Control.Feedback type={"invalid"}>
+                {basketStore.errors.street && basketStore.errors.street.message}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
+          <Col md={3}>
+            <Form.Group>
+              <Form.Label>Дом</Form.Label>
+              <Form.Control
+                type="text"
+                value={building}
+                onChange={(e) => handleChangeBuilding(e.target.value)}
+                placeholder="Дом"
+                isInvalid={basketStore.errors.building}
+              />
+              <Form.Control.Feedback type={"invalid"}>
+                {basketStore.errors.building &&
+                  basketStore.errors.building.message}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Корпус</Form.Label>
+              <Form.Control
+                type="text"
+                value={corp}
+                onChange={(e) => handleChangeCorp(e.target.value)}
+                placeholder="Корпус"
+                isInvalid={basketStore.errors.corp}
+              />
+              <Form.Control.Feedback type={"invalid"}>
+                {basketStore.errors.corp && basketStore.errors.corp.message}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Квартира</Form.Label>
+              <Form.Control
+                type="text"
+                value={flat}
+                onChange={(e) => handleChangeFlat(e.target.value)}
+                placeholder="Квартира"
+                isInvalid={basketStore.errors.flat}
+              />
+              <Form.Control.Feedback type={"invalid"}>
+                {basketStore.errors.flat && basketStore.errors.flat.message}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
+        </Row>
+      }
+      { 
+        deliveryType === 'postCheck' && <Row>
           <Form.Group>
-            <Form.Label>Город</Form.Label>
+            <Form.Label>Отделение Европочта (Адрес)</Form.Label>
             <Form.Control
               type="text"
-              value={city}
-              onChange={(e) => handleChangeCity(e.target.value)}
-              placeholder="Город"
-              isInvalid={basketStore.errors.city}
+              value={postoffice}
+              onChange={(e) => handleChangePostoffice(e.target.value)}
+              placeholder="Отделение №308 г. Заславль, ул. Советская, 39"
+              isInvalid={basketStore.errors.postoffice}
             />
             <Form.Control.Feedback type={"invalid"}>
-              {basketStore.errors.city && basketStore.errors.city.message}
+              {basketStore.errors.postoffice && basketStore.errors.postoffice.message}
             </Form.Control.Feedback>
           </Form.Group>
-          <Form.Group>
-            <Form.Label>Улица</Form.Label>
-            <Form.Control
-              type="text"
-              value={street}
-              onChange={(e) => handleChangeStreet(e.target.value)}
-              placeholder="Улица"
-              isInvalid={basketStore.errors.street}
-            />
-            <Form.Control.Feedback type={"invalid"}>
-              {basketStore.errors.street && basketStore.errors.street.message}
-            </Form.Control.Feedback>
-          </Form.Group>
-        </Col>
-        <Col md={3}>
-          <Form.Group>
-            <Form.Label>Дом</Form.Label>
-            <Form.Control
-              type="text"
-              value={building}
-              onChange={(e) => handleChangeBuilding(e.target.value)}
-              placeholder="Дом"
-              isInvalid={basketStore.errors.building}
-            />
-            <Form.Control.Feedback type={"invalid"}>
-              {basketStore.errors.building &&
-                basketStore.errors.building.message}
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Корпус</Form.Label>
-            <Form.Control
-              type="text"
-              value={corp}
-              onChange={(e) => handleChangeCorp(e.target.value)}
-              placeholder="Корпус"
-              isInvalid={basketStore.errors.corp}
-            />
-            <Form.Control.Feedback type={"invalid"}>
-              {basketStore.errors.corp && basketStore.errors.corp.message}
-            </Form.Control.Feedback>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Квартира</Form.Label>
-            <Form.Control
-              type="text"
-              value={flat}
-              onChange={(e) => handleChangeFlat(e.target.value)}
-              placeholder="Квартира"
-              isInvalid={basketStore.errors.flat}
-            />
-            <Form.Control.Feedback type={"invalid"}>
-              {basketStore.errors.flat && basketStore.errors.flat.message}
-            </Form.Control.Feedback>
-          </Form.Group>
-        </Col>
-      </Row>
+        </Row>
+      }
       <Form.Group className="mb-3">
         <Form.Label>Комментарий к заказу</Form.Label>
         <Form.Control
@@ -200,6 +228,7 @@ const OrderForm = ({ submitForm }) => {
             building,
             corp,
             flat,
+            postoffice
           })
         }
         type="submit"
