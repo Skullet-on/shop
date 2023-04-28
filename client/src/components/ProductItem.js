@@ -112,7 +112,6 @@ const ProductItem = ({ product }) => {
             Цена:
             {product.oldPrice ? <s> {product.oldPrice} руб.</s> : ""}
             <b> {product.price} руб. </b>
-            {count > 1 && `(${product.price * count} руб)`}
           </Card.Text>
           <Card.Text className="mb-1">
             {selectedColor && selectedColor.count > 0 ? (

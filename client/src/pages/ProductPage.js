@@ -25,11 +25,11 @@ function ProductPage() {
     <Container className="mt-3">
       <Row>
         <Col md={4}>
-          {item.color ? (
+          {item.colors ? (
             <Image
               style={{ width: "100%" }}
               src={
-                process.env.REACT_APP_API_URL + "/" + item.color[imgIndex].img
+                process.env.REACT_APP_API_URL + "/images/" + item.colors[imgIndex].img
               }
             />
           ) : (

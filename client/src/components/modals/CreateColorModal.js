@@ -108,26 +108,32 @@ const CreateColorModal = ({ show, onHide, productId }) => {
             </Col>
           </Row>
           <Row className="mt-2">
-            <Form.Control
-              value={name}
-              onChange={(e) => handleChangeName(e.target.value)}
-              isInvalid={colorStore.errors.name}
-              placeholder="Введите код цвета"
-            />
-            <Form.Control.Feedback type={"invalid"}>
-              {colorStore.errors.name && colorStore.errors.name.message}
-            </Form.Control.Feedback>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon1">Код цвета</span>
+              <Form.Control
+                value={name}
+                onChange={(e) => handleChangeName(e.target.value)}
+                isInvalid={colorStore.errors.name}
+                placeholder="Введите код цвета"
+              />
+              <Form.Control.Feedback type={"invalid"}>
+                {colorStore.errors.name && colorStore.errors.name.message}
+              </Form.Control.Feedback>
+            </div>
           </Row>
           <Row className="mt-2">
-            <Form.Control
-              value={count}
-              onChange={(e) => handleChangeCount(e.target.value)}
-              isInvalid={colorStore.errors.count}
-              placeholder="Введите количество"
-            />
-            <Form.Control.Feedback type={"invalid"}>
-              {colorStore.errors.count && colorStore.errors.count.message}
-            </Form.Control.Feedback>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="basic-addon1">Количество</span>
+              <Form.Control
+                value={count}
+                onChange={(e) => handleChangeCount(e.target.value)}
+                isInvalid={colorStore.errors.count}
+                placeholder="Введите количество"
+              />
+              <Form.Control.Feedback type={"invalid"}>
+                {colorStore.errors.count && colorStore.errors.count.message}
+              </Form.Control.Feedback>
+            </div>
           </Row>
         </Form>
       </Modal.Body>

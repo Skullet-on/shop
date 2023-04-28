@@ -56,23 +56,29 @@ const CreateProperty = ({ show, onHide }) => {
         <Form>
           <Row>
             <Col sm={4} lg={5}>
-              <Form.Control
-                value={value}
-                isInvalid={Object.keys(propertiesStore.errors).length}
-                onChange={(e) => handleChangeName(e.target.value)}
-                placeholder="Введите название свойства"
-              />
-              <Form.Control.Feedback type={"invalid"}>
-                {Object.keys(propertiesStore.errors).length &&
-                  propertiesStore.errors.name.message}
-              </Form.Control.Feedback>
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Название свойства</span>
+                <Form.Control
+                  value={value}
+                  isInvalid={Object.keys(propertiesStore.errors).length}
+                  onChange={(e) => handleChangeName(e.target.value)}
+                  placeholder="Введите название свойства"
+                />
+                <Form.Control.Feedback type={"invalid"}>
+                  {Object.keys(propertiesStore.errors).length &&
+                    propertiesStore.errors.name.message}
+                </Form.Control.Feedback>
+              </div>
             </Col>
             <Col sm={4} lg={5}>
-              <Form.Control
-                value={currency}
-                onChange={(e) => setCurrency(e.target.value)}
-                placeholder="Введите единицу измерения"
-              />
+              <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1">Единица измерения</span>
+                <Form.Control
+                  value={currency}
+                  onChange={(e) => setCurrency(e.target.value)}
+                  placeholder="Введите единицу измерения"
+                />
+              </div>
             </Col>
             <Col>
               <Dropdown>

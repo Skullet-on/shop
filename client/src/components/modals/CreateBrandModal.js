@@ -35,16 +35,19 @@ const CreateBrand = ({ show, onHide }) => {
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <Form.Control
-            value={value}
-            onChange={(e) => handleChange(e.target.value)}
-            isInvalid={Object.keys(brandStore.errors).length}
-            placeholder="Введите название бренда"
-          />
-          <Form.Control.Feedback type={"invalid"}>
-            {Object.keys(brandStore.errors).length &&
-              brandStore.errors.name.message}
-          </Form.Control.Feedback>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">Бренд</span>
+            <Form.Control
+              value={value}
+              onChange={(e) => handleChange(e.target.value)}
+              isInvalid={Object.keys(brandStore.errors).length}
+              placeholder="Введите название бренда"
+            />
+            <Form.Control.Feedback type={"invalid"}>
+              {Object.keys(brandStore.errors).length &&
+                brandStore.errors.name.message}
+            </Form.Control.Feedback>
+          </div>
         </Form>
       </Modal.Body>
       <Modal.Footer>

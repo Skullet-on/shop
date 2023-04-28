@@ -40,6 +40,8 @@ const CreateCatalog = ({ show, onHide }) => {
       </Modal.Header>
       <Modal.Body>
         <Form>
+        <div class="input-group mb-3">
+          <span class="input-group-text" id="basic-addon1">Название каталога</span>
           <Form.Control
             value={value}
             onChange={(e) => handleChange(e.target.value)}
@@ -50,6 +52,7 @@ const CreateCatalog = ({ show, onHide }) => {
             {Object.keys(catalogStore.errors).length &&
               catalogStore.errors.name.message}
           </Form.Control.Feedback>
+        </div>
         </Form>
       </Modal.Body>
       <Modal.Footer>
