@@ -47,9 +47,7 @@ const CreateColorModal = ({ show, onHide, productId }) => {
         setName("");
         setFile({});
         setCount(0);
-        toastStore.setMessage(`Цвет успешно добавлен`);
-        toastStore.setVariant("info");
-        toastStore.setShow(true);
+        toastStore.setInfoToast(`Цвет успешно добавлен`);
         onHide();
       }
     });

@@ -9,7 +9,7 @@ import { addOrder } from "../http/productApi";
 import { LS_BASKET, SHOP_ROUTE } from "../utils/constants";
 
 const Basket = () => {
-  const { basketStore } = useContext(Context);
+  const { basketStore, toastStore } = useContext(Context);
   const [deliveryType, setDeliveryType] = useState("deliveryCheck")
   const navigate = useNavigate();
 
@@ -48,6 +48,7 @@ const Basket = () => {
           localStorage.removeItem(LS_BASKET);
           basketStore.setItems([]);
           navigate(SHOP_ROUTE);
+          toastStore.setInfoToast("Заказ принят.")
         }
       })
       .catch((e) => {

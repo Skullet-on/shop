@@ -8,7 +8,7 @@ import Badge from "./basic/Badge";
 import ColorList from "./ColorList";
 
 const ProductItem = ({ product }) => {
-  const { basketStore } = useContext(Context);
+  const { basketStore, toastStore } = useContext(Context);
   const [count, setCount] = useState(1);
   const [selectedColor, setSelectedColor] = useState(null);
 
@@ -75,6 +75,7 @@ const ProductItem = ({ product }) => {
         count: count,
       });
     }
+    toastStore.setInfoToast('Товар добавлен в корзину');
   };
 
   const handleChangeColor = (color) => {

@@ -39,9 +39,7 @@ const NavBar = observer(() => {
   const handleLogout = (user) => {
     user.logout();
     navigate(SHOP_ROUTE);
-    toastStore.setMessage("Вы вышли из аккаунта");
-    toastStore.setVariant("info");
-    toastStore.setShow(true);
+    toastStore.setInfoToast("Вы вышли из аккаунта");
   };
 
   const handleClickPaid = (e) => {

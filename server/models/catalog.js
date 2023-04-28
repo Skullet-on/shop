@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
   Catalog.init(
     {
       name: DataTypes.STRING,
+      label: DataTypes.STRING,
     },
     {
       sequelize,

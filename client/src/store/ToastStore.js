@@ -21,6 +21,12 @@ export default class ToastStore {
     this._variant = variant;
   }
 
+  setInfoToast(message) {
+    this._message = message;
+    this._variant = 'info';
+    this._show = true;
+  }
+
   get message() {
     return this._message;
   }

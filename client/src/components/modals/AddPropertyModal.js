@@ -14,9 +14,7 @@ const AddProperty = ({ show, onHide, catalogId }) => {
       onHide();
     });
 
-    toastStore.setMessage(`Свойство добавлено к продукту`);
-    toastStore.setVariant("info");
-    toastStore.setShow(true);
+    toastStore.setInfoToast(`Свойство добавлено к продукту`);
   };
 
   return (

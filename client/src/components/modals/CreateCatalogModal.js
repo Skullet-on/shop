@@ -19,9 +19,7 @@ const CreateCatalog = ({ show, onHide }) => {
       }
     });
 
-    toastStore.setMessage(`Каталог ${value} успешно создан`);
-    toastStore.setVariant("info");
-    toastStore.setShow(true);
+    toastStore.setInfoToast(`Каталог ${value} успешно создан`);
   };
 
   const handleChange = (value) => {

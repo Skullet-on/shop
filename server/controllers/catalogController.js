@@ -17,7 +17,7 @@ class CatalogController {
       }
 
       const { name, properties = [] } = req.body;
-      const catalog = await Catalog.create({ name: name.toLowerCase() });
+      const catalog = await Catalog.create({ name: name.toLowerCase(), label: name });
 
       if (properties.length) {
         properties.forEach((property) => {
@@ -58,7 +58,8 @@ class CatalogController {
       const { id } = req.params;
       const { name } = req.body;
       const catalog = await Catalog.update(
-        { name: name.toLowerCase() },
+        { name: name.toLowerCase(),
+          label: name, },
         { where: { id } }
       );
 

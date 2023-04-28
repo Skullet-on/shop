@@ -22,9 +22,7 @@ const Registration = () => {
       if (!Object.keys(userStore.errors).length) {
         navigate(SHOP_ROUTE);
 
-        toastStore.setMessage("Вы успешно зарегистрировались, " + email);
-        toastStore.setVariant("info");
-        toastStore.setShow(true);
+        toastStore.setInfoToast("Вы успешно зарегистрировались, " + email);
       }
     } catch (e) {
       alert(e);

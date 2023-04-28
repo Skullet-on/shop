@@ -48,9 +48,7 @@ const CreateProduct = observer(({ show, onHide }) => {
     formData.append("info", JSON.stringify(info));
     createProduct(formData).then((data) => onHide());
 
-    toastStore.setMessage(`Продукт успешно добавлен`);
-    toastStore.setVariant("info");
-    toastStore.setShow(true);
+    toastStore.setInfoToast(`Продукт успешно добавлен`);
   };
 
   return (
