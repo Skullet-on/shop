@@ -8,6 +8,7 @@ import { Spinner } from "react-bootstrap";
 import TopBar from "./components/TopBar";
 import { fetchBrands, fetchCatalogs, fetchProperties } from "./http/productApi";
 import { LS_BASKET, LS_TOKEN } from "./utils/constants";
+import ToastMessage from "./components/ToastMessage";
 
 const App = () => {
   const {
@@ -47,6 +48,7 @@ const App = () => {
       <TopBar />
       <NavBar />
       <AppRouter />
+      <ToastMessage />
     </BrowserRouter>
   );
 };

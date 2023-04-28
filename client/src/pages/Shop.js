@@ -6,7 +6,6 @@ import ProductList from "../components/ProductList";
 import FilterBar from "../components/FilterBar";
 import { fetchCatalogs, fetchBrands, fetchProducts } from "../http/productApi";
 import Pages from "../components/Pages";
-import ToastMessage from "../components/ToastMessage";
 import { ucFirst } from "../helpers";
 
 const Shop = observer(() => {
@@ -90,7 +89,6 @@ const Shop = observer(() => {
           <Pages />
         </Col>
       </Row>
-      <ToastMessage />
     </Container>
   );
 });

@@ -37,7 +37,7 @@ const FilterBar = () => {
                   checked={filterStore.brands.includes(brand.id)}
                   onChange={() => {}}
                 />
-                {brand.name}
+                {brand.label}
               </li>
             ))}
           </ul>
