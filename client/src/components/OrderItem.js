@@ -50,9 +50,17 @@ const OrderItem = ({ order, doneOrder }) => {
         })}
       </td>
       <td>
+        {order.deliveryType === "pickupCheck" ? (
+          "Самовывоз"
+        ) : order.deliveryType === "deliveryCheck" ? (
+          "Доставка"
+        ) : "Европочта"}
+      </td>
+      <td>
         <p>{order.fio}</p>
         <p>{order.phone}</p>
         <p>{`г. ${order.city}, ул. ${order.street}, д. ${order.building}/${order.corp}, кв. ${order.flat}`}</p>
+        {order.deliveryType === "postCheck" && <p>Европочта: {order.postoffice}</p>}
       </td>
       <td>{totalSum} руб.</td>
       <td>

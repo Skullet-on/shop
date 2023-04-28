@@ -25,6 +25,7 @@ const Orders = () => {
           <thead>
             <tr>
               <th colSpan={2}>Товар</th>
+              <th>Тип доставки</th>
               <th>Контактные данные</th>
               <th>Сумма</th>
               <th>Статус</th>
