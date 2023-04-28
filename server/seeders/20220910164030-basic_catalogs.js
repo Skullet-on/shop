@@ -4,32 +4,38 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     return queryInterface.bulkInsert("Catalogs", [
       {
-        name: "Пряжа",
+        name: "пряжа",
+        label: "Пряжа",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        name: "Спицы",
+        name: "спицы",
+        label: "Спицы",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        name: "Крючки",
+        name: "крючки",
+        label: "Крючки",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        name: "Аксесуары для вязания и рукоделия",
+        name: "аксесуары для вязания и рукоделия",
+        label: "Аксесуары для вязания и рукоделия",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        name: "Помпоны",
+        name: "помпоны",
+        label: "Помпоны",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        name: "Подарочные сертификаты",
+        name: "подарочные сертификаты",
+        label: "Подарочные сертификаты",
         createdAt: new Date(),
         updatedAt: new Date(),
       },
