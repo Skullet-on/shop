@@ -290,7 +290,10 @@ class ProductController {
       },
       limit,
       offset,
-      include: ["properties", "brand", "catalog", "colors"],
+      include: [{ 
+        model: Property, 
+        as: "properties",
+      }, "brand", "catalog", "colors"],
       order: [["colors", "id"]],
       distinct: true,
     });

@@ -16,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
         through: models.ProductProperty,
         foreignKey: "productId",
       });
+      Product.hasMany(models.ProductProperty, {
+        as: "props",
+        foreignKey: "productId",
+      });
       Product.hasMany(models.Color, {
         as: "colors",
         foreignKey: "productId",

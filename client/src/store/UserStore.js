@@ -80,7 +80,7 @@ export default class UserStore {
       this.setUser({});
       this.setErrors({});
     } catch (e) {
-      console.log(e);
+      console.log("e", e);
     }
   }
 

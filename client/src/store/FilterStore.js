@@ -5,6 +5,7 @@ export default class FilterStore {
     this._minPrice = null;
     this._maxPrice = null;
     this._brands = [];
+    this._filters = {};
 
     makeAutoObservable(this);
   }
@@ -18,6 +19,13 @@ export default class FilterStore {
   setBrands(brand) {
     this._brands = brand;
   }
+  setFilters(property, value) {
+    this._filters[property] = value || null;
+  }
+
+  clearFilters() {
+    this._filters = {};
+  }
 
   get minPrice() {
     return this._minPrice;
@@ -27,5 +35,8 @@ export default class FilterStore {
   }
   get brands() {
     return this._brands;
+  }
+  get filters() {
+    return this._filters;
   }
 }

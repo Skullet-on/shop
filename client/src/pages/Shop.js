@@ -23,7 +23,7 @@ const Shop = observer(() => {
       null,
       productStore.page,
       productStore.limit,
-      filterStore
+      filterStore.filters
     ).then((data) => {
       productStore.setProducts(data.rows);
       productStore.setTotalCount(data.count);
@@ -38,7 +38,7 @@ const Shop = observer(() => {
       productStore.page,
       productStore.limit,
       productStore.search,
-      filterStore
+      filterStore.filters
     ).then((data) => {
       productStore.setProducts(data.rows);
       productStore.setTotalCount(data.count);
@@ -57,7 +57,7 @@ const Shop = observer(() => {
       productStore.page,
       productStore.limit,
       productStore.search,
-      filterStore
+      filterStore.filters
     ).then((data) => {
       productStore.setProducts(data.rows);
       productStore.setTotalCount(data.count);

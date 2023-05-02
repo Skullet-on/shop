@@ -13,7 +13,7 @@ class CatalogPropertyController {
 
       return res.json(catalogProperty);
     } catch (error) {
-      console.log(error);
+      console.log("error", error);
     }
   }
 

@@ -107,9 +107,7 @@ export const fetchProducts = async (
       page,
       limit,
       search,
-      minPrice: filter.minPrice,
-      maxPrice: filter.maxPrice,
-      brands: filter.brands,
+      ...filter
     },
   });
 
