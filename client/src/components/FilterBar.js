@@ -1,8 +1,7 @@
 import { observer } from "mobx-react-lite";
 import React, { useContext, useEffect } from "react";
-import { Accordion } from "react-bootstrap";
+import { Accordion, Form, InputGroup } from "react-bootstrap";
 import { Context } from "..";
-import AdditionalFilters from "./AdditionalFilters";
 
 const FilterBar = () => {
   const { brandStore, catalogStore, filterStore } = useContext(Context);
@@ -22,7 +21,7 @@ const FilterBar = () => {
       filterStore.setFilters('brands', [brand]);
     }
   };
-  const currentCatalog = catalogStore.catalogs.filter((catalog) => catalog.name === catalogStore.selectedCatalog.name)[0];
+  //const currentCatalog = catalogStore.catalogs.filter((catalog) => catalog.name === catalogStore.selectedCatalog.name)[0];
 
   const handleSetFilter = ({ name, value }) => {
     filterStore.setFilters(name, value);
@@ -53,7 +52,27 @@ const FilterBar = () => {
           </ul>
         </Accordion.Body>
       </Accordion.Item>
-      {currentCatalog && currentCatalog.properties && <AdditionalFilters properties={currentCatalog.properties} setFilters={(e) => handleSetFilter(e)} />}
+      <Accordion.Item eventKey="1">
+        <Accordion.Header>Цена</Accordion.Header>
+        <Accordion.Body className="p-0">
+          <InputGroup className="mb-3">
+            <InputGroup.Text id="basic-addon1">От</InputGroup.Text>
+            <Form.Control
+              placeholder='Цена'
+              onChange={e => handleSetFilter({ name: 'priceFrom', value: e.target.value })}
+            />
+            <InputGroup.Text id="basic-addon2">руб.</InputGroup.Text>
+          </InputGroup>
+          <InputGroup className="mb-3">
+            <InputGroup.Text id="basic-addon3">До</InputGroup.Text>
+            <Form.Control
+              placeholder='Цена'
+              onChange={e => handleSetFilter({ name: 'priceTo', value: e.target.value })}
+            />
+            <InputGroup.Text id="basic-addon3">руб.</InputGroup.Text>
+          </InputGroup>
+        </Accordion.Body>
+      </Accordion.Item>
     </Accordion>
   );
 };

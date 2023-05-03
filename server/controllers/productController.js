@@ -270,7 +270,7 @@ class ProductController {
   }
 
   async getAll(req, res) {
-    let { catalogId = null, limit, page, search = "", brands = [] } = req.query;
+    let { catalogId = null, limit, page, search = "", brands = [], priceFrom, priceTo } = req.query;
     page = page || 1;
     limit = limit || 10;
     let offset = page * limit - limit;
@@ -286,6 +286,14 @@ class ProductController {
           {
             name: { [Op.like]: `%${search.toLowerCase()}%` },
           },
+          {
+            price: {
+              [Op.and]: {
+                [Op.lte]: Number(priceTo) || 999999999,
+                [Op.gte]: Number(priceFrom) || 0
+              }
+            }
+          }
         ],
       },
       limit,

@@ -128,13 +128,17 @@ const ProductItem = ({ product }) => {
           {product.properties.length
             ? product.properties.map((property) => {
                 return (
-                  <Card.Text key={property.id} className="d-flex mb-1">
+                  <Card.Text key={property.id} className="d-flex mb-0" style={{
+                    fontSize: 12
+                  }}>
                     {property.name || ""}:
-                    <div className="ms-2">
+                    <span className="ms-2" style={{
+                      fontSize: 12
+                    }}>
                       {property.type === "string"
                         ? `${property.ProductProperty.description} ${property.currency}`
                         : `${property.ProductProperty.value} ${property.currency}`}
-                    </div>
+                    </span>
                   </Card.Text>
                 );
               })
