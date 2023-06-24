@@ -16,8 +16,8 @@ const TopBar = () => {
         <Col md={3}>
           <div className="d-flex">
             <Phone />
-            <a className="ms-2" href="tel:+375293407694">
-              +375 (29) 340-76-94
+            <a className="ms-2" href="tel:+375445549041">
+              +375 (44) 554-90-41
             </a>
           </div>
           <div className="d-flex">
@@ -28,8 +28,8 @@ const TopBar = () => {
           </div>
           <div className="d-flex">
             <Envelope />
-            <a className="ms-2" href="mailto:skullet-on@mail.ru">
-              skullet-on@mail.ru
+            <a className="ms-2" href="mailto:pryazhamilayaalpaka@gmail.com">
+              pryazhamilayaalpaka@gmail.com
             </a>
           </div>
         </Col>

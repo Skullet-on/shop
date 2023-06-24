@@ -29,7 +29,7 @@ const start = async () => {
         await sequelize.authenticate();
         await sequelize.sync(); 
 
-        app.listen(PORT, () => {
+        app.listen(() => {
             console.log(`Listening on ${PORT}`);
         }); 
     } catch (e) {

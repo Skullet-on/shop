@@ -107,9 +107,9 @@ const NavBar = observer(() => {
               <NavDropdown.Item onClick={() => navigate(LOGIN_ROUTE)}>
                 Войти
               </NavDropdown.Item>
-              <NavDropdown.Item onClick={() => navigate(REGISTRATION_ROUTE)}>
+              {/* <NavDropdown.Item onClick={() => navigate(REGISTRATION_ROUTE)}>
                 Зарегистрироваться
-              </NavDropdown.Item>
+              </NavDropdown.Item> */}
             </>
           )}
         </NavDropdown>

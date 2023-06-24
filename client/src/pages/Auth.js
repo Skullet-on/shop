@@ -66,8 +66,8 @@ const Auth = () => {
           </Form.Control.Feedback>
           <div className="d-flex justify-content-between mt-3">
             <div>
-              Нет аккаунта?{" "}
-              <NavLink to={REGISTRATION_ROUTE}>Регистрация</NavLink>
+              {/* Нет аккаунта?{" "}
+              <NavLink to={REGISTRATION_ROUTE}>Регистрация</NavLink> */}
             </div>
             <Button variant={"outline-dark"} onClick={handleClick}>
               Войти
