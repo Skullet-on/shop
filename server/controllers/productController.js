@@ -183,7 +183,6 @@ class ProductController {
             where: { id: clr.id },
           }
         );
-
         product = await Product.update(
           {
             name,
@@ -197,7 +196,7 @@ class ProductController {
         );
       } else {
         product = await Product.update(
-          { name: name.toLowerCase(), price, brandId, catalogId },
+          { name: name.toLowerCase(), price, oldPrice, brandId, catalogId },
           { where: { id: id } }
         );
       }
@@ -270,7 +269,15 @@ class ProductController {
   }
 
   async getAll(req, res) {
-    let { catalogId = null, limit, page, search = "", brands = [], priceFrom, priceTo } = req.query;
+    let {
+      catalogId = null,
+      limit,
+      page,
+      search = "",
+      brands = [],
+      priceFrom,
+      priceTo,
+    } = req.query;
     page = page || 1;
     limit = limit || 10;
     let offset = page * limit - limit;
@@ -290,18 +297,23 @@ class ProductController {
             price: {
               [Op.and]: {
                 [Op.lte]: Number(priceTo) || 999999999,
-                [Op.gte]: Number(priceFrom) || 0
-              }
-            }
-          }
+                [Op.gte]: Number(priceFrom) || 0,
+              },
+            },
+          },
         ],
       },
-      limit,
+      limit: Number(limit),
       offset,
-      include: [{ 
-        model: Property, 
-        as: "properties",
-      }, "brand", "catalog", "colors"],
+      include: [
+        {
+          model: Property,
+          as: "properties",
+        },
+        "brand",
+        "catalog",
+        "colors",
+      ],
       order: [["colors", "id"]],
       distinct: true,
     });
@@ -314,7 +326,15 @@ class ProductController {
       const { id } = req.params;
       const product = await Product.findOne({
         where: { id },
-        include: ["properties", "colors"],
+        include: [
+          {
+            model: Property,
+            as: "properties",
+          },
+          "brand",
+          "catalog",
+          "colors",
+        ],
         order: [["colors", "id"]],
       });
 

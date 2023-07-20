@@ -6,6 +6,7 @@ import { Context } from "..";
 import { imagesUrl, LS_BASKET, PRODUCT_ROUTE } from "../utils/constants";
 import Badge from "./basic/Badge";
 import ColorList from "./ColorList";
+import { ucFirst } from "../helpers";
 
 const ProductItem = ({ product }) => {
   const { basketStore, toastStore } = useContext(Context);
@@ -75,7 +76,7 @@ const ProductItem = ({ product }) => {
         count: count,
       });
     }
-    toastStore.setInfoToast('Товар добавлен в корзину');
+    toastStore.setInfoToast("Товар добавлен в корзину");
   };
 
   const handleChangeColor = (color) => {
@@ -84,7 +85,7 @@ const ProductItem = ({ product }) => {
 
   return (
     <Col sm={12} md={6} xl={4} xxl={3} className="mt-3 p-1">
-      <Card>
+      <Card style={{ height: "100%" }}>
         <Image
           src={
             selectedColor
@@ -98,7 +99,13 @@ const ProductItem = ({ product }) => {
             cursor: "pointer",
           }}
         />
-        <Card.Body>
+        <Card.Body
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-evenly',
+          }}
+        >
           <Card.Title
             className="fs-6"
             style={{
@@ -111,7 +118,7 @@ const ProductItem = ({ product }) => {
           </Card.Title>
           <Card.Text className="mb-1">
             Цена:
-            {product.oldPrice ? <s> {product.oldPrice} руб.</s> : ""}
+            {product.oldPrice !== "0.00" ? <s> {product.oldPrice} руб.</s> : ""}
             <b> {product.price} руб. </b>
           </Card.Text>
           <Card.Text className="mb-1">
@@ -128,13 +135,20 @@ const ProductItem = ({ product }) => {
           {product.properties.length
             ? product.properties.map((property) => {
                 return (
-                  <Card.Text key={property.id} className="d-flex mb-0" style={{
-                    fontSize: 12
-                  }}>
-                    {property.name || ""}:
-                    <span className="ms-2" style={{
-                      fontSize: 12
-                    }}>
+                  <Card.Text
+                    key={property.id}
+                    className="d-flex mb-0"
+                    style={{
+                      fontSize: 12,
+                    }}
+                  >
+                    {ucFirst(property.name) || ""}:
+                    <span
+                      className="ms-2"
+                      style={{
+                        fontSize: 12,
+                      }}
+                    >
                       {property.type === "string"
                         ? `${property.ProductProperty.description} ${property.currency}`
                         : `${property.ProductProperty.value} ${property.currency}`}
@@ -143,6 +157,17 @@ const ProductItem = ({ product }) => {
                 );
               })
             : ""}
+          {selectedColor && (
+            <Card.Text
+              className="mb-0"
+              style={{
+                fontSize: 12,
+              }}
+            >
+              Цвет:
+              <span> {selectedColor.name}</span>
+            </Card.Text>
+          )}
           <ColorList product={product} changeColor={handleChangeColor} />
         </Card.Body>
         <ButtonGroup aria-label="Basic example">

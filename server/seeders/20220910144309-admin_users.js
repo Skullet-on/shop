@@ -21,6 +21,13 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      {
+        email: "irinakatser23@gmail.com",
+        password: await bcrypt.hash("1q2w#E$R", 5),
+        role: "ADMIN",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     ]);
   },
 

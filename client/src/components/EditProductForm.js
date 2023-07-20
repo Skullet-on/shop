@@ -17,8 +17,8 @@ import CreateColor from "./CreateColor";
 const EditProductForm = () => {
   const { productStore, brandStore, catalogStore } = useContext(Context);
   const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [oldPrice, setOldPrice] = useState(0);
+  const [price, setPrice] = useState(null);
+  const [oldPrice, setOldPrice] = useState(null);
   const [selectedColor, setSelectedColor] = useState({});
   const [selectedBrand, setSelectedBrand] = useState({});
   const [selectedCatalog, setSelectedCatalog] = useState({});
@@ -200,7 +200,7 @@ const EditProductForm = () => {
       productStore.removeFieldErrors("price");
     }
     if (value < 0 || !value) {
-      setPrice(0);
+      setPrice(null);
     } else if (value > 1000) {
       setPrice(1000);
     } else {
@@ -213,14 +213,14 @@ const EditProductForm = () => {
       productStore.removeFieldErrors("oldPrice");
     }
     if (value < 0 || !value) {
-      setOldPrice(0);
+      setOldPrice(null);
     } else if (value > 1000) {
       setOldPrice(1000);
     } else {
       setOldPrice(value);
     }
   };
-
+  console.log(selectedColor);
   const handleRemoveProduct = async () => {
     await removeProduct(productStore.selectedProduct.id);
 
@@ -293,6 +293,7 @@ const EditProductForm = () => {
                   <Col md={10} className="mt-2">
                     <Form.Control
                       type="number"
+                      step="0.1"
                       value={price}
                       isInvalid={
                         productStore.errors.price && productStore.errors.price
@@ -313,6 +314,7 @@ const EditProductForm = () => {
                   <Col md={10} className="mt-2">
                     <Form.Control
                       type="number"
+                      step="0.1"
                       value={oldPrice}
                       isInvalid={
                         productStore.errors.oldPrice &&

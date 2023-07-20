@@ -107,7 +107,7 @@ export const fetchProducts = async (
       page,
       limit,
       search,
-      ...filter
+      ...filter,
     },
   });
 

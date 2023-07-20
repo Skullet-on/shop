@@ -37,7 +37,7 @@ const BasketItem = ({ item, basket }) => {
         onClick={() => navigate(PRODUCT_ROUTE + "/" + item.product.id)}
         style={{ cursor: "pointer" }}
       >
-        {item.product.name}
+        {`${item.product.name}, цвет: ${item.color.name}`}
       </td>
       <td>{item.product.price} руб.</td>
       <td>
@@ -48,7 +48,7 @@ const BasketItem = ({ item, basket }) => {
           onChange={(e) => handleSetCount(e.target.value)}
         />
       </td>
-      <td>{item.product.price * item.count} руб.</td>
+      <td>{Number(item.product.price * item.count).toFixed(2)} руб.</td>
       <td>
         <X
           width="24"

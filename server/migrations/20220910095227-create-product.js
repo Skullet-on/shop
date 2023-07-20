@@ -14,11 +14,11 @@ module.exports = {
         allowNull: false,
       },
       price: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DECIMAL(10, 2),
         allowNull: false,
       },
       oldPrice: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.DECIMAL(10, 2),
         defaultValue: 0,
       },
       rating: {

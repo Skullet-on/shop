@@ -12,14 +12,14 @@ router.post(
     .isLength({ min: 5, max: 100 })
     .withMessage("Название должно содержать от 5 до 100 символов"),
   body("price")
-    .isNumeric()
+    .isFloat()
     .withMessage("Цена должна быть числом")
-    .isInt({ min: 1 })
+    .isFloat({ min: 1 })
     .withMessage("Цена не указана"),
   body("oldPrice")
-    .isNumeric()
+    .isFloat()
     .withMessage("Цена должна быть числом")
-    .isInt({ min: 0 })
+    .isFloat({ min: 0 })
     .withMessage("Цена не должна быть отрицательна"),
   body("color")
     .isLength({ min: 1 })
@@ -41,14 +41,14 @@ router.patch(
     .isLength({ min: 5, max: 100 })
     .withMessage("Название должно содержать от 5 до 100 символов"),
   body("price")
-    .isNumeric()
+    .isFloat()
     .withMessage("Цена должна быть числом")
-    .isInt({ min: 0 })
-    .withMessage("Цена не должна быть отрицательна"),
+    .isFloat({ min: 1 })
+    .withMessage("Цена не указана"),
   body("oldPrice")
-    .isNumeric()
+    .isFloat()
     .withMessage("Цена должна быть числом")
-    .isInt({ min: 0 })
+    .isFloat({ min: 0 })
     .withMessage("Цена не должна быть отрицательна"),
   body("catalogId").isNumeric().withMessage("Каталог не выбран"),
   body("brandId").isNumeric().withMessage("Бренд не выбран"),

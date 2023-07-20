@@ -10,7 +10,7 @@ import { LS_BASKET, SHOP_ROUTE } from "../utils/constants";
 
 const Basket = () => {
   const { basketStore, toastStore } = useContext(Context);
-  const [deliveryType, setDeliveryType] = useState("deliveryCheck")
+  const [deliveryType, setDeliveryType] = useState("deliveryCheck");
   const navigate = useNavigate();
 
   const handleSubmitForm = (
@@ -48,7 +48,7 @@ const Basket = () => {
           localStorage.removeItem(LS_BASKET);
           basketStore.setItems([]);
           navigate(SHOP_ROUTE);
-          toastStore.setInfoToast("Заказ принят.")
+          toastStore.setInfoToast("Заказ принят.");
         }
       })
       .catch((e) => {
@@ -81,31 +81,58 @@ const Basket = () => {
               <tr>
                 <td colSpan={4}></td>
                 <td>
-                  <b>{basketStore.totalSum} руб.</b>
+                  <b>{Number(basketStore.totalSum).toFixed(2)} руб.</b>
                 </td>
                 <td></td>
               </tr>
             </tfoot>
           </Table>
-          <div class="form-check" onClick={() => setDeliveryType("deliveryCheck")}>
-            <input class="form-check-input" type="radio" name="deliveryCheck" id="deliveryCheck" checked={deliveryType === 'deliveryCheck'} />
+          <div
+            class="form-check"
+            onClick={() => setDeliveryType("deliveryCheck")}
+          >
+            <input
+              class="form-check-input"
+              type="radio"
+              name="deliveryCheck"
+              id="deliveryCheck"
+              checked={deliveryType === "deliveryCheck"}
+            />
             <label class="form-check-label" for="deliveryCheck">
               Доставка
             </label>
           </div>
-          <div class="form-check" onClick={() => setDeliveryType("pickupCheck")}>
-            <input class="form-check-input" type="radio" name="pickupCheck" id="pickupCheck" checked={deliveryType === 'pickupCheck'} />
+          <div
+            class="form-check"
+            onClick={() => setDeliveryType("pickupCheck")}
+          >
+            <input
+              class="form-check-input"
+              type="radio"
+              name="pickupCheck"
+              id="pickupCheck"
+              checked={deliveryType === "pickupCheck"}
+            />
             <label class="form-check-label" for="pickupCheck">
               Самовывоз
             </label>
           </div>
           <div class="form-check" onClick={() => setDeliveryType("postCheck")}>
-            <input class="form-check-input" type="radio" name="postCheck" id="postCheck" checked={deliveryType === 'postCheck'} />
+            <input
+              class="form-check-input"
+              type="radio"
+              name="postCheck"
+              id="postCheck"
+              checked={deliveryType === "postCheck"}
+            />
             <label class="form-check-label" for="postCheck">
               Европочта
             </label>
           </div>
-          <OrderForm submitForm={handleSubmitForm} deliveryType={deliveryType} />
+          <OrderForm
+            submitForm={handleSubmitForm}
+            deliveryType={deliveryType}
+          />
         </>
       ) : (
         <div>Корзина пуста</div>

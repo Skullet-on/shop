@@ -14,21 +14,33 @@ const TopBar = () => {
           <div></div>
         </Col>
         <Col md={3}>
-          <div className="d-flex">
+          <div>
             <Phone />
-            <a className="ms-2" href="tel:+375445549041">
+            <a
+              className="ms-2"
+              style={{ textDecoration: "auto" }}
+              href="tel:+375445549041"
+            >
               +375 (44) 554-90-41
             </a>
           </div>
-          <div className="d-flex">
+          <div>
             <Instagram />
-            <a className="ms-2" href="https://deeplink.hoverlanding.com/lhhfjt">
+            <a
+              className="ms-2"
+              style={{ textDecoration: "auto" }}
+              href="https://deeplink.hoverlanding.com/lhhfjt"
+            >
               pryazhamilalpaka
             </a>
           </div>
-          <div className="d-flex">
+          <div>
             <Envelope />
-            <a className="ms-2" href="mailto:pryazhamilayaalpaka@gmail.com">
+            <a
+              className="ms-2"
+              style={{ textDecoration: "auto" }}
+              href="mailto:pryazhamilayaalpaka@gmail.com"
+            >
               pryazhamilayaalpaka@gmail.com
             </a>
           </div>

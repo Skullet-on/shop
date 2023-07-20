@@ -34,7 +34,7 @@ const NavBasket = () => {
       ))}
       <NavDropdown.Divider />
       <NavDropdown.ItemText>
-        Сумма: <b>{basketStore.totalSum} руб.</b>
+        Сумма: <b>{Number(basketStore.totalSum).toFixed(2)} руб.</b>
       </NavDropdown.ItemText>
       <NavDropdown.Divider />
       <NavDropdown.Item onClick={() => navigate(BASKET_ROUTE)}>

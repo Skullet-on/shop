@@ -42,7 +42,9 @@ const OrderItem = ({ order, doneOrder }) => {
     <tr>
       <td colSpan={2}>
         {products.map((product) => {
-          return (
+          return order.isDone ? (
+            <s>{`${product.name}, ${product.price} руб., ${product.count} шт., цвет: ${product.color.name}`}</s>
+          ) : (
             <p
               key={product.name}
             >{`${product.name}, ${product.price} руб., ${product.count} шт., цвет: ${product.color.name}`}</p>
@@ -50,19 +52,46 @@ const OrderItem = ({ order, doneOrder }) => {
         })}
       </td>
       <td>
-        {order.deliveryType === "pickupCheck" ? (
-          "Самовывоз"
-        ) : order.deliveryType === "deliveryCheck" ? (
-          "Доставка"
-        ) : "Европочта"}
+        {order.isDone ? (
+          <s>
+            {order.deliveryType === "pickupCheck"
+              ? "Самовывоз"
+              : order.deliveryType === "deliveryCheck"
+              ? "Доставка"
+              : "Европочта"}
+          </s>
+        ) : (
+          <p>
+            {order.deliveryType === "pickupCheck"
+              ? "Самовывоз"
+              : order.deliveryType === "deliveryCheck"
+              ? "Доставка"
+              : "Европочта"}
+          </p>
+        )}
       </td>
       <td>
-        <p>{order.fio}</p>
-        <p>{order.phone}</p>
-        <p>{`г. ${order.city}, ул. ${order.street}, д. ${order.building}/${order.corp}, кв. ${order.flat}`}</p>
-        {order.deliveryType === "postCheck" && <p>Европочта: {order.postoffice}</p>}
+        {order.isDone ? (
+          <>
+            <s>{order.fio}</s>
+            <s>{order.phone}</s>
+            <s>{`г. ${order.city}, ул. ${order.street}, д. ${order.building}/${order.corp}, кв. ${order.flat}`}</s>
+            {order.deliveryType === "postCheck" && (
+              <s>Европочта: {order.postoffice}</s>
+            )}
+          </>
+        ) : (
+          <>
+            <p>{order.fio}</p>
+            <p>{order.phone}</p>
+            <p>{`г. ${order.city}, ул. ${order.street}, д. ${order.building}/${order.corp}, кв. ${order.flat}`}</p>
+            {order.deliveryType === "postCheck" && (
+              <p>Европочта: {order.postoffice}</p>
+            )}
+          </>
+        )}
       </td>
-      <td>{totalSum} руб.</td>
+      <td>{order.isDone ? <s>{totalSum} руб.</s> : <p>{totalSum} руб.</p>}</td>
       <td>
         {order.isDone ? (
           "Выполнен"

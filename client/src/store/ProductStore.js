@@ -6,7 +6,7 @@ export default class ProductStore {
     this._selectedProduct = {};
     this._page = 1;
     this._totalCount = 0;
-    this._limit = 10;
+    this._limit = 20;
     this._search = "";
     this._errors = {};
 

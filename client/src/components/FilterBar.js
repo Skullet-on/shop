@@ -13,12 +13,18 @@ const FilterBar = () => {
   const handleCheck = (brand) => {
     if (filterStore.filters.brands) {
       if (filterStore.filters.brands.includes(brand)) {
-        filterStore.setFilters('brands', filterStore.filters.brands.filter((id) => id !== brand));
+        filterStore.setFilters(
+          "brands",
+          filterStore.filters.brands.filter((id) => id !== brand)
+        );
       } else {
-        filterStore.setFilters('brands', [...filterStore.filters.brands, brand]);
+        filterStore.setFilters("brands", [
+          ...filterStore.filters.brands,
+          brand,
+        ]);
       }
     } else {
-      filterStore.setFilters('brands', [brand]);
+      filterStore.setFilters("brands", [brand]);
     }
   };
   //const currentCatalog = catalogStore.catalogs.filter((catalog) => catalog.name === catalogStore.selectedCatalog.name)[0];
@@ -43,7 +49,11 @@ const FilterBar = () => {
                 <input
                   className="form-check-input me-1"
                   type="checkbox"
-                  checked={filterStore.filters && filterStore.filters.brands && filterStore.filters.brands.includes(brand.id)}
+                  checked={
+                    filterStore.filters &&
+                    filterStore.filters.brands &&
+                    filterStore.filters.brands.includes(brand.id)
+                  }
                   onChange={() => {}}
                 />
                 {brand.label}
@@ -58,16 +68,22 @@ const FilterBar = () => {
           <InputGroup className="mb-3">
             <InputGroup.Text id="basic-addon1">От</InputGroup.Text>
             <Form.Control
-              placeholder='Цена'
-              onChange={e => handleSetFilter({ name: 'priceFrom', value: e.target.value })}
+              placeholder="Цена"
+              type="number"
+              onChange={(e) =>
+                handleSetFilter({ name: "priceFrom", value: e.target.value })
+              }
             />
             <InputGroup.Text id="basic-addon2">руб.</InputGroup.Text>
           </InputGroup>
           <InputGroup className="mb-3">
             <InputGroup.Text id="basic-addon3">До</InputGroup.Text>
             <Form.Control
-              placeholder='Цена'
-              onChange={e => handleSetFilter({ name: 'priceTo', value: e.target.value })}
+              placeholder="Цена"
+              type="number"
+              onChange={(e) =>
+                handleSetFilter({ name: "priceTo", value: e.target.value })
+              }
             />
             <InputGroup.Text id="basic-addon3">руб.</InputGroup.Text>
           </InputGroup>

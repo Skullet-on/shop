@@ -15,7 +15,10 @@ const ChooseProduct = () => {
         {productStore.products.map((prod) => (
           <Dropdown.Item
             key={prod.id}
-            onClick={() => productStore.setSelectedProduct(prod)}
+            onClick={() => {
+              console.log(prod);
+              return productStore.setSelectedProduct(prod);
+            }}
           >
             {prod.name}
           </Dropdown.Item>
