@@ -17,8 +17,8 @@ import CreateColor from "./CreateColor";
 const EditProductForm = () => {
   const { productStore, brandStore, catalogStore } = useContext(Context);
   const [name, setName] = useState("");
-  const [price, setPrice] = useState(null);
-  const [oldPrice, setOldPrice] = useState(null);
+  const [price, setPrice] = useState("");
+  const [oldPrice, setOldPrice] = useState("");
   const [selectedColor, setSelectedColor] = useState({});
   const [selectedBrand, setSelectedBrand] = useState({});
   const [selectedCatalog, setSelectedCatalog] = useState({});
@@ -38,11 +38,7 @@ const EditProductForm = () => {
         setOldPrice(data.oldPrice);
         setSelectedCatalog(data.catalogId);
         setSelectedBrand(data.brandId);
-        selectedColor.id
-          ? setSelectedColor(
-              data.colors.filter((color) => color.id === selectedColor.id)[0]
-            )
-          : setSelectedColor(data.colors[0]);
+        setSelectedColor(data.colors[0]);
 
         if (data.properties.length) {
           const newInfo = data.properties.reduce((result, current) => {
@@ -72,10 +68,14 @@ const EditProductForm = () => {
     if (productStore.errors.properties && productStore.errors.properties[id]) {
       productStore.removePropertyErrors(id);
     }
+
     setProperties(
-      properties.map((property) =>
-        property.id === id ? { ...property, value: value } : property
-      )
+      properties.map((property) =>{
+        if(property.type === 'number') {
+          return property.id === id && value ? { ...property, value } : property
+        }
+        return property.id === id ? { ...property, value } : property
+      })
     );
   };
 
@@ -220,7 +220,7 @@ const EditProductForm = () => {
       setOldPrice(value);
     }
   };
-  console.log(selectedColor);
+
   const handleRemoveProduct = async () => {
     await removeProduct(productStore.selectedProduct.id);
 
@@ -431,6 +431,7 @@ const EditProductForm = () => {
                     <InputGroup className="mb-3">
                       <Form.Control
                         type={property.type}
+                        step={1}
                         value={property.value}
                         isInvalid={
                           productStore.errors.properties &&

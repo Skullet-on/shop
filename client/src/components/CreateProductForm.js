@@ -8,8 +8,8 @@ import { imagesUrl } from "../utils/constants";
 const CreateProductForm = () => {
   const { productStore, brandStore, catalogStore } = useContext(Context);
   const [name, setName] = useState("");
-  const [price, setPrice] = useState(null);
-  const [oldPrice, setOldPrice] = useState(null);
+  const [price, setPrice] = useState("");
+  const [oldPrice, setOldPrice] = useState("");
   const [color, setColor] = useState("");
   const [count, setCount] = useState(0);
   const [file, setFile] = useState({});
@@ -47,8 +47,14 @@ const CreateProductForm = () => {
     ) {
       productStore.removePropertyErrors(number);
     }
+
     setProperties(
-      properties.map((i) => (i.number === number ? { ...i, [key]: value } : i))
+      properties.map((i) => {
+        if (i.number === number) {
+          return i.number === number && value ? { ...i, [key]: value } : i
+        }
+        return i.number === number ? { ...i, [key]: value } : i
+      })
     );
   };
 
