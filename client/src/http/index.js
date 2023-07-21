@@ -1,4 +1,5 @@
 import axios from "axios";
+import { LS_TOKEN } from "../utils/constants";
 
 const $host = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
@@ -11,7 +12,7 @@ const $authHost = axios.create({
 });
 
 const authInterceptor = (config) => {
-  config.headers.authorization = `Bearer ${localStorage.getItem("token")}`;
+  config.headers.authorization = `Bearer ${localStorage.getItem(LS_TOKEN)}`;
   return config;
 };
 
@@ -21,7 +22,7 @@ const errorInterceptor = async (error) => {
   if (error.response.status === 401) {
     try {
       const response = await $authHost.get("api/users/refresh");
-      localStorage.setItem("token", response.data.accessToken);
+      localStorage.setItem(LS_TOKEN, response.data.accessToken);
 
       return $authHost.request(originalRequest);
     } catch (error) {
