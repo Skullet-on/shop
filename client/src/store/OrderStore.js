@@ -28,6 +28,10 @@ class OrderStore {
     delete this._errors[field];
   }
 
+  getNotIsDoneCount() {
+    return this._items.filter((item) => !item.isDone).length
+  }
+
   get items() {
     return this._items;
   }

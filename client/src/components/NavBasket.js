@@ -15,17 +15,19 @@ const NavBasket = () => {
     <NavDropdown
       align="end"
       title={
+        basketStore.items.length ?
         <>
           <Cart2 width="24" height="24" />
           <Badge
             pill
-            bg="light"
-            text="primary"
+            bg="danger"
+            text="light"
             style={{ position: "absolute", right: 10, top: 3 }}
           >
             {basketStore.items.length}
           </Badge>
         </>
+        : <Cart2 width="24" height="24" />
       }
       id="header-basket"
     >

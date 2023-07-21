@@ -10142,6 +10142,12 @@ textarea.form-control-lg {
   display: block;
 }
 
+.toastMessages__container {
+  position: fixed!important;
+  right: 0;
+  bottom: 0;
+}
+
 @media (max-width: 768px) {
   .topBar_contacts {
     display: none;

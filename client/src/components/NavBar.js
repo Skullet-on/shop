@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { Context } from "..";
-import { Navbar, Container, NavDropdown, Nav } from "react-bootstrap";
+import { Navbar, Container, NavDropdown, Nav, Badge } from "react-bootstrap";
 import {
   ADMIN_ROUTE,
   LOGIN_ROUTE,
@@ -16,7 +16,7 @@ import { fetchCatalogs } from "../http/productApi";
 import NavBasket from "./NavBasket";
 
 const NavBar = observer(() => {
-  const { userStore, catalogStore, toastStore } = useContext(
+  const { userStore, catalogStore, toastStore, orderStore } = useContext(
     Context
   );
   const navigate = useNavigate();
@@ -68,7 +68,19 @@ const NavBar = observer(() => {
         <NavBasket />
         <NavDropdown
           align="end"
-          title={<Person width="24" height="24" />}
+          title={userStore.user.role === "ADMIN" && orderStore.getNotIsDoneCount() 
+            ? <>
+                <Person width="24" height="24" />
+                <Badge
+                  pill
+                  bg="danger"
+                  text="light"
+                  style={{ position: "absolute", right: 10, top: 3 }}                
+                >
+                  {orderStore.getNotIsDoneCount()}
+                </Badge>
+              </> 
+            : <Person width="24" height="24" />}
           id="auth-dropdown"
         >
           {userStore.isAuth ? (
@@ -82,9 +94,19 @@ const NavBar = observer(() => {
                   <NavDropdown.Item onClick={() => navigate(ADMIN_ROUTE)}>
                     Админка
                   </NavDropdown.Item>
-                  <NavDropdown.Item onClick={() => navigate(ORDERS_ROUTE)}>
-                    Заказы
-                  </NavDropdown.Item>
+                  
+                    <NavDropdown.Item onClick={() => navigate(ORDERS_ROUTE)}>
+                      Заказы
+                      {orderStore.getNotIsDoneCount() ? <Badge
+                        pill
+                        bg="danger"
+                        text="light"
+                        className="ms-1"
+                      >
+                        {orderStore.getNotIsDoneCount()}
+                      </Badge> : ""
+                    }   
+                    </NavDropdown.Item>
                 </>
               ) : (
                 ""

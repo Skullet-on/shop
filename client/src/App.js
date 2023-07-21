@@ -6,7 +6,7 @@ import AppRouter from "./components/AppRouter";
 import NavBar from "./components/NavBar";
 import { Spinner } from "react-bootstrap";
 import TopBar from "./components/TopBar";
-import { fetchBrands, fetchCatalogs, fetchProperties } from "./http/productApi";
+import { fetchBrands, fetchCatalogs, fetchOrders, fetchProperties } from "./http/productApi";
 import { LS_BASKET, LS_TOKEN } from "./utils/constants";
 
 import ToastMessage from "./components/ToastMessage";
@@ -19,6 +19,7 @@ const App = () => {
     propertiesStore,
     userStore,
     basketStore,
+    orderStore
   } = useContext(Context);
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
@@ -50,6 +51,7 @@ const App = () => {
     fetchProperties().then((data) => {
       propertiesStore.setProperties(data);
     });
+    fetchOrders().then((data) => orderStore.setItems(data));
   }, []);
 
   if (userStore.isLoading) {

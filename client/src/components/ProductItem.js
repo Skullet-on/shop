@@ -41,6 +41,8 @@ const ProductItem = ({ product }) => {
       localStorage.setItem(LS_BASKET, JSON.stringify(newItems));
 
       basketStore.setItems(newItems);
+
+      toastStore.setInfoToast("Товар добавлен в корзину");
     } else {
       const items = localStorage.getItem(LS_BASKET);
 

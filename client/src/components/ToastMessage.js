@@ -7,7 +7,7 @@ const ToastMessage = () => {
   const { toastStore } = useContext(Context);
 
   return (
-    <ToastContainer className="p-3" position="bottom-end">
+    <ToastContainer className="p-3 toastMessages__container">
       <Toast
         show={toastStore.show}
         bg={toastStore.variant}
