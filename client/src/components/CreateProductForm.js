@@ -16,6 +16,7 @@ const CreateProductForm = () => {
   const [properties, setProperties] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState({});
   const [selectedCatalog, setSelectedCatalog] = useState({});
+  const [disableButtons, setDisableButtons] = useState(false);
 
   useEffect(() => {
     setSelectedBrand({});
@@ -104,6 +105,7 @@ const CreateProductForm = () => {
   };
 
   const addProduct = async () => {
+    setDisableButtons(true);
     const formData = new FormData();
 
     formData.append("name", name);
@@ -116,6 +118,7 @@ const CreateProductForm = () => {
     formData.append("brandId", selectedBrand.id);
     formData.append("properties", JSON.stringify(properties));
     await createProduct(formData).then((data) => {
+      setDisableButtons(false);
       if (data.errors) {
         productStore.setErrors(data.errors);
       } else {
@@ -395,7 +398,7 @@ const CreateProductForm = () => {
       </Row>
       <hr />
       <Row>
-        <Button variant="outline-success" onClick={addProduct}>
+        <Button variant="outline-success" disabled={disableButtons} onClick={addProduct}>
           Добавить товар
         </Button>
       </Row>

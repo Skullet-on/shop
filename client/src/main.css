@@ -10108,7 +10108,7 @@ textarea.form-control-lg {
   }
 }
 :root {
-  --bs-body-font-family: cursive;
+  --bs-body-font-family: system-ui;
 }
 
 .nav-link {
@@ -10121,6 +10121,31 @@ textarea.form-control-lg {
 
 .form-control {
   background-color: white;
+}
+
+.navBarMobile_container {
+  display: flex;
+  flex-direction: column;
+}
+
+.navBarMobile_main {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.navBarMobile_contacts {
+  display: flex;
+}
+
+.topBar_contacts {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .topBar_contacts {
+    display: none;
+  }
 }
 
 /*# sourceMappingURL=main.css.map */

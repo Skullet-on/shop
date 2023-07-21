@@ -1,5 +1,4 @@
 import React from "react";
-import { Col, Container, Row } from "react-bootstrap";
 import ColorItem from "./ColorItem";
 
 const ColorList = ({ product, changeColor }) => {

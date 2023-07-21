@@ -1,23 +1,22 @@
 import React, { useContext, useEffect } from "react";
 import { Context } from "..";
-import { Navbar, Container, NavDropdown, Form, Nav } from "react-bootstrap";
+import { Navbar, Container, NavDropdown, Nav } from "react-bootstrap";
 import {
   ADMIN_ROUTE,
   LOGIN_ROUTE,
   ORDERS_ROUTE,
   PAID_AND_DELIVERY,
-  REGISTRATION_ROUTE,
   SHOP_ROUTE,
 } from "../utils/constants";
 import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
 import { Person } from "react-bootstrap-icons";
-import { debounce, ucFirst } from "../helpers";
+import { ucFirst } from "../helpers";
 import { fetchCatalogs } from "../http/productApi";
 import NavBasket from "./NavBasket";
 
 const NavBar = observer(() => {
-  const { userStore, productStore, catalogStore, toastStore } = useContext(
+  const { userStore, catalogStore, toastStore } = useContext(
     Context
   );
   const navigate = useNavigate();
@@ -31,10 +30,6 @@ const NavBar = observer(() => {
 
     navigate(SHOP_ROUTE);
   };
-
-  const handleSearch = debounce((value) => {
-    productStore.setSearch(value);
-  }, 300);
 
   const handleLogout = (user) => {
     user.logout();
@@ -68,15 +63,8 @@ const NavBar = observer(() => {
         <Nav.Link href={PAID_AND_DELIVERY} onClick={(e) => handleClickPaid(e)}>
           Доставка и оплата
         </Nav.Link>
-        <Form className="d-flex" style={{ width: "100%" }}>
-          <Form.Control
-            type="search"
-            placeholder="Поиск"
-            className="me-2"
-            aria-label="Search"
-            onChange={(e) => handleSearch(e.target.value)}
-          />
-        </Form>
+        <div className="d-flex" style={{ width: "100%" }}>
+        </div>
         <NavBasket />
         <NavDropdown
           align="end"

@@ -48,12 +48,17 @@ const NewAdminPage = observer(() => {
     fetchProperties().then((data) => propertiesStore.setProperties(data));
   }, [modalStore.createPropertyModal.show]);
 
+  const handleSetTab = (newTab) => {
+    productStore.setErrors({})
+    setTab(newTab);
+  } 
+
   return (
     <Container className="mt-3">
       <Tabs
         defaultActiveKey="profile"
         activeKey={tab}
-        onSelect={(t) => setTab(t)}
+        onSelect={(t) => handleSetTab(t)}
         className="mb-3 mt-3"
       >
         <Tab eventKey="catalogs" title="Каталоги">

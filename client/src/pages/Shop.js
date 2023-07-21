@@ -1,12 +1,12 @@
 import { observer } from "mobx-react-lite";
 import React, { useContext, useEffect } from "react";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Context } from "../index";
 import ProductList from "../components/ProductList";
 import FilterBar from "../components/FilterBar";
 import { fetchCatalogs, fetchBrands, fetchProducts } from "../http/productApi";
 import Pages from "../components/Pages";
-import { ucFirst } from "../helpers";
+import { debounce, ucFirst } from "../helpers";
 
 const Shop = observer(() => {
   const { productStore, brandStore, catalogStore, filterStore } = useContext(
@@ -64,8 +64,23 @@ const Shop = observer(() => {
     });
   };
 
+  const handleSearch = debounce((value) => {
+    productStore.setSearch(value);
+  }, 300);
+
   return (
     <Container>
+      <Row className="mt-2">
+        <Form className="d-flex" style={{ width: "100%" }}>
+          <Form.Control
+            type="search"
+            placeholder="Поиск"
+            className="me-2"
+            aria-label="Search"
+            onChange={(e) => handleSearch(e.target.value)}
+          />
+        </Form>
+      </Row>
       <Row className="mt-2">
         <Col md={3}>
           <FilterBar />

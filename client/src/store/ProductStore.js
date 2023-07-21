@@ -18,6 +18,7 @@ export default class ProductStore {
   }
   setSelectedProduct(product) {
     this._selectedProduct = product;
+    this._errors = {}
   }
   setPage(page) {
     this._page = page;

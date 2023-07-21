@@ -96,7 +96,7 @@ export const fetchProducts = async (
   catalogId,
   brandId,
   page,
-  limit = 10,
+  limit = 9999999,
   search,
   filter = {}
 ) => {
@@ -152,6 +152,12 @@ export const createColor = async (color) => {
 
 export const editColor = async (id, color) => {
   const { data } = await $authHost.patch("/api/color/" + id, color);
+
+  return data;
+};
+
+export const deleteColor = async (id) => {
+  const { data } = await $authHost.delete("/api/color/" + id);
 
   return data;
 };

@@ -23,6 +23,7 @@ const EditProductForm = () => {
   const [selectedBrand, setSelectedBrand] = useState({});
   const [selectedCatalog, setSelectedCatalog] = useState({});
   const [properties, setProperties] = useState([]);
+  const [disableButtons, setDisableButtons] = useState(false);
 
   useEffect(() => {
     brandStore.setSelectedBrand({});
@@ -166,6 +167,7 @@ const EditProductForm = () => {
   };
 
   const handleEditProduct = () => {
+    setDisableButtons(true);
     const formData = new FormData();
 
     formData.append("name", name);
@@ -177,6 +179,7 @@ const EditProductForm = () => {
     formData.append("properties", JSON.stringify(properties));
 
     editProduct(productStore.selectedProduct.id, formData).then((data) => {
+      setDisableButtons(false);
       if (data.errors) {
         productStore.setErrors(data.errors);
       } else {
@@ -419,7 +422,7 @@ const EditProductForm = () => {
                   product={productStore.selectedProduct}
                   changeColor={handleChooseColor}
                 />
-                <CreateColor product={productStore.selectedProduct} />
+                <CreateColor product={productStore.selectedProduct} color={selectedColor} />
               </Col>
             </Row>
             <hr />
@@ -458,12 +461,14 @@ const EditProductForm = () => {
             <Row>
               <Button
                 variant="outline-warning"
+                disabled={disableButtons}
                 onClick={() => handleEditProduct()}
               >
                 Изменить товар
               </Button>
               <Button
                 className="mt-2"
+                disabled={disableButtons}
                 variant="outline-danger"
                 onClick={() => handleRemoveProduct()}
               >

@@ -1,9 +1,9 @@
 import { observer } from "mobx-react-lite";
 import React, { useContext, useEffect, useState } from "react";
 import { Button, Card, Container, Form } from "react-bootstrap";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Context } from "../index";
-import { REGISTRATION_ROUTE, SHOP_ROUTE } from "../utils/constants";
+import { SHOP_ROUTE } from "../utils/constants";
 
 const Auth = () => {
   const { userStore, toastStore } = useContext(Context);

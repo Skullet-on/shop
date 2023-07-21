@@ -1,5 +1,6 @@
 const uuid = require("uuid");
 const path = require("path");
+const fs = require('fs');
 const { Color } = require("../models");
 const { validationResult } = require("express-validator");
 const ApiError = require("../error/ApiError");
@@ -60,6 +61,27 @@ class ColorController {
     );
 
     return res.json(color);
+  }
+
+  async delete(req, res) {
+    const { id } = req.params;
+    
+    const color = await Color.findOne({
+      where: { id }
+    })
+    const filePath = path.resolve(__dirname, "..", "static/images", color.img)
+
+    const removedColor = await Color.destroy(
+      { where: { id } }
+    );
+
+    if (removedColor === 1) {
+      fs.unlink(filePath, (error) => {
+        console.log(error);
+      })
+    }
+
+    return res.json(removedColor);
   }
 }
 

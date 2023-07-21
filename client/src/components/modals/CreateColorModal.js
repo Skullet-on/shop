@@ -9,6 +9,7 @@ const CreateColorModal = ({ show, onHide, productId }) => {
   const [name, setName] = useState("");
   const [count, setCount] = useState(0);
   const [file, setFile] = useState({});
+  const [disableButtons, setDisableButtons] = useState(false);
   const { productStore, colorStore, toastStore } = useContext(Context);
 
   const selectFile = (e) => {
@@ -29,6 +30,7 @@ const CreateColorModal = ({ show, onHide, productId }) => {
   };
 
   const addColor = async () => {
+    setDisableButtons(true);
     const formData = new FormData();
 
     formData.append("name", name);
@@ -36,6 +38,7 @@ const CreateColorModal = ({ show, onHide, productId }) => {
     formData.append("productId", productId);
     formData.append("img", file.file);
     await createColor(formData).then((data) => {
+      setDisableButtons(false);
       if (data.errors) {
         colorStore.setErrors(data.errors);
       } else {
@@ -136,10 +139,10 @@ const CreateColorModal = ({ show, onHide, productId }) => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="outline-success" onClick={addColor}>
+        <Button variant="outline-success" disabled={disableButtons} onClick={addColor}>
           Добавить
         </Button>
-        <Button variant="outline-dark" onClick={onHide}>
+        <Button variant="outline-dark" disabled={disableButtons} onClick={onHide}>
           Закрыть
         </Button>
       </Modal.Footer>

@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { BrowserRouter } from "react-router-dom";
 import { Context } from "./index";
 import AppRouter from "./components/AppRouter";
@@ -8,7 +8,9 @@ import { Spinner } from "react-bootstrap";
 import TopBar from "./components/TopBar";
 import { fetchBrands, fetchCatalogs, fetchProperties } from "./http/productApi";
 import { LS_BASKET, LS_TOKEN } from "./utils/constants";
+
 import ToastMessage from "./components/ToastMessage";
+import NavBarMobile from "./components/NavBarMobile";
 
 const App = () => {
   const {
@@ -18,6 +20,17 @@ const App = () => {
     userStore,
     basketStore,
   } = useContext(Context);
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleWindowResize);
+    return () => {
+      window.removeEventListener('resize', handleWindowResize);
+    };
+  });
 
   useEffect(() => {
     if (localStorage.getItem(LS_TOKEN)) {
@@ -46,7 +59,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <TopBar />
-      <NavBar />
+      {screenWidth > 768 ? <NavBar /> : <NavBarMobile />}
       <AppRouter />
       <ToastMessage />
     </BrowserRouter>

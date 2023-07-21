@@ -9,7 +9,7 @@ import ColorList from "./ColorList";
 import { ucFirst } from "../helpers";
 
 const ProductItem = ({ product }) => {
-  const { basketStore, toastStore } = useContext(Context);
+  const { basketStore, toastStore, userStore } = useContext(Context);
   const [count, setCount] = useState(1);
   const [selectedColor, setSelectedColor] = useState(null);
 
@@ -95,7 +95,7 @@ const ProductItem = ({ product }) => {
           onClick={() => navigate(PRODUCT_ROUTE + "/" + product.id)}
           style={{
             objectFit: "cover",
-            aspectRatio: "16 / 9",
+            aspectRatio: "4 / 3",
             cursor: "pointer",
           }}
         />
@@ -166,6 +166,17 @@ const ProductItem = ({ product }) => {
             >
               Цвет:
               <span> {selectedColor.name}</span>
+            </Card.Text>
+          )}
+          {selectedColor && userStore.isAuth && userStore.user.role === "ADMIN" && (
+            <Card.Text
+              className="mb-0"
+              style={{
+                fontSize: 12,
+              }}
+            >
+              Количество:
+              <span> {selectedColor.count}</span>
             </Card.Text>
           )}
           <ColorList product={product} changeColor={handleChangeColor} />

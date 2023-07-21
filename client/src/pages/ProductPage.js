@@ -10,7 +10,6 @@ import { LS_BASKET, imagesUrl } from "../utils/constants";
 function ProductPage() {
   const { propertiesStore, basketStore, toastStore } = useContext(Context);
   const [item, setItem] = useState({});
-  const [imgIndex, setImgIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState(null);
 
   const { id } = useParams();
@@ -23,11 +22,6 @@ function ProductPage() {
       })
       .catch((error) => {});
   }, []);
-
-  const getImageById = (id) => {
-    const filteredColor = item.colors.filter((color) => color.id === id);
-    return filteredColor[0];
-  };
 
   const handleAddToCart = (e) => {
     const identificator = item.id + selectedColor.name;
@@ -94,7 +88,7 @@ function ProductPage() {
               }
             />
           ) : (
-            <Image style={{ width: "100%" }} src={imagesUrl + "/ma.jpg"} />
+            <Image style={{ width: "100%" }} src={imagesUrl + "/no-image.jpg"} />
           )}
         </Col>
         <Col md={8}>
