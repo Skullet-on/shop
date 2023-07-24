@@ -61,7 +61,7 @@ class OrderController {
 
   async getAll(req, res) {
     const orders = await Order.findAll({
-      order: [["id"]],
+      order: [["isDone"], ["createdAt"]],
     });
 
     return res.json(orders);
