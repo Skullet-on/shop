@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { Context } from "..";
 import { Navbar, Container, NavDropdown, Nav, Badge } from "react-bootstrap";
 import {
@@ -12,7 +12,6 @@ import { observer } from "mobx-react-lite";
 import { useNavigate } from "react-router-dom";
 import { Person } from "react-bootstrap-icons";
 import { ucFirst } from "../helpers";
-import { fetchCatalogs } from "../http/productApi";
 import NavBasket from "./NavBasket";
 
 const NavBar = observer(() => {
@@ -20,10 +19,6 @@ const NavBar = observer(() => {
     Context
   );
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchCatalogs().then((data) => catalogStore.setCatalogs(data));
-  }, []);
 
   const handleClickCatalog = (catalog) => {
     catalogStore.setSelectedCatalog(catalog);

@@ -4,7 +4,7 @@ import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { Context } from "../index";
 import ProductList from "../components/ProductList";
 import FilterBar from "../components/FilterBar";
-import { fetchCatalogs, fetchBrands, fetchProducts } from "../http/productApi";
+import { fetchProducts } from "../http/productApi";
 import Pages from "../components/Pages";
 import { debounce, ucFirst } from "../helpers";
 
@@ -13,11 +13,6 @@ const Shop = observer(() => {
     Context
   );
   useEffect(() => {
-    fetchCatalogs().then((data) => {
-      catalogStore.setCatalogs(data);
-      catalogStore.setSelectedCatalog(data[0] || {});
-    });
-    fetchBrands().then((data) => brandStore.setBrands(data));
     fetchProducts(
       null,
       null,
