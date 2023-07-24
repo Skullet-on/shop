@@ -123,17 +123,15 @@ const ProductItem = ({ product }) => {
             {product.oldPrice !== "0.00" ? <s> {product.oldPrice} руб.</s> : ""}
             <b> {product.price} руб. </b>
           </Card.Text>
-          <Card.Text className="mb-1">
             {selectedColor && selectedColor.count > 0 ? (
               <Badge type="dot" bg="success">
-                В наличии
+                {"В наличии"}
               </Badge>
             ) : (
               <Badge type="dot" bg="warning">
-                Под заказ
+                {"Под заказ"}
               </Badge>
             )}
-          </Card.Text>
           {product.properties.length
             ? product.properties.map((property) => {
                 return (

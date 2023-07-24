@@ -21,7 +21,7 @@ const Orders = () => {
   return (
     <Container className="mt-3">
       {orderStore.items.length ? (
-        <Table striped>
+        <Table striped responsive>
           <thead>
             <tr>
               <th colSpan={2}>Товар</th>

@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import React, { useContext, useState } from "react";
-import { Container, Table } from "react-bootstrap";
+import { Container, Form, Table } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Context } from "..";
 import BasketItem from "../components/BasketItem";
@@ -60,7 +60,7 @@ const Basket = () => {
     <Container className="mt-3">
       {basketStore.items.length ? (
         <>
-          <Table striped bordered hover>
+          <Table striped bordered hover responsive>
             <thead>
               <tr>
                 <th colSpan={2}>Товар</th>
@@ -87,48 +87,34 @@ const Basket = () => {
               </tr>
             </tfoot>
           </Table>
-          <div
-            class="form-check"
-            onClick={() => setDeliveryType("deliveryCheck")}
-          >
-            <input
-              class="form-check-input"
-              type="radio"
-              name="deliveryCheck"
-              id="deliveryCheck"
-              checked={deliveryType === "deliveryCheck"}
-            />
-            <label class="form-check-label" for="deliveryCheck">
-              Доставка
-            </label>
-          </div>
-          <div
-            class="form-check"
-            onClick={() => setDeliveryType("pickupCheck")}
-          >
-            <input
-              class="form-check-input"
-              type="radio"
-              name="pickupCheck"
-              id="pickupCheck"
-              checked={deliveryType === "pickupCheck"}
-            />
-            <label class="form-check-label" for="pickupCheck">
-              Самовывоз
-            </label>
-          </div>
-          <div class="form-check" onClick={() => setDeliveryType("postCheck")}>
-            <input
-              class="form-check-input"
-              type="radio"
-              name="postCheck"
-              id="postCheck"
-              checked={deliveryType === "postCheck"}
-            />
-            <label class="form-check-label" for="postCheck">
-              Европочта
-            </label>
-          </div>
+          <Form>
+            <div className="mb-3">
+              <Form.Check
+                type="radio"
+                id="deliveryCheck"
+                label="Доставка"
+                checked={deliveryType === "deliveryCheck"}
+                onChange={() => setDeliveryType("deliveryCheck")}
+              />
+
+              <Form.Check
+                type="radio"
+                label="Самовывоз"
+                id="pickupCheck"
+                checked={deliveryType === "pickupCheck"}
+                onChange={() => setDeliveryType("pickupCheck")}
+              />
+
+              <Form.Check
+                type="radio"
+                label="Европочта"
+                id="postCheck"
+                checked={deliveryType === "postCheck"}
+                onChange={() => setDeliveryType("postCheck")}
+              />
+            </div>
+          </Form>
+
           <OrderForm
             submitForm={handleSubmitForm}
             deliveryType={deliveryType}

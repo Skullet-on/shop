@@ -13,7 +13,7 @@ const ProductList = () => {
         <ProductItem
           key={prod.id}
           product={prod}
-          brand={brandStore.getBrand(prod.brandId).name}
+          brand={brandStore.getBrand(prod.brandId) ? brandStore.getBrand(prod.brandId).name : ""}
         />
       ))}
     </Row>

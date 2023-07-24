@@ -41,13 +41,13 @@ const OrderItem = ({ order, doneOrder }) => {
   return (
     <tr>
       <td colSpan={2}>
-        {products.map((product) => {
+        {products.map((product, index) => {
           return order.isDone ? (
-            <s>{`${product.name}, ${product.price} руб., ${product.count} шт., цвет: ${product.color.name}`}</s>
+            <s key={index}>{`${index + 1}. ${product.name}, ${product.price} руб., ${product.count} шт., цвет: ${product.color.name}`}</s>
           ) : (
             <p
-              key={product.name}
-            >{`${product.name}, ${product.price} руб., ${product.count} шт., цвет: ${product.color.name}`}</p>
+              key={index}
+            >{`${index + 1}. ${product.name}, ${product.price} руб., ${product.count} шт., цвет: ${product.color.name}`}</p>
           );
         })}
       </td>
