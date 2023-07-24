@@ -109,8 +109,8 @@ const CreateColorModal = ({ show, onHide, productId }) => {
             </Col>
           </Row>
           <Row className="mt-2">
-            <div class="input-group mb-3">
-              <span class="input-group-text" id="basic-addon1">Код цвета</span>
+            <div className="input-group mb-3">
+              <span className="input-group-text" id="basic-addon1">Код цвета</span>
               <Form.Control
                 value={name}
                 onChange={(e) => handleChangeName(e.target.value)}
@@ -123,8 +123,8 @@ const CreateColorModal = ({ show, onHide, productId }) => {
             </div>
           </Row>
           <Row className="mt-2">
-            <div class="input-group mb-3">
-              <span class="input-group-text" id="basic-addon1">Количество</span>
+            <div className="input-group mb-3">
+              <span className="input-group-text" id="basic-addon1">Количество</span>
               <Form.Control
                 value={count}
                 onChange={(e) => handleChangeCount(e.target.value)}

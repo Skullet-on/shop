@@ -35,8 +35,8 @@ const CreateBrand = ({ show, onHide }) => {
       </Modal.Header>
       <Modal.Body>
         <Form>
-          <div class="input-group mb-3">
-            <span class="input-group-text" id="basic-addon1">Бренд</span>
+          <div className="input-group mb-3">
+            <span className="input-group-text" id="basic-addon1">Бренд</span>
             <Form.Control
               value={value}
               onChange={(e) => handleChange(e.target.value)}

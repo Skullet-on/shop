@@ -2,12 +2,24 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
       rel="stylesheet"
       href="main.css"
     />
+    <link rel="manifest" href="/manifest.json" />
     <title>Милая Альпака</title>
+    <script>
+      window.addEventListener('load', async () => {
+        if ('serviceWorker' in navigator) {
+          try {
+            await navigator.serviceWorker.register('/sw.js')
+          } catch (e) {
+          }
+        }
+      });
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

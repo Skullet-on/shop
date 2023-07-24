@@ -56,8 +56,8 @@ const CreateProperty = ({ show, onHide }) => {
         <Form>
           <Row>
             <Col sm={4} lg={5}>
-              <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1">Название свойства</span>
+              <div className="input-group mb-3">
+                <span className="input-group-text" id="basic-addon1">Название свойства</span>
                 <Form.Control
                   value={value}
                   isInvalid={Object.keys(propertiesStore.errors).length}
@@ -71,8 +71,8 @@ const CreateProperty = ({ show, onHide }) => {
               </div>
             </Col>
             <Col sm={4} lg={5}>
-              <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1">Единица измерения</span>
+              <div className="input-group mb-3">
+                <span className="input-group-text" id="basic-addon1">Единица измерения</span>
                 <Form.Control
                   value={currency}
                   onChange={(e) => setCurrency(e.target.value)}
